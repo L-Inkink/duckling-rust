@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate failure;
 extern crate fnv;
 extern crate rustling_core;
 extern crate rustling_ml;
@@ -9,8 +7,8 @@ pub use rustling_core::{
     AttemptFrom, AttemptInto, BoundariesChecker, InnerStashIndexable, Node, NodePayload,
     ParsedNode, Range, RuleSet, RuleSetBuilder, StashIndexable, Sym,
 };
-pub use rustling_core::{RuleError, RuleResult};
-pub use rustling_ml::{ClassId, Classifier, ClassifierId, Feature, Input, Model};
+pub use rustling_core::{RuleResult, RustlingError};
+pub use rustling_ml::{ClassId, Classifier, ClassifierId, Feature, Input, Model, MLError};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 pub use train::{Check, Example};
@@ -26,7 +24,7 @@ pub mod core {
     pub use rustling_core::rule::{Rule1, Rule2, Rule3, Rule4, Rule5, Rule6};
 }
 
-pub type RustlingResult<T> = Result<T, ::failure::Error>;
+pub type RustlingResult<T> = Result<T, RustlingError>;
 
 #[derive(Debug, Hash, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct RuleId(pub Sym);

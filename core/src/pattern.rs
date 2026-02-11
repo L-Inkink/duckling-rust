@@ -156,12 +156,12 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue> for TextPatte
         let mut results = PredicateMatches::with_status(ParsingStatus::Continue);
         for cap in self.pattern.captures_iter(&sentence) {
             let full = cap.get(0).ok_or_else(|| {
-                format_err!(
+                crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
                     self.pattern,
                     self.pattern_sym,
                     sentence
-                )
+                ))
             })?;
             let full_range = Range(full.start(), full.end());
             if !self.boundaries_checker.check(sentence, full_range) {
@@ -170,14 +170,14 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue> for TextPatte
             let mut groups = SmallVec::new();
             for (ix, group) in cap.iter().enumerate() {
                 let group = group.ok_or_else(|| {
-                    format_err!(
+                    crate::error::RustlingError::NoCapture(format!(
                         "No capture for regexp {} in rule {:?}, group number {} in \
                          capture: {}",
                         self.pattern,
                         self.pattern_sym,
                         ix,
                         full.as_str()
-                    )
+                    ))
                 })?;
                 let range = Range(group.start(), group.end());
                 groups.push(range);
@@ -236,12 +236,12 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue>
         let mut results = PredicateMatches::with_status(ParsingStatus::Continue);
         for cap in self.pattern.captures_iter(&sentence) {
             let full = cap.get(0).ok_or_else(|| {
-                format_err!(
+                crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
                     self.pattern,
                     self.pattern_sym,
                     sentence
-                )
+                ))
             })?;
             let full_range = Range(full.start(), full.end());
             if !self.boundaries_checker.check(sentence, full_range) {
@@ -255,14 +255,14 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue>
             let mut groups = SmallVec::new();
             for (ix, group) in cap.iter().enumerate() {
                 let group = group.ok_or_else(|| {
-                    format_err!(
+                    crate::error::RustlingError::NoCapture(format!(
                         "No capture for regexp {} in rule {:?}, group number {} in \
                          capture: {}",
                         self.pattern,
                         self.pattern_sym,
                         ix,
                         full.as_str()
-                    )
+                    ))
                 })?;
                 let range = Range(group.start(), group.end());
                 groups.push(range);

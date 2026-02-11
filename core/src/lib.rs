@@ -1,10 +1,9 @@
-#[macro_use]
-extern crate failure;
 pub extern crate regex;
 extern crate smallvec;
 extern crate string_interner;
 
 mod builder;
+pub mod error;
 mod helpers;
 pub mod pattern;
 mod range;
@@ -12,13 +11,14 @@ pub mod rule;
 mod stash;
 
 pub use builder::RuleSetBuilder;
+pub use error::{Result as CoreResult, RustlingError};
 pub use helpers::BoundariesChecker;
 use pattern::Pattern;
 use pattern::TerminalPattern;
 pub use range::Range;
 use rule::Rule;
 use rule::TerminalRule;
-pub use rule::{RuleError, RuleResult};
+pub use rule::RuleResult;
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 use stash::Stash;
@@ -27,8 +27,6 @@ use std::collections::HashSet;
 use std::fmt::Debug;
 use std::{cell, rc};
 use string_interner::StringInterner;
-
-pub type CoreResult<T> = Result<T, ::failure::Error>;
 
 pub trait AttemptFrom<V>: Sized {
     fn attempt_from(v: V) -> Option<Self>;

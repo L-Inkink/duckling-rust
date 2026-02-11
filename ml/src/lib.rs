@@ -1,13 +1,21 @@
-#[macro_use]
-extern crate failure;
 extern crate fnv;
 
 use fnv::{FnvHashMap, FnvHashSet};
 use std::fmt::Debug;
 use std::hash;
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 
-pub type MLResult<T> = Result<T, ::failure::Error>;
+#[derive(Error, Debug)]
+pub enum MLError {
+    #[error("No classes in classifier")]
+    NoClasses,
+
+    #[error("{0}")]
+    Other(String),
+}
+
+pub type MLResult<T> = Result<T, MLError>;
 
 pub trait ClassifierId: Eq + hash::Hash + Clone + Debug {}
 pub trait ClassId: Eq + hash::Hash + Clone + Debug {}
@@ -93,7 +101,7 @@ impl<Id: ClassId, Feat: Feature> Classifier<Id, Feat> {
         self.scores(bag_of_features)
             .into_iter()
             .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(::std::cmp::Ordering::Equal))
-            .ok_or(format_err!("no classes in classifier"))
+            .ok_or(MLError::NoClasses)
     }
 
     pub fn train(examples: &Vec<(FnvHashMap<Feat, usize>, Id)>) -> Classifier<Id, Feat> {

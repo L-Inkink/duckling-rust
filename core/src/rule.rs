@@ -1,3 +1,4 @@
+use crate::error::RustlingError;
 use crate::pattern::*;
 use crate::stash::Stash;
 use crate::{
@@ -6,13 +7,7 @@ use crate::{
 };
 use smallvec::SmallVec;
 
-#[derive(Debug, Fail)]
-pub enum RuleError {
-    #[fail(display = "invalid rule")]
-    Invalid,
-}
-
-pub type RuleResult<T> = Result<T, failure::Error>;
+pub type RuleResult<T> = Result<T, RustlingError>;
 
 macro_rules! svec {
     ($($item:expr),*) => { {
@@ -147,10 +142,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -256,10 +249,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -397,10 +388,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -552,10 +541,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -729,10 +716,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -927,10 +912,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
