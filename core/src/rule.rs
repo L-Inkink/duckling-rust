@@ -779,7 +779,7 @@ where
         }
         let matches_3 = self.pattern.3.predicate(stash, sentence)?;
         if matches_3.is_empty() {
-            return Ok(PredicateMatches::with_status(matches_3.status));;
+            return Ok(PredicateMatches::with_status(matches_3.status));
         }
         let matches_4 = self.pattern.4.predicate(stash, sentence)?;
         if matches_4.is_empty() {
@@ -1206,5 +1206,4 @@ mod tests {
                 .nodes
         );
     }
-
 }

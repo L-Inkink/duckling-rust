@@ -17,8 +17,8 @@ use pattern::Pattern;
 use pattern::TerminalPattern;
 pub use range::Range;
 use rule::Rule;
-use rule::TerminalRule;
 pub use rule::RuleResult;
+use rule::TerminalRule;
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 use stash::Stash;
@@ -57,8 +57,8 @@ pub type ChildrenNodes<Payload> = SmallVec<[rc::Rc<Node<Payload>>; 2]>;
 pub struct Sym(usize);
 
 impl string_interner::Symbol for Sym {
-    fn from_usize(val: usize) -> Self {
-        Sym(val)
+    fn try_from_usize(val: usize) -> Option<Self> {
+        Some(Sym(val))
     }
 
     fn to_usize(self) -> usize {
@@ -77,11 +77,11 @@ impl From<Sym> for usize {
     }
 }
 
-pub struct SymbolTable(StringInterner<Sym>);
+pub struct SymbolTable(StringInterner<string_interner::backend::StringBackend<Sym>>);
 
 impl Default for SymbolTable {
     fn default() -> SymbolTable {
-        SymbolTable(string_interner::StringInterner::new())
+        SymbolTable(StringInterner::new())
     }
 }
 

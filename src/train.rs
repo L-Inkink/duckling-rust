@@ -1,6 +1,6 @@
 use crate::{
     Classifier, Feature, FeatureExtractor, Model, Node, ParsedNode, Range, RuleId, RuleSet,
-    RustlingResult, StashIndexable, Truth, Value,
+    RustlingError, RustlingResult, StashIndexable, Truth, Value,
 };
 use fnv::FnvHashMap;
 use fnv::FnvHashSet;
@@ -48,7 +48,10 @@ where
             .partition::<Vec<_>, _>(|candidate| ex.predicate.check(&candidate));
         // - example sanity check
         if positive_parsed_nodes.is_empty() {
-            Err(format_err!("example: {:?} matched no rule", ex.text))?
+            Err(RustlingError::Other(format!(
+                "example: {:?} matched no rule",
+                ex.text
+            )))?
         }
 
         // - expand parse nodes to nodes, according to the partition

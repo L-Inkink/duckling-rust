@@ -11,6 +11,12 @@ pub enum RustlingError {
     #[error("Regex error: {0}")]
     Regex(#[from] regex::Error),
 
+    #[error("Parse int error: {0}")]
+    ParseInt(#[from] std::num::ParseIntError),
+
+    #[error("Parse float error: {0}")]
+    ParseFloat(#[from] std::num::ParseFloatError),
+
     #[error("Invalid pattern: {0}")]
     InvalidPattern(String),
 

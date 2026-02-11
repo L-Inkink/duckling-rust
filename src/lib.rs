@@ -8,7 +8,7 @@ pub use rustling_core::{
     ParsedNode, Range, RuleSet, RuleSetBuilder, StashIndexable, Sym,
 };
 pub use rustling_core::{RuleResult, RustlingError};
-pub use rustling_ml::{ClassId, Classifier, ClassifierId, Feature, Input, Model, MLError};
+pub use rustling_ml::{ClassId, Classifier, ClassifierId, Feature, Input, MLError, Model};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 pub use train::{Check, Example};
@@ -128,7 +128,10 @@ where
             .into_iter()
             .map(|p| {
                 let features: Input<RuleId, Feat> = self.extractor.for_parsed_node(&p);
-                let probalog = self.model.classify(&features, &Truth(true))?;
+                let probalog = self
+                    .model
+                    .classify(&features, &Truth(true))
+                    .map_err(|e| RustlingError::Other(format!("ML classification error: {}", e)))?;
                 let pm = ParserMatch {
                     byte_range: p.root_node.byte_range,
                     char_range: p.root_node.byte_range.char_range(input),

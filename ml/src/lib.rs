@@ -1,9 +1,9 @@
 extern crate fnv;
 
 use fnv::{FnvHashMap, FnvHashSet};
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::hash;
-use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -109,7 +109,7 @@ impl<Id: ClassId, Feat: Feature> Classifier<Id, Feat> {
         let total_examples = examples.len();
         let mut all_features = FnvHashSet::default();
         for &(ref features, ref class) in examples {
-            let mut data = classes
+            let data = classes
                 .entry(class.clone())
                 .or_insert_with(|| (0, FnvHashMap::default()));
             data.0 += 1;

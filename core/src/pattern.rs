@@ -158,9 +158,7 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue> for TextPatte
             let full = cap.get(0).ok_or_else(|| {
                 crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
-                    self.pattern,
-                    self.pattern_sym,
-                    sentence
+                    self.pattern, self.pattern_sym, sentence
                 ))
             })?;
             let full_range = Range(full.start(), full.end());
@@ -238,9 +236,7 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue>
             let full = cap.get(0).ok_or_else(|| {
                 crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
-                    self.pattern,
-                    self.pattern_sym,
-                    sentence
+                    self.pattern, self.pattern_sym, sentence
                 ))
             })?;
             let full_range = Range(full.start(), full.end());
