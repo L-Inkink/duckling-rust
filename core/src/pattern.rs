@@ -104,8 +104,13 @@ impl<M> PredicateMatches<M> {
     pub fn iter(&self) -> Iter<'_, M> {
         self.matches.iter()
     }
+}
 
-    pub fn into_iter(self) -> IntoIter<M> {
+impl<M> IntoIterator for PredicateMatches<M> {
+    type Item = M;
+    type IntoIter = IntoIter<M>;
+
+    fn into_iter(self) -> Self::IntoIter {
         self.matches.into_iter()
     }
 }
@@ -282,11 +287,13 @@ impl<StashValue: NodePayload + StashIndexable> TerminalPattern<StashValue>
 
 pub type AnyNodePattern<V> = FilterNodePattern<V>;
 
+type FilterPredicate<V> = Box<dyn Fn(&V) -> bool + Send + Sync>;
+
 pub struct FilterNodePattern<V>
 where
     V: NodePayload + InnerStashIndexable,
 {
-    predicates: Vec<Box<dyn Fn(&V) -> bool + Send + Sync>>,
+    predicates: Vec<FilterPredicate<V>>,
     _phantom: SendSyncPhantomData<V>,
 }
 
@@ -309,7 +316,7 @@ impl<V> FilterNodePattern<V>
 where
     V: NodePayload + InnerStashIndexable,
 {
-    pub fn filter(predicates: Vec<Box<dyn Fn(&V) -> bool + Sync + Send>>) -> FilterNodePattern<V> {
+    pub fn filter(predicates: Vec<FilterPredicate<V>>) -> FilterNodePattern<V> {
         FilterNodePattern {
             predicates,
             _phantom: SendSyncPhantomData::new(),

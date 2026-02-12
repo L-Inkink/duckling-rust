@@ -9,6 +9,12 @@ use smallvec::SmallVec;
 
 pub type RuleResult<T> = Result<T, RustlingError>;
 
+type PredicateMatches2<M1, M2> = CoreResult<PredicateMatches<(M1, M2)>>;
+type PredicateMatches3<M1, M2, M3> = CoreResult<PredicateMatches<(M1, M2, M3)>>;
+type PredicateMatches4<M1, M2, M3, M4> = CoreResult<PredicateMatches<(M1, M2, M3, M4)>>;
+type PredicateMatches5<M1, M2, M3, M4, M5> = CoreResult<PredicateMatches<(M1, M2, M3, M4, M5)>>;
+type PredicateMatches6<M1, M2, M3, M4, M5, M6> = CoreResult<PredicateMatches<(M1, M2, M3, M4, M5, M6)>>;
+
 macro_rules! svec {
     ($($item:expr),*) => { {
         let mut v =SmallVec::new();
@@ -296,7 +302,7 @@ where
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M)>> {
+    ) -> PredicateMatches2<PA::M, PB::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -428,7 +434,7 @@ where
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M)>> {
+    ) -> PredicateMatches3<PA::M, PB::M, PC::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -588,7 +594,7 @@ where
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M, PD::M)>> {
+    ) -> PredicateMatches4<PA::M, PB::M, PC::M, PD::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -760,11 +766,12 @@ where
         }
     }
 
+    #[allow(clippy::type_complexity)]
     fn matches(
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M, PD::M, PE::M)>> {
+    ) -> PredicateMatches5<PA::M, PB::M, PC::M, PD::M, PE::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -958,11 +965,12 @@ where
         }
     }
 
+    #[allow(clippy::type_complexity)]
     fn matches(
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M, PD::M, PE::M, PF::M)>> {
+    ) -> PredicateMatches6<PA::M, PB::M, PC::M, PD::M, PE::M, PF::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));

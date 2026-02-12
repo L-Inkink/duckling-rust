@@ -8,6 +8,8 @@ use std::cmp::Eq;
 use std::fmt::Debug;
 use std::hash::Hash;
 
+type ClassifiedExamples<F> = FnvHashMap<RuleId, Vec<(FnvHashMap<F, usize>, Truth)>>;
+
 #[derive(Debug)]
 pub struct Example<V: Value> {
     pub text: &'static str,
@@ -35,8 +37,7 @@ where
     F: Feature,
     E: FeatureExtractor<V, F>,
 {
-    let mut classified_ex: FnvHashMap<RuleId, Vec<(FnvHashMap<F, usize>, Truth)>> =
-        FnvHashMap::default();
+    let mut classified_ex: ClassifiedExamples<F> = FnvHashMap::default();
     for ex in examples.iter() {
         let stash = rules.apply_all(&ex.text.to_lowercase()).unwrap();
 

@@ -102,17 +102,11 @@ pub enum ParsingStatus {
 
 impl ParsingStatus {
     pub fn is_exit(&self) -> bool {
-        match self {
-            &ParsingStatus::Exit => true,
-            _ => false,
-        }
+        matches!(self, &ParsingStatus::Exit)
     }
 
     pub fn is_continue(&self) -> bool {
-        match self {
-            &ParsingStatus::Continue => true,
-            _ => false,
-        }
+        matches!(self, &ParsingStatus::Continue)
     }
 }
 
@@ -206,7 +200,7 @@ impl<StashValue: NodePayload + StashIndexable> RuleSet<StashValue> {
         &self,
         stash: &mut Stash<StashValue>,
         sentence: &str,
-        rules_mask_status: &mut Vec<ParsingStatus>,
+        rules_mask_status: &mut [ParsingStatus],
     ) -> CoreResult<()> {
         let mut produced_nodes = vec![];
         for (idx, rule) in self.composition_rules.iter().enumerate() {

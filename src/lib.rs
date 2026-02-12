@@ -240,6 +240,7 @@ mod tests {
     use fnv::FnvHashMap;
     use std::str::FromStr;
 
+    #[allow(dead_code)]
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct MyPayload;
 
@@ -300,7 +301,7 @@ mod tests {
             BoundariesChecker::separated_alphanumeric_word(),
         );
         b.rule_1("int", b.reg("\\d+").unwrap(), |a| {
-            Ok(Int(usize::from_str(&*a.group(0))?))
+            Ok(Int(usize::from_str(a.group(0))?))
         });
         b.rule_3(
             "add",
@@ -391,10 +392,10 @@ mod tests {
             BoundariesChecker::separated_alphanumeric_word(),
         );
         b.rule_1("int", b.reg("\\d+").unwrap(), |a| {
-            Ok(Int(usize::from_str(&*a.group(0))?))
+            Ok(Int(usize::from_str(a.group(0))?))
         });
         b.rule_1("fp", b.reg("\\d+\\.\\d+").unwrap(), |a| {
-            Ok(F32(f32::from_str(&*a.group(0))?))
+            Ok(F32(f32::from_str(a.group(0))?))
         });
         b.rule_3(
             "pow",

@@ -39,11 +39,11 @@ macro_rules! enum_kind {
             }
         }
 
-        impl ::std::string::ToString for $kindname {
-            fn to_string(&self) -> String {
+        impl ::std::fmt::Display for $kindname {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
                 match self {
                     $(
-                        &$kindname::$varname => stringify!($varname).to_string(),
+                        &$kindname::$varname => write!(f, "{}", stringify!($varname)),
                     )*
                 }
             }
