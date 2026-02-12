@@ -263,10 +263,42 @@ impl<StashValue: NodePayload + StashIndexable> RuleSet<StashValue> {
     }
 }
 
+/// A phantom type marker that is always `Send + Sync` regardless of `T`.
+///
+/// This type is used to hold type information for generics without actually storing any data.
+/// It's particularly useful for rule and pattern structs that need to be thread-safe.
+///
+/// # Safety Justification (Audited 2026-02-12)
+///
+/// The unsafe impl of `Send` and `Sync` is sound because:
+/// 1. `PhantomData<T>` is a zero-sized type (ZST) with no runtime representation
+/// 2. It doesn't actually store any `T` - it only exists for the type system
+/// 3. Since there's no actual data to send/sync across threads, it's always safe
+///
+/// # Historical Note
+///
+/// This pattern was common in Rust 2015-2018 era. Modern Rust (1.70+) allows direct use
+/// of `PhantomData<T>` which is `Send + Sync` by default. This wrapper can be removed
+/// in future refactoring without functional changes.
+///
+/// See `UNSAFE_CODE_AUDIT.md` for detailed analysis.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct SendSyncPhantomData<T>(::std::marker::PhantomData<T>);
+
+// SAFETY: PhantomData<T> is a ZST that doesn't actually contain T, so it's always
+// safe to send across threads regardless of T's Send/Sync properties.
 unsafe impl<T> Send for SendSyncPhantomData<T> {}
+
+// SAFETY: PhantomData<T> is a ZST that doesn't actually contain T, so it's always
+// safe to share across threads regardless of T's Send/Sync properties.
 unsafe impl<T> Sync for SendSyncPhantomData<T> {}
+
+impl<T> Default for SendSyncPhantomData<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> SendSyncPhantomData<T> {
     pub fn new() -> SendSyncPhantomData<T> {
         SendSyncPhantomData(::std::marker::PhantomData)

@@ -45,7 +45,7 @@ where
         let (positive_parsed_nodes, negative_parse_nodes) = stash
             .into_iter()
             .filter(|candidate| candidate.root_node.byte_range == Range(0, ex.text.len()))
-            .partition::<Vec<_>, _>(|candidate| ex.predicate.check(&candidate));
+            .partition::<Vec<_>, _>(|candidate| ex.predicate.check(candidate));
         // - example sanity check
         if positive_parsed_nodes.is_empty() {
             Err(RustlingError::Other(format!(

@@ -224,6 +224,7 @@ impl<StashValue: NodePayload + StashIndexable> RuleSetBuilder<StashValue> {
             .push(Box::new(Rule4::new(sym, (pa, pb, pc, pd), production)))
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rule_5<S, PA, PB, PC, PD, PE, V, F>(
         &self,
         sym: S,
@@ -259,6 +260,7 @@ impl<StashValue: NodePayload + StashIndexable> RuleSetBuilder<StashValue> {
             .push(Box::new(Rule5::new(sym, (pa, pb, pc, pd, pe), production)))
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rule_5_terminal<S, PA, PB, PC, PD, PE, V, F>(
         &self,
         sym: S,
@@ -294,6 +296,7 @@ impl<StashValue: NodePayload + StashIndexable> RuleSetBuilder<StashValue> {
             .push(Box::new(Rule5::new(sym, (pa, pb, pc, pd, pe), production)))
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rule_6<S, PA, PB, PC, PD, PE, PF, V, F>(
         &self,
         sym: S,
@@ -336,6 +339,7 @@ impl<StashValue: NodePayload + StashIndexable> RuleSetBuilder<StashValue> {
             )))
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn rule_6_terminal<S, PA, PB, PC, PD, PE, PF, V, F>(
         &self,
         sym: S,

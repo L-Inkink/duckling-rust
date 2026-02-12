@@ -58,7 +58,7 @@ impl<S: StashIndexable + NodePayload> Stash<S> {
                 nodes
                     .iter()
                     .filter_map(|position| {
-                        let ref node = self.values[*position];
+                        let node = &self.values[*position];
                         if let Some(v) = V::attempt_from(node.value.clone()) {
                             if (predicate)(&v) {
                                 Some(ParsedNode::new(
@@ -80,7 +80,7 @@ impl<S: StashIndexable + NodePayload> Stash<S> {
             .unwrap_or(vec![])
     }
 
-    pub fn iter(&self) -> Iter<ParsedNode<S>> {
+    pub fn iter(&self) -> Iter<'_, ParsedNode<S>> {
         self.values.iter()
     }
     pub fn into_iter(self) -> IntoIter<ParsedNode<S>> {

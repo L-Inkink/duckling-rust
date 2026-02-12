@@ -14,3 +14,10 @@ rustling-ml = { path = "ml" }
 thiserror = "1.0"
 fnv = "1.0"
 serde = { version = "1.0", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "parser_bench"
+harness = false

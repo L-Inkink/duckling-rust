@@ -10,31 +10,31 @@ enum BoundariesClass {
 
 impl BoundariesClass {
     fn apply_left(&self, sentence: &str, range: &Range) -> bool {
-        match self {
-            &BoundariesClass::AlphanumericWord { option } => {
+        match *self {
+            BoundariesClass::AlphanumericWord { option } => {
                 left_valid_boundaries(sentence, range, &option, &alphanumeric_class)
             }
-            &BoundariesClass::AlphabeticWord { option } => {
+            BoundariesClass::AlphabeticWord { option } => {
                 left_valid_boundaries(sentence, range, &option, &alphabetic_class)
             }
-            &BoundariesClass::Detailed { option } => {
+            BoundariesClass::Detailed { option } => {
                 left_valid_boundaries(sentence, range, &option, &detailed_class)
             }
-            &BoundariesClass::NoClass => true,
+            BoundariesClass::NoClass => true,
         }
     }
     fn apply_right(&self, sentence: &str, range: &Range) -> bool {
-        match self {
-            &BoundariesClass::AlphanumericWord { option } => {
+        match *self {
+            BoundariesClass::AlphanumericWord { option } => {
                 right_valid_boundaries(sentence, range, &option, &alphanumeric_class)
             }
-            &BoundariesClass::AlphabeticWord { option } => {
+            BoundariesClass::AlphabeticWord { option } => {
                 right_valid_boundaries(sentence, range, &option, &alphabetic_class)
             }
-            &BoundariesClass::Detailed { option } => {
+            BoundariesClass::Detailed { option } => {
                 right_valid_boundaries(sentence, range, &option, &detailed_class)
             }
-            &BoundariesClass::NoClass => true,
+            BoundariesClass::NoClass => true,
         }
     }
 }
@@ -103,7 +103,7 @@ fn detailed_class(c: char) -> char {
         'u'
     } else if c.is_lowercase() {
         'l'
-    } else if c.is_digit(10) {
+    } else if c.is_ascii_digit() {
         'd'
     } else {
         c
@@ -125,9 +125,9 @@ where
         .map(char_class); //Some(c)
     let first_after = sentence[range.1..].chars().next().map(char_class); // Option(c)
 
-    match option {
-        &ValidBoundariesOption::OnCharClassChange => last_mine != first_after,
-        &ValidBoundariesOption::OnSameCharClass => first_after == None || last_mine == first_after,
+    match *option {
+        ValidBoundariesOption::OnCharClassChange => last_mine != first_after,
+        ValidBoundariesOption::OnSameCharClass => first_after.is_none() || last_mine == first_after,
     }
 }
 
@@ -143,9 +143,9 @@ where
     let first_mine = sentence[range.0..range.1].chars().next().map(char_class); // Some(c)
     let last_before = sentence[..range.0].chars().next_back().map(char_class); // Option(c)
 
-    match option {
-        &ValidBoundariesOption::OnCharClassChange => first_mine != last_before,
-        &ValidBoundariesOption::OnSameCharClass => first_mine == None || first_mine == last_before,
+    match *option {
+        ValidBoundariesOption::OnCharClassChange => first_mine != last_before,
+        ValidBoundariesOption::OnSameCharClass => first_mine.is_none() || first_mine == last_before,
     }
 }
 

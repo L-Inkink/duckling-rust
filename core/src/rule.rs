@@ -118,7 +118,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -221,7 +221,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -359,7 +359,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -506,7 +506,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -679,7 +679,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -873,7 +873,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());

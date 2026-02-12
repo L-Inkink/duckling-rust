@@ -135,7 +135,7 @@ where
                 let pm = ParserMatch {
                     byte_range: p.root_node.byte_range,
                     char_range: p.root_node.byte_range.char_range(input),
-                    value: p.value.clone().into(),
+                    value: p.value.clone(),
                     parsing_tree_height: p.root_node.height(),
                     parsing_tree_num_nodes: p.root_node.num_nodes(),
                     probalog,
@@ -170,10 +170,10 @@ where
         &self,
         examples: Vec<&str>,
         tagger: &Tagger,
-    ) -> RustlingResult<ParsingAnalysis> {
+    ) -> RustlingResult<ParsingAnalysis<'_>> {
         let all_syms = self.rules.all_syms().into_iter().collect::<HashSet<_>>();
         let rules_syms = self.rules.rules_syms().into_iter().collect::<HashSet<_>>();
-        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).map(|s| *s).collect();
+        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).copied().collect();
 
         let mut used_syms = HashSet::new();
         let mut failed_examples = vec![];
@@ -195,12 +195,12 @@ where
         }
         let unused_rules: Vec<_> = rules_syms
             .difference(&used_syms)
-            .filter_map(|s| self.resolve_sym(&s))
+            .filter_map(|s| self.resolve_sym(s))
             .collect();
 
         let unused_text_pattern: Vec<_> = text_pattern_syms
             .difference(&used_syms)
-            .filter_map(|s| self.resolve_sym(&s))
+            .filter_map(|s| self.resolve_sym(s))
             .collect();
 
         Ok(ParsingAnalysis {
@@ -225,7 +225,7 @@ where
     pub fn num_text_patterns(&self) -> usize {
         let all_syms = self.rules.all_syms().into_iter().collect::<HashSet<_>>();
         let rules_syms = self.rules.rules_syms().into_iter().collect::<HashSet<_>>();
-        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).map(|s| *s).collect();
+        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).copied().collect();
         text_pattern_syms.len()
     }
 

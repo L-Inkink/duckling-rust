@@ -82,7 +82,7 @@ impl<M> PredicateMatches<M> {
     }
 
     pub fn exit_if_empty(self) -> PredicateMatches<M> {
-        if self.matches.len() == 0 {
+        if self.matches.is_empty() {
             PredicateMatches::with_status(ParsingStatus::Exit)
         } else {
             self
@@ -101,7 +101,7 @@ impl<M> PredicateMatches<M> {
         self.matches.len()
     }
 
-    pub fn iter(&self) -> Iter<M> {
+    pub fn iter(&self) -> Iter<'_, M> {
         self.matches.iter()
     }
 
@@ -154,7 +154,7 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue> for TextPatte
         sentence: &str,
     ) -> CoreResult<PredicateMatches<Self::M>> {
         let mut results = PredicateMatches::with_status(ParsingStatus::Continue);
-        for cap in self.pattern.captures_iter(&sentence) {
+        for cap in self.pattern.captures_iter(sentence) {
             let full = cap.get(0).ok_or_else(|| {
                 crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
@@ -232,7 +232,7 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue>
         sentence: &str,
     ) -> CoreResult<PredicateMatches<Text<StashValue>>> {
         let mut results = PredicateMatches::with_status(ParsingStatus::Continue);
-        for cap in self.pattern.captures_iter(&sentence) {
+        for cap in self.pattern.captures_iter(sentence) {
             let full = cap.get(0).ok_or_else(|| {
                 crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
@@ -290,6 +290,12 @@ where
     _phantom: SendSyncPhantomData<V>,
 }
 
+impl<V: NodePayload + InnerStashIndexable> Default for AnyNodePattern<V> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<V: NodePayload + InnerStashIndexable> AnyNodePattern<V> {
     pub fn new() -> AnyNodePattern<V> {
         FilterNodePattern {
@@ -325,7 +331,7 @@ where
         _sentence: &str,
     ) -> CoreResult<PredicateMatches<ParsedNode<V>>> {
         Ok(PredicateMatches::continue_with(stash.filter(|v| {
-            self.predicates.iter().all(|predicate| (predicate)(&v))
+            self.predicates.iter().all(|predicate| (predicate)(v))
         })))
     }
 }
