@@ -82,7 +82,7 @@ impl<M> PredicateMatches<M> {
     }
 
     pub fn exit_if_empty(self) -> PredicateMatches<M> {
-        if self.matches.len() == 0 {
+        if self.matches.is_empty() {
             PredicateMatches::with_status(ParsingStatus::Exit)
         } else {
             self
@@ -101,11 +101,16 @@ impl<M> PredicateMatches<M> {
         self.matches.len()
     }
 
-    pub fn iter(&self) -> Iter<M> {
+    pub fn iter(&self) -> Iter<'_, M> {
         self.matches.iter()
     }
+}
 
-    pub fn into_iter(self) -> IntoIter<M> {
+impl<M> IntoIterator for PredicateMatches<M> {
+    type Item = M;
+    type IntoIter = IntoIter<M>;
+
+    fn into_iter(self) -> Self::IntoIter {
         self.matches.into_iter()
     }
 }
@@ -154,14 +159,12 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue> for TextPatte
         sentence: &str,
     ) -> CoreResult<PredicateMatches<Self::M>> {
         let mut results = PredicateMatches::with_status(ParsingStatus::Continue);
-        for cap in self.pattern.captures_iter(&sentence) {
+        for cap in self.pattern.captures_iter(sentence) {
             let full = cap.get(0).ok_or_else(|| {
-                format_err!(
+                crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
-                    self.pattern,
-                    self.pattern_sym,
-                    sentence
-                )
+                    self.pattern, self.pattern_sym, sentence
+                ))
             })?;
             let full_range = Range(full.start(), full.end());
             if !self.boundaries_checker.check(sentence, full_range) {
@@ -170,14 +173,14 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue> for TextPatte
             let mut groups = SmallVec::new();
             for (ix, group) in cap.iter().enumerate() {
                 let group = group.ok_or_else(|| {
-                    format_err!(
+                    crate::error::RustlingError::NoCapture(format!(
                         "No capture for regexp {} in rule {:?}, group number {} in \
                          capture: {}",
                         self.pattern,
                         self.pattern_sym,
                         ix,
                         full.as_str()
-                    )
+                    ))
                 })?;
                 let range = Range(group.start(), group.end());
                 groups.push(range);
@@ -234,14 +237,12 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue>
         sentence: &str,
     ) -> CoreResult<PredicateMatches<Text<StashValue>>> {
         let mut results = PredicateMatches::with_status(ParsingStatus::Continue);
-        for cap in self.pattern.captures_iter(&sentence) {
+        for cap in self.pattern.captures_iter(sentence) {
             let full = cap.get(0).ok_or_else(|| {
-                format_err!(
+                crate::error::RustlingError::NoCapture(format!(
                     "No capture for regexp {} in rule {:?} for sentence: {}",
-                    self.pattern,
-                    self.pattern_sym,
-                    sentence
-                )
+                    self.pattern, self.pattern_sym, sentence
+                ))
             })?;
             let full_range = Range(full.start(), full.end());
             if !self.boundaries_checker.check(sentence, full_range) {
@@ -255,14 +256,14 @@ impl<StashValue: NodePayload + StashIndexable> Pattern<StashValue>
             let mut groups = SmallVec::new();
             for (ix, group) in cap.iter().enumerate() {
                 let group = group.ok_or_else(|| {
-                    format_err!(
+                    crate::error::RustlingError::NoCapture(format!(
                         "No capture for regexp {} in rule {:?}, group number {} in \
                          capture: {}",
                         self.pattern,
                         self.pattern_sym,
                         ix,
                         full.as_str()
-                    )
+                    ))
                 })?;
                 let range = Range(group.start(), group.end());
                 groups.push(range);
@@ -286,12 +287,20 @@ impl<StashValue: NodePayload + StashIndexable> TerminalPattern<StashValue>
 
 pub type AnyNodePattern<V> = FilterNodePattern<V>;
 
+type FilterPredicate<V> = Box<dyn Fn(&V) -> bool + Send + Sync>;
+
 pub struct FilterNodePattern<V>
 where
     V: NodePayload + InnerStashIndexable,
 {
-    predicates: Vec<Box<dyn Fn(&V) -> bool + Send + Sync>>,
+    predicates: Vec<FilterPredicate<V>>,
     _phantom: SendSyncPhantomData<V>,
+}
+
+impl<V: NodePayload + InnerStashIndexable> Default for AnyNodePattern<V> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<V: NodePayload + InnerStashIndexable> AnyNodePattern<V> {
@@ -307,7 +316,7 @@ impl<V> FilterNodePattern<V>
 where
     V: NodePayload + InnerStashIndexable,
 {
-    pub fn filter(predicates: Vec<Box<dyn Fn(&V) -> bool + Sync + Send>>) -> FilterNodePattern<V> {
+    pub fn filter(predicates: Vec<FilterPredicate<V>>) -> FilterNodePattern<V> {
         FilterNodePattern {
             predicates,
             _phantom: SendSyncPhantomData::new(),
@@ -329,7 +338,7 @@ where
         _sentence: &str,
     ) -> CoreResult<PredicateMatches<ParsedNode<V>>> {
         Ok(PredicateMatches::continue_with(stash.filter(|v| {
-            self.predicates.iter().all(|predicate| (predicate)(&v))
+            self.predicates.iter().all(|predicate| (predicate)(v))
         })))
     }
 }

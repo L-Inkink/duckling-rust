@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate failure;
 extern crate fnv;
 extern crate rustling_core;
 extern crate rustling_ml;
@@ -9,8 +7,8 @@ pub use rustling_core::{
     AttemptFrom, AttemptInto, BoundariesChecker, InnerStashIndexable, Node, NodePayload,
     ParsedNode, Range, RuleSet, RuleSetBuilder, StashIndexable, Sym,
 };
-pub use rustling_core::{RuleError, RuleResult};
-pub use rustling_ml::{ClassId, Classifier, ClassifierId, Feature, Input, Model};
+pub use rustling_core::{RuleResult, RustlingError};
+pub use rustling_ml::{ClassId, Classifier, ClassifierId, Feature, Input, MLError, Model};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 pub use train::{Check, Example};
@@ -19,6 +17,13 @@ pub use train::{Check, Example};
 pub mod macros;
 pub mod train;
 
+// Phase 1: Core enhancements
+pub mod values;
+pub mod rules;
+pub mod fuzzy;
+pub mod metrics;
+pub mod dynamic;
+
 pub mod core {
     pub use rustling_core::pattern::{
         AnyNodePattern, FilterNodePattern, TextNegLHPattern, TextPattern,
@@ -26,7 +31,7 @@ pub mod core {
     pub use rustling_core::rule::{Rule1, Rule2, Rule3, Rule4, Rule5, Rule6};
 }
 
-pub type RustlingResult<T> = Result<T, ::failure::Error>;
+pub type RustlingResult<T> = Result<T, RustlingError>;
 
 #[derive(Debug, Hash, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct RuleId(pub Sym);
@@ -130,11 +135,14 @@ where
             .into_iter()
             .map(|p| {
                 let features: Input<RuleId, Feat> = self.extractor.for_parsed_node(&p);
-                let probalog = self.model.classify(&features, &Truth(true))?;
+                let probalog = self
+                    .model
+                    .classify(&features, &Truth(true))
+                    .map_err(|e| RustlingError::Other(format!("ML classification error: {}", e)))?;
                 let pm = ParserMatch {
                     byte_range: p.root_node.byte_range,
                     char_range: p.root_node.byte_range.char_range(input),
-                    value: p.value.clone().into(),
+                    value: p.value.clone(),
                     parsing_tree_height: p.root_node.height(),
                     parsing_tree_num_nodes: p.root_node.num_nodes(),
                     probalog,
@@ -169,10 +177,10 @@ where
         &self,
         examples: Vec<&str>,
         tagger: &Tagger,
-    ) -> RustlingResult<ParsingAnalysis> {
+    ) -> RustlingResult<ParsingAnalysis<'_>> {
         let all_syms = self.rules.all_syms().into_iter().collect::<HashSet<_>>();
         let rules_syms = self.rules.rules_syms().into_iter().collect::<HashSet<_>>();
-        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).map(|s| *s).collect();
+        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).copied().collect();
 
         let mut used_syms = HashSet::new();
         let mut failed_examples = vec![];
@@ -194,12 +202,12 @@ where
         }
         let unused_rules: Vec<_> = rules_syms
             .difference(&used_syms)
-            .filter_map(|s| self.resolve_sym(&s))
+            .filter_map(|s| self.resolve_sym(s))
             .collect();
 
         let unused_text_pattern: Vec<_> = text_pattern_syms
             .difference(&used_syms)
-            .filter_map(|s| self.resolve_sym(&s))
+            .filter_map(|s| self.resolve_sym(s))
             .collect();
 
         Ok(ParsingAnalysis {
@@ -224,7 +232,7 @@ where
     pub fn num_text_patterns(&self) -> usize {
         let all_syms = self.rules.all_syms().into_iter().collect::<HashSet<_>>();
         let rules_syms = self.rules.rules_syms().into_iter().collect::<HashSet<_>>();
-        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).map(|s| *s).collect();
+        let text_pattern_syms: HashSet<_> = all_syms.difference(&rules_syms).copied().collect();
         text_pattern_syms.len()
     }
 
@@ -239,6 +247,7 @@ mod tests {
     use fnv::FnvHashMap;
     use std::str::FromStr;
 
+    #[allow(dead_code)]
     #[derive(Copy, Clone, Debug, PartialEq)]
     pub struct MyPayload;
 
@@ -299,7 +308,7 @@ mod tests {
             BoundariesChecker::separated_alphanumeric_word(),
         );
         b.rule_1("int", b.reg("\\d+").unwrap(), |a| {
-            Ok(Int(usize::from_str(&*a.group(0))?))
+            Ok(Int(usize::from_str(a.group(0))?))
         });
         b.rule_3(
             "add",
@@ -390,10 +399,10 @@ mod tests {
             BoundariesChecker::separated_alphanumeric_word(),
         );
         b.rule_1("int", b.reg("\\d+").unwrap(), |a| {
-            Ok(Int(usize::from_str(&*a.group(0))?))
+            Ok(Int(usize::from_str(a.group(0))?))
         });
         b.rule_1("fp", b.reg("\\d+\\.\\d+").unwrap(), |a| {
-            Ok(F32(f32::from_str(&*a.group(0))?))
+            Ok(F32(f32::from_str(a.group(0))?))
         });
         b.rule_3(
             "pow",

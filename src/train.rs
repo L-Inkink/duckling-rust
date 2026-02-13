@@ -1,12 +1,14 @@
 use crate::{
     Classifier, Feature, FeatureExtractor, Model, Node, ParsedNode, Range, RuleId, RuleSet,
-    RustlingResult, StashIndexable, Truth, Value,
+    RustlingError, RustlingResult, StashIndexable, Truth, Value,
 };
 use fnv::FnvHashMap;
 use fnv::FnvHashSet;
 use std::cmp::Eq;
 use std::fmt::Debug;
 use std::hash::Hash;
+
+type ClassifiedExamples<F> = FnvHashMap<RuleId, Vec<(FnvHashMap<F, usize>, Truth)>>;
 
 #[derive(Debug)]
 pub struct Example<V: Value> {
@@ -35,8 +37,7 @@ where
     F: Feature,
     E: FeatureExtractor<V, F>,
 {
-    let mut classified_ex: FnvHashMap<RuleId, Vec<(FnvHashMap<F, usize>, Truth)>> =
-        FnvHashMap::default();
+    let mut classified_ex: ClassifiedExamples<F> = FnvHashMap::default();
     for ex in examples.iter() {
         let stash = rules.apply_all(&ex.text.to_lowercase()).unwrap();
 
@@ -45,10 +46,13 @@ where
         let (positive_parsed_nodes, negative_parse_nodes) = stash
             .into_iter()
             .filter(|candidate| candidate.root_node.byte_range == Range(0, ex.text.len()))
-            .partition::<Vec<_>, _>(|candidate| ex.predicate.check(&candidate));
+            .partition::<Vec<_>, _>(|candidate| ex.predicate.check(candidate));
         // - example sanity check
         if positive_parsed_nodes.is_empty() {
-            Err(format_err!("example: {:?} matched no rule", ex.text))?
+            Err(RustlingError::Other(format!(
+                "example: {:?} matched no rule",
+                ex.text
+            )))?
         }
 
         // - expand parse nodes to nodes, according to the partition

@@ -1,13 +1,21 @@
-#[macro_use]
-extern crate failure;
 extern crate fnv;
 
 use fnv::{FnvHashMap, FnvHashSet};
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 use std::hash;
-use serde::{Deserialize, Serialize};
+use thiserror::Error;
 
-pub type MLResult<T> = Result<T, ::failure::Error>;
+#[derive(Error, Debug)]
+pub enum MLError {
+    #[error("No classes in classifier")]
+    NoClasses,
+
+    #[error("{0}")]
+    Other(String),
+}
+
+pub type MLResult<T> = Result<T, MLError>;
 
 pub trait ClassifierId: Eq + hash::Hash + Clone + Debug {}
 pub trait ClassId: Eq + hash::Hash + Clone + Debug {}
@@ -56,9 +64,9 @@ impl<Id: ClassifierId, Class: ClassId, Feat: Feature> Model<Id, Class, Feat> {
             .iter()
             .find(|item| &item.0 == target)
             .map(|item| item.1)
-            .unwrap_or(::std::f32::NEG_INFINITY);
+            .unwrap_or(f32::NEG_INFINITY);
         for child in &input.children {
-            probalog += self.classify(&child, target)?;
+            probalog += self.classify(child, target)?;
         }
         Ok(probalog)
     }
@@ -93,15 +101,15 @@ impl<Id: ClassId, Feat: Feature> Classifier<Id, Feat> {
         self.scores(bag_of_features)
             .into_iter()
             .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(::std::cmp::Ordering::Equal))
-            .ok_or(format_err!("no classes in classifier"))
+            .ok_or(MLError::NoClasses)
     }
 
     pub fn train(examples: &Vec<(FnvHashMap<Feat, usize>, Id)>) -> Classifier<Id, Feat> {
         let mut classes: FnvHashMap<Id, (usize, FnvHashMap<Feat, usize>)> = FnvHashMap::default();
         let total_examples = examples.len();
         let mut all_features = FnvHashSet::default();
-        for &(ref features, ref class) in examples {
-            let mut data = classes
+        for (features, class) in examples {
+            let data = classes
                 .entry(class.clone())
                 .or_insert_with(|| (0, FnvHashMap::default()));
             data.0 += 1;
@@ -117,7 +125,7 @@ impl<Id: ClassId, Feat: Feature> Classifier<Id, Feat> {
                 let smooth_denom: f32 = (total_features + v.1.values().sum::<usize>()) as f32;
                 let feat_probalog =
                     v.1.into_iter()
-                        .map(|(k, v)| (k, f32::ln((v as f32 + 1 as f32) / smooth_denom)))
+                        .map(|(k, v)| (k, f32::ln((v as f32 + 1_f32) / smooth_denom)))
                         .collect();
                 (
                     k,
@@ -125,7 +133,7 @@ impl<Id: ClassId, Feat: Feature> Classifier<Id, Feat> {
                         example_count: v.0,
                         class_probalog: f32::ln(v.0 as f32 / total_examples as f32),
                         unk_probalog: f32::ln(1.0 / smooth_denom),
-                        feat_probalog: feat_probalog,
+                        feat_probalog,
                     },
                 )
             })

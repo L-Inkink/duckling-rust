@@ -1,3 +1,4 @@
+use crate::error::RustlingError;
 use crate::pattern::*;
 use crate::stash::Stash;
 use crate::{
@@ -6,13 +7,14 @@ use crate::{
 };
 use smallvec::SmallVec;
 
-#[derive(Debug, Fail)]
-pub enum RuleError {
-    #[fail(display = "invalid rule")]
-    Invalid,
-}
+pub type RuleResult<T> = Result<T, RustlingError>;
 
-pub type RuleResult<T> = Result<T, failure::Error>;
+type PredicateMatches2<M1, M2> = CoreResult<PredicateMatches<(M1, M2)>>;
+type PredicateMatches3<M1, M2, M3> = CoreResult<PredicateMatches<(M1, M2, M3)>>;
+type PredicateMatches4<M1, M2, M3, M4> = CoreResult<PredicateMatches<(M1, M2, M3, M4)>>;
+type PredicateMatches5<M1, M2, M3, M4, M5> = CoreResult<PredicateMatches<(M1, M2, M3, M4, M5)>>;
+type PredicateMatches6<M1, M2, M3, M4, M5, M6> =
+    CoreResult<PredicateMatches<(M1, M2, M3, M4, M5, M6)>>;
 
 macro_rules! svec {
     ($($item:expr),*) => { {
@@ -123,7 +125,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -147,10 +149,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -228,7 +228,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -256,10 +256,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -305,7 +303,7 @@ where
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M)>> {
+    ) -> PredicateMatches2<PA::M, PB::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -368,7 +366,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -397,10 +395,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -439,7 +435,7 @@ where
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M)>> {
+    ) -> PredicateMatches3<PA::M, PB::M, PC::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -517,7 +513,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -552,10 +548,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -601,7 +595,7 @@ where
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M, PD::M)>> {
+    ) -> PredicateMatches4<PA::M, PB::M, PC::M, PD::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -692,7 +686,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -729,10 +723,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -775,11 +767,12 @@ where
         }
     }
 
+    #[allow(clippy::type_complexity)]
     fn matches(
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M, PD::M, PE::M)>> {
+    ) -> PredicateMatches5<PA::M, PB::M, PC::M, PD::M, PE::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -794,7 +787,7 @@ where
         }
         let matches_3 = self.pattern.3.predicate(stash, sentence)?;
         if matches_3.is_empty() {
-            return Ok(PredicateMatches::with_status(matches_3.status));;
+            return Ok(PredicateMatches::with_status(matches_3.status));
         }
         let matches_4 = self.pattern.4.predicate(stash, sentence)?;
         if matches_4.is_empty() {
@@ -888,7 +881,7 @@ where
         stash: &Stash<StashValue>,
         sentence: &str,
     ) -> CoreResult<RuleOutput<StashValue>> {
-        let matches = self.matches(&stash, sentence)?;
+        let matches = self.matches(stash, sentence)?;
 
         if matches.status.is_exit() {
             return Ok(RuleOutput::exit());
@@ -927,10 +920,8 @@ where
                                 nodes,
                             )))
                         }
-                        Err(e) => match e.downcast::<RuleError>() {
-                            Ok(RuleError::Invalid) => None,
-                            Err(e) => Some(Err(e)),
-                        },
+                        Err(RustlingError::Rule(_)) => None,
+                        Err(e) => Some(Err(e)),
                     }
                 } else {
                     None
@@ -975,11 +966,12 @@ where
         }
     }
 
+    #[allow(clippy::type_complexity)]
     fn matches(
         &self,
         stash: &Stash<StashValue>,
         sentence: &str,
-    ) -> CoreResult<PredicateMatches<(PA::M, PB::M, PC::M, PD::M, PE::M, PF::M)>> {
+    ) -> PredicateMatches6<PA::M, PB::M, PC::M, PD::M, PE::M, PF::M> {
         let matches_0 = self.pattern.0.predicate(stash, sentence)?;
         if matches_0.is_empty() {
             return Ok(PredicateMatches::with_status(matches_0.status));
@@ -1207,7 +1199,7 @@ mod tests {
         use std::str::FromStr;
         let mut st = SymbolTable::default();
         let rule_int = Rule1::new(st.sym("int"), reg!(st, usize, "\\d+"), |a| {
-            Ok(usize::from_str(&*a.group(0))?)
+            Ok(usize::from_str(a.group(0))?)
         });
         assert_eq!(
             svec4![ParsedNode::new(
@@ -1223,5 +1215,4 @@ mod tests {
                 .nodes
         );
     }
-
 }

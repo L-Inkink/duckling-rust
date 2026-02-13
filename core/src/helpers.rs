@@ -10,31 +10,31 @@ enum BoundariesClass {
 
 impl BoundariesClass {
     fn apply_left(&self, sentence: &str, range: &Range) -> bool {
-        match self {
-            &BoundariesClass::AlphanumericWord { option } => {
+        match *self {
+            BoundariesClass::AlphanumericWord { option } => {
                 left_valid_boundaries(sentence, range, &option, &alphanumeric_class)
             }
-            &BoundariesClass::AlphabeticWord { option } => {
+            BoundariesClass::AlphabeticWord { option } => {
                 left_valid_boundaries(sentence, range, &option, &alphabetic_class)
             }
-            &BoundariesClass::Detailed { option } => {
+            BoundariesClass::Detailed { option } => {
                 left_valid_boundaries(sentence, range, &option, &detailed_class)
             }
-            &BoundariesClass::NoClass => true,
+            BoundariesClass::NoClass => true,
         }
     }
     fn apply_right(&self, sentence: &str, range: &Range) -> bool {
-        match self {
-            &BoundariesClass::AlphanumericWord { option } => {
+        match *self {
+            BoundariesClass::AlphanumericWord { option } => {
                 right_valid_boundaries(sentence, range, &option, &alphanumeric_class)
             }
-            &BoundariesClass::AlphabeticWord { option } => {
+            BoundariesClass::AlphabeticWord { option } => {
                 right_valid_boundaries(sentence, range, &option, &alphabetic_class)
             }
-            &BoundariesClass::Detailed { option } => {
+            BoundariesClass::Detailed { option } => {
                 right_valid_boundaries(sentence, range, &option, &detailed_class)
             }
-            &BoundariesClass::NoClass => true,
+            BoundariesClass::NoClass => true,
         }
     }
 }
@@ -103,7 +103,7 @@ fn detailed_class(c: char) -> char {
         'u'
     } else if c.is_lowercase() {
         'l'
-    } else if c.is_digit(10) {
+    } else if c.is_ascii_digit() {
         'd'
     } else {
         c
@@ -125,9 +125,9 @@ where
         .map(char_class); //Some(c)
     let first_after = sentence[range.1..].chars().next().map(char_class); // Option(c)
 
-    match option {
-        &ValidBoundariesOption::OnCharClassChange => last_mine != first_after,
-        &ValidBoundariesOption::OnSameCharClass => first_after == None || last_mine == first_after,
+    match *option {
+        ValidBoundariesOption::OnCharClassChange => last_mine != first_after,
+        ValidBoundariesOption::OnSameCharClass => first_after.is_none() || last_mine == first_after,
     }
 }
 
@@ -143,9 +143,9 @@ where
     let first_mine = sentence[range.0..range.1].chars().next().map(char_class); // Some(c)
     let last_before = sentence[..range.0].chars().next_back().map(char_class); // Option(c)
 
-    match option {
-        &ValidBoundariesOption::OnCharClassChange => first_mine != last_before,
-        &ValidBoundariesOption::OnSameCharClass => first_mine == None || first_mine == last_before,
+    match *option {
+        ValidBoundariesOption::OnCharClassChange => first_mine != last_before,
+        ValidBoundariesOption::OnSameCharClass => first_mine.is_none() || first_mine == last_before,
     }
 }
 
@@ -156,68 +156,68 @@ mod tests {
     #[test]
     fn test_valid_boundaries_alphanumeric() {
         let checker = BoundariesChecker::separated_alphanumeric_word();
-        assert_eq!(true, checker.check("abc def ret", Range(4, 7))); // "def"
-        assert_eq!(false, checker.check("abc def ret", Range(2, 8))); // "c def r"
-        assert_eq!(false, checker.check("abc def123 ret", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("def123 ret", Range(0, 6))); // "def123"
-        assert_eq!(false, checker.check("def123 ret", Range(0, 3))); // "def"
-        assert_eq!(true, checker.check("ret def", Range(4, 7))); // "def"
-        assert_eq!(false, checker.check("ret 123def", Range(7, 10))); // "def"
-        assert_eq!(false, checker.check("aéc def ret", Range(3, 9))); // "c def r"
-        assert_eq!(false, checker.check("aec def rét", Range(2, 8))); // "c def r"
-        assert_eq!(false, checker.check("aec déf ret", Range(2, 9))); // "c déf r"
-        assert_eq!(false, checker.check("aeç def ret", Range(2, 9))); // "ç def r"
-        assert_eq!(true, checker.check("aeç def ret", Range(4, 8))); // " def "
+        assert!(checker.check("abc def ret", Range(4, 7))); // "def"
+        assert!(!checker.check("abc def ret", Range(2, 8))); // "c def r"
+        assert!(!checker.check("abc def123 ret", Range(4, 7))); // "def"
+        assert!(checker.check("def123 ret", Range(0, 6))); // "def123"
+        assert!(!checker.check("def123 ret", Range(0, 3))); // "def"
+        assert!(checker.check("ret def", Range(4, 7))); // "def"
+        assert!(!checker.check("ret 123def", Range(7, 10))); // "def"
+        assert!(!checker.check("aéc def ret", Range(3, 9))); // "c def r"
+        assert!(!checker.check("aec def rét", Range(2, 8))); // "c def r"
+        assert!(!checker.check("aec déf ret", Range(2, 9))); // "c déf r"
+        assert!(!checker.check("aeç def ret", Range(2, 9))); // "ç def r"
+        assert!(checker.check("aeç def ret", Range(4, 8))); // " def "
     }
 
     #[test]
     fn test_valid_boundaries_composed_word_or_detailed() {
         let checker = BoundariesChecker::composed_word_or_detailed();
-        assert_eq!(true, checker.check("abc def ret", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("abc def ret", Range(2, 8))); // "c def r"
-        assert_eq!(true, checker.check("abc def123 ret", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("def123 ret", Range(0, 6))); // "def123"
-        assert_eq!(true, checker.check("def123 ret", Range(0, 3))); // "def"
-        assert_eq!(true, checker.check("ret def", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("ret 123def", Range(7, 10))); // "def"
-        assert_eq!(true, checker.check("aéc def ret", Range(3, 9))); // "c def r"
-        assert_eq!(true, checker.check("aec def rét", Range(2, 8))); // "c def r"
-        assert_eq!(true, checker.check("aec déf ret", Range(2, 9))); // "c déf r"
-        assert_eq!(true, checker.check("aeç def ret", Range(2, 9))); // "ç def r"
-        assert_eq!(true, checker.check("aeç def ret", Range(4, 8))); // " def "
+        assert!(checker.check("abc def ret", Range(4, 7))); // "def"
+        assert!(checker.check("abc def ret", Range(2, 8))); // "c def r"
+        assert!(checker.check("abc def123 ret", Range(4, 7))); // "def"
+        assert!(checker.check("def123 ret", Range(0, 6))); // "def123"
+        assert!(checker.check("def123 ret", Range(0, 3))); // "def"
+        assert!(checker.check("ret def", Range(4, 7))); // "def"
+        assert!(checker.check("ret 123def", Range(7, 10))); // "def"
+        assert!(checker.check("aéc def ret", Range(3, 9))); // "c def r"
+        assert!(checker.check("aec def rét", Range(2, 8))); // "c def r"
+        assert!(checker.check("aec déf ret", Range(2, 9))); // "c déf r"
+        assert!(checker.check("aeç def ret", Range(2, 9))); // "ç def r"
+        assert!(checker.check("aeç def ret", Range(4, 8))); // " def "
     }
 
     #[test]
     fn test_valid_boundaries_detailed() {
         let checker = BoundariesChecker::detailed();
-        assert_eq!(true, checker.check("abc def ret", Range(4, 7))); // "def"
-        assert_eq!(false, checker.check("abc def ret", Range(2, 8))); // "c def r"
-        assert_eq!(true, checker.check("abc def123 ret", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("def123 ret", Range(0, 6))); // "def123"
-        assert_eq!(true, checker.check("def123 ret", Range(0, 3))); // "def"
-        assert_eq!(true, checker.check("ret def", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("ret 123def", Range(7, 10))); // "def"
-        assert_eq!(false, checker.check("aéc def ret", Range(3, 9))); // "c def r"
-        assert_eq!(false, checker.check("aec def rét", Range(2, 8))); // "c def r"
-        assert_eq!(false, checker.check("aec déf ret", Range(2, 9))); // "c déf r"
-        assert_eq!(false, checker.check("aeç def ret", Range(2, 9))); // "ç def r"
-        assert_eq!(true, checker.check("aeç def ret", Range(4, 8))); // " def "
+        assert!(checker.check("abc def ret", Range(4, 7))); // "def"
+        assert!(!checker.check("abc def ret", Range(2, 8))); // "c def r"
+        assert!(checker.check("abc def123 ret", Range(4, 7))); // "def"
+        assert!(checker.check("def123 ret", Range(0, 6))); // "def123"
+        assert!(checker.check("def123 ret", Range(0, 3))); // "def"
+        assert!(checker.check("ret def", Range(4, 7))); // "def"
+        assert!(checker.check("ret 123def", Range(7, 10))); // "def"
+        assert!(!checker.check("aéc def ret", Range(3, 9))); // "c def r"
+        assert!(!checker.check("aec def rét", Range(2, 8))); // "c def r"
+        assert!(!checker.check("aec déf ret", Range(2, 9))); // "c déf r"
+        assert!(!checker.check("aeç def ret", Range(2, 9))); // "ç def r"
+        assert!(checker.check("aeç def ret", Range(4, 8))); // " def "
     }
 
     #[test]
     fn test_valid_boundaries_no_check() {
         let checker = BoundariesChecker::no_check();
-        assert_eq!(true, checker.check("abc def ret", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("abc def ret", Range(2, 8))); // "c def r"
-        assert_eq!(true, checker.check("abc def123 ret", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("def123 ret", Range(0, 6))); // "def123"
-        assert_eq!(true, checker.check("def123 ret", Range(0, 3))); // "def"
-        assert_eq!(true, checker.check("ret def", Range(4, 7))); // "def"
-        assert_eq!(true, checker.check("ret 123def", Range(7, 10))); // "def"
-        assert_eq!(true, checker.check("aéc def ret", Range(3, 9))); // "c def r"
-        assert_eq!(true, checker.check("aec def rét", Range(2, 8))); // "c def r"
-        assert_eq!(true, checker.check("aec déf ret", Range(2, 9))); // "c déf r"
-        assert_eq!(true, checker.check("aeç def ret", Range(2, 9))); // "ç def r"
-        assert_eq!(true, checker.check("aeç def ret", Range(4, 8))); // " def "
+        assert!(checker.check("abc def ret", Range(4, 7))); // "def"
+        assert!(checker.check("abc def ret", Range(2, 8))); // "c def r"
+        assert!(checker.check("abc def123 ret", Range(4, 7))); // "def"
+        assert!(checker.check("def123 ret", Range(0, 6))); // "def123"
+        assert!(checker.check("def123 ret", Range(0, 3))); // "def"
+        assert!(checker.check("ret def", Range(4, 7))); // "def"
+        assert!(checker.check("ret 123def", Range(7, 10))); // "def"
+        assert!(checker.check("aéc def ret", Range(3, 9))); // "c def r"
+        assert!(checker.check("aec def rét", Range(2, 8))); // "c def r"
+        assert!(checker.check("aec déf ret", Range(2, 9))); // "c déf r"
+        assert!(checker.check("aeç def ret", Range(2, 9))); // "ç def r"
+        assert!(checker.check("aeç def ret", Range(4, 8))); // " def "
     }
 }

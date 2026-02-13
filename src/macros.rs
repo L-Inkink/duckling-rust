@@ -16,7 +16,7 @@ macro_rules! variant_converters {
                 }
             }
         }
-    }
+    };
 }
 
 #[macro_export]
@@ -39,11 +39,11 @@ macro_rules! enum_kind {
             }
         }
 
-        impl ::std::string::ToString for $kindname {
-            fn to_string(&self) -> String {
+        impl ::std::fmt::Display for $kindname {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
                 match self {
                     $(
-                        &$kindname::$varname => stringify!($varname).to_string(),
+                        &$kindname::$varname => write!(f, "{}", stringify!($varname)),
                     )*
                 }
             }
@@ -51,7 +51,7 @@ macro_rules! enum_kind {
     }
 }
 
-#[macro_export]  
+#[macro_export]
 macro_rules! rustling_value {
     ( #[$doc:meta] #[$derive:meta] $name:ident $kindname:ident { $($varname:ident($varty:ty)),*, } fn latent($v1:ident: &$t1:ty) -> bool { $( $body1:tt )* } fn extract_payload($v2:ident: &$t2:ty) -> Option<$payload:ty> { $( $body2:tt )* } ) => {
         #[$doc] #[$derive]
@@ -104,9 +104,9 @@ macro_rules! rustling_value {
             }
         }
 
-        $( 
-            variant_converters!($name, $varname, $varty); 
-            
+        $(
+            variant_converters!($name, $varname, $varty);
+
             impl NodePayload for $varty {
                 type Payload = $payload;
                 fn extract_payload(&self) -> Option<Self::Payload> {
@@ -126,6 +126,10 @@ macro_rules! rustling_value {
 
 #[macro_export]
 macro_rules! dim {
-    ($typ:ty) => ( $crate::core::AnyNodePattern::<$typ>::new() );
-    ($typ:ty, $predicates:expr) => ( $crate::core::FilterNodePattern::<$typ>::filter($predicates) );
+    ($typ:ty) => {
+        $crate::core::AnyNodePattern::<$typ>::new()
+    };
+    ($typ:ty, $predicates:expr) => {
+        $crate::core::FilterNodePattern::<$typ>::filter($predicates)
+    };
 }

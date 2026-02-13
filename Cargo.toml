@@ -1,8 +1,9 @@
 [package]
 name = "rustling"
-version = "0.9.1"
+version = "0.10.0"
 authors = ["hdlj <hubert.delajonquiere@snips.net>", "Mathieu Poumeyrol <kali@zoy.org>"]
-edition = "2018"
+edition = "2021"
+rust-version = "1.70"
 
 [workspace]
 members = ["core", "ml"]
@@ -10,6 +11,23 @@ members = ["core", "ml"]
 [dependencies]
 rustling-core = { path = "core" }
 rustling-ml = { path = "ml" }
-failure = "0.1"
+thiserror = "1.0"
 fnv = "1.0"
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+reqwest = { version = "0.12", features = ["json", "blocking"], optional = true }
+finalfusion = { version = "0.17", optional = true }
+dirs = { version = "5.0", optional = true }
+
+[features]
+default = []
+apollo = ["reqwest"]
+fasttext = ["finalfusion", "dirs", "reqwest"]
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "parser_bench"
+harness = false

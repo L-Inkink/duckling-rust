@@ -28,6 +28,10 @@ impl Range {
         self.1 - self.0
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.0 >= self.1
+    }
+
     pub fn is_disjoint(&self, other: &Self) -> bool {
         self.0 >= other.1 || other.0 >= self.1
     }

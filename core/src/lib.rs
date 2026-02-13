@@ -1,10 +1,9 @@
-#[macro_use]
-extern crate failure;
 pub extern crate regex;
 extern crate smallvec;
 extern crate string_interner;
 
 mod builder;
+pub mod error;
 mod helpers;
 pub mod pattern;
 mod range;
@@ -12,13 +11,14 @@ pub mod rule;
 mod stash;
 
 pub use builder::RuleSetBuilder;
+pub use error::{Result as CoreResult, RustlingError};
 pub use helpers::BoundariesChecker;
 use pattern::Pattern;
 use pattern::TerminalPattern;
 pub use range::Range;
 use rule::Rule;
+pub use rule::RuleResult;
 use rule::TerminalRule;
-pub use rule::{RuleError, RuleResult};
 use serde::{Deserialize, Serialize};
 use smallvec::SmallVec;
 use stash::Stash;
@@ -27,8 +27,6 @@ use std::collections::HashSet;
 use std::fmt::Debug;
 use std::{cell, rc};
 use string_interner::StringInterner;
-
-pub type CoreResult<T> = Result<T, ::failure::Error>;
 
 pub trait AttemptFrom<V>: Sized {
     fn attempt_from(v: V) -> Option<Self>;
@@ -59,8 +57,8 @@ pub type ChildrenNodes<Payload> = SmallVec<[rc::Rc<Node<Payload>>; 2]>;
 pub struct Sym(usize);
 
 impl string_interner::Symbol for Sym {
-    fn from_usize(val: usize) -> Self {
-        Sym(val)
+    fn try_from_usize(val: usize) -> Option<Self> {
+        Some(Sym(val))
     }
 
     fn to_usize(self) -> usize {
@@ -79,11 +77,11 @@ impl From<Sym> for usize {
     }
 }
 
-pub struct SymbolTable(StringInterner<Sym>);
+pub struct SymbolTable(StringInterner<string_interner::backend::StringBackend<Sym>>);
 
 impl Default for SymbolTable {
     fn default() -> SymbolTable {
-        SymbolTable(string_interner::StringInterner::new())
+        SymbolTable(StringInterner::new())
     }
 }
 
@@ -104,17 +102,11 @@ pub enum ParsingStatus {
 
 impl ParsingStatus {
     pub fn is_exit(&self) -> bool {
-        match self {
-            &ParsingStatus::Exit => true,
-            _ => false,
-        }
+        matches!(self, &ParsingStatus::Exit)
     }
 
     pub fn is_continue(&self) -> bool {
-        match self {
-            &ParsingStatus::Continue => true,
-            _ => false,
-        }
+        matches!(self, &ParsingStatus::Continue)
     }
 }
 
@@ -208,7 +200,7 @@ impl<StashValue: NodePayload + StashIndexable> RuleSet<StashValue> {
         &self,
         stash: &mut Stash<StashValue>,
         sentence: &str,
-        rules_mask_status: &mut Vec<ParsingStatus>,
+        rules_mask_status: &mut [ParsingStatus],
     ) -> CoreResult<()> {
         let mut produced_nodes = vec![];
         for (idx, rule) in self.composition_rules.iter().enumerate() {
@@ -265,10 +257,42 @@ impl<StashValue: NodePayload + StashIndexable> RuleSet<StashValue> {
     }
 }
 
+/// A phantom type marker that is always `Send + Sync` regardless of `T`.
+///
+/// This type is used to hold type information for generics without actually storing any data.
+/// It's particularly useful for rule and pattern structs that need to be thread-safe.
+///
+/// # Safety Justification (Audited 2026-02-12)
+///
+/// The unsafe impl of `Send` and `Sync` is sound because:
+/// 1. `PhantomData<T>` is a zero-sized type (ZST) with no runtime representation
+/// 2. It doesn't actually store any `T` - it only exists for the type system
+/// 3. Since there's no actual data to send/sync across threads, it's always safe
+///
+/// # Historical Note
+///
+/// This pattern was common in Rust 2015-2018 era. Modern Rust (1.70+) allows direct use
+/// of `PhantomData<T>` which is `Send + Sync` by default. This wrapper can be removed
+/// in future refactoring without functional changes.
+///
+/// See `UNSAFE_CODE_AUDIT.md` for detailed analysis.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct SendSyncPhantomData<T>(::std::marker::PhantomData<T>);
+
+// SAFETY: PhantomData<T> is a ZST that doesn't actually contain T, so it's always
+// safe to send across threads regardless of T's Send/Sync properties.
 unsafe impl<T> Send for SendSyncPhantomData<T> {}
+
+// SAFETY: PhantomData<T> is a ZST that doesn't actually contain T, so it's always
+// safe to share across threads regardless of T's Send/Sync properties.
 unsafe impl<T> Sync for SendSyncPhantomData<T> {}
+
+impl<T> Default for SendSyncPhantomData<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> SendSyncPhantomData<T> {
     pub fn new() -> SendSyncPhantomData<T> {
         SendSyncPhantomData(::std::marker::PhantomData)
