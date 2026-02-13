@@ -91,16 +91,24 @@ pub struct ConfigStatusResponse {
 }
 
 /// Get configuration status
-pub async fn config_status(state: web::Data<AppState>) -> impl Responder {
-    let config = state.config_manager.lock().unwrap();
+pub async fn config_status(
+    state: web::Data<AppState>,
+) -> Result<impl Responder, actix_web::Error> {
+    let state_clone = state.clone();
+    let (current_version, has_dynamic) = web::block(move || {
+        let config = state_clone.config_manager.lock().unwrap();
+        (config.current_version(), config.has_dynamic_rules())
+    })
+    .await
+    .map_err(|_| actix_web::error::ErrorInternalServerError("Failed to get config"))?;
 
-    HttpResponse::Ok().json(ConfigStatusResponse {
+    Ok(HttpResponse::Ok().json(ConfigStatusResponse {
         dynamic_enabled: state.dynamic_enabled,
-        current_version: config.current_version(),
-        source: if config.has_dynamic_rules() {
+        current_version,
+        source: if has_dynamic {
             "apollo".to_string()
         } else {
             "static".to_string()
         },
-    })
+    }))
 }
