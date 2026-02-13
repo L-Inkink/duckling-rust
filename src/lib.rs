@@ -17,6 +17,13 @@ pub use train::{Check, Example};
 pub mod macros;
 pub mod train;
 
+// Phase 1: Core enhancements
+pub mod values;
+pub mod rules;
+pub mod fuzzy;
+pub mod metrics;
+pub mod dynamic;
+
 pub mod core {
     pub use rustling_core::pattern::{
         AnyNodePattern, FilterNodePattern, TextNegLHPattern, TextPattern,
