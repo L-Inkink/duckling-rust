@@ -153,6 +153,55 @@ fn benchmark_rule_set_creation(c: &mut Criterion) {
     });
 }
 
+// Benchmark: Parse using Value types (Phase 1)
+fn benchmark_parse_integer_value(c: &mut Criterion) {
+    use rustling::rules::integer;
+    use rustling::values::Value;
+
+    let mut b = RuleSetBuilder::<Value>::new(
+        BoundariesChecker::detailed(),
+        BoundariesChecker::separated_alphanumeric_word(),
+    );
+    integer::rules(&mut b);
+    let rule_set = b.build();
+
+    c.bench_function("parse integer value", |b| {
+        b.iter(|| {
+            let result = rule_set.apply_all(black_box("12345"));
+            result.unwrap()
+        })
+    });
+}
+
+// Benchmark: Levenshtein distance calculation
+fn benchmark_levenshtein(c: &mut Criterion) {
+    use rustling::fuzzy::LevenshteinMatcher;
+
+    let matcher = LevenshteinMatcher::new(0.8);
+    let s1 = "tomorrow";
+    let s2 = "tomorow";
+
+    c.bench_function("levenshtein distance", |b| {
+        b.iter(|| {
+            matcher.distance(black_box(s1), black_box(s2))
+        })
+    });
+}
+
+// Benchmark: Pattern normalization
+fn benchmark_pattern_normalizer(c: &mut Criterion) {
+    use rustling::fuzzy::PatternNormalizer;
+
+    let normalizer = PatternNormalizer::new();
+    let input = "明早";
+
+    c.bench_function("pattern normalize", |b| {
+        b.iter(|| {
+            normalizer.normalize(black_box(input))
+        })
+    });
+}
+
 criterion_group!(
     benches,
     benchmark_parse_simple_number,
@@ -161,6 +210,9 @@ criterion_group!(
     benchmark_parse_no_matches,
     benchmark_parse_long_text,
     benchmark_rule_set_creation,
+    benchmark_parse_integer_value,
+    benchmark_levenshtein,
+    benchmark_pattern_normalizer,
 );
 
 criterion_main!(benches);

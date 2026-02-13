@@ -2,6 +2,8 @@
 //!
 //! Provides utilities for tracking parsing performance and resource usage.
 
+pub mod timing;
+
 use std::time::{Duration, Instant};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::RwLock;
