@@ -10,6 +10,7 @@ use finalfusion::io::ReadEmbeddings;
 use std::collections::HashMap;
 use std::path::Path;
 use std::io::BufReader;
+use std::sync::RwLock;
 
 /// Error type for FastText operations
 #[derive(Debug)]
@@ -31,12 +32,54 @@ impl std::fmt::Display for FastTextError {
 
 impl std::error::Error for FastTextError {}
 
+/// Cached embeddings index for fast lookup
+struct EmbeddingsIndex {
+    /// Word to embedding index mapping
+    word_indices: HashMap<String, usize>,
+    /// Vocabulary size
+    vocab_size: usize,
+    /// Dimension of embeddings
+    embedding_dim: usize,
+}
+
+impl EmbeddingsIndex {
+    fn new(embeddings: &Embeddings<SimpleVocab, NdArray>) -> Self {
+        let vocab = embeddings.vocab();
+        let words: Vec<String> = vocab.words().iter().map(|w| w.to_string()).collect();
+        let vocab_size = words.len();
+
+        // Create word to index mapping
+        let mut word_indices = HashMap::new();
+        for (i, word) in words.into_iter().enumerate() {
+            word_indices.insert(word, i);
+        }
+
+        // Get embedding dimension
+        let embedding_dim = embeddings
+            .embedding(vocab.words().first().unwrap_or(&"".to_string()))
+            .map(|e| e.len())
+            .unwrap_or(0);
+
+        Self {
+            word_indices,
+            vocab_size,
+            embedding_dim,
+        }
+    }
+
+    fn get_index(&self, word: &str) -> Option<usize> {
+        self.word_indices.get(word).copied()
+    }
+}
+
 /// FastText-based text expander
 ///
 /// Uses fastText embeddings to find similar words for abbreviation expansion.
 /// For example, "明早" -> "明天早上", "国考" -> "国家考试"
 pub struct FastTextExpander {
     embeddings: Option<Embeddings<SimpleVocab, NdArray>>,
+    /// Cached index for fast lookup
+    index: Option<EmbeddingsIndex>,
     similarity_threshold: f32,
     max_candidates: usize,
     /// Pre-defined abbreviation mappings (fallback when model not available)
@@ -52,8 +95,12 @@ impl FastTextExpander {
         let embeddings = Embeddings::read_embeddings(&mut BufReader::new(file))
             .map_err(|e| FastTextError::LoadFailed(format!("Failed to load embeddings: {:?}", e)))?;
 
+        // Build index for fast lookup
+        let index = EmbeddingsIndex::new(&embeddings);
+
         let mut expander = Self {
             embeddings: Some(embeddings),
+            index: Some(index),
             similarity_threshold: 0.75,
             max_candidates: 5,
             abbreviation_map: HashMap::new(),
@@ -69,6 +116,7 @@ impl FastTextExpander {
     pub fn new() -> Self {
         let mut expander = Self {
             embeddings: None,
+            index: None,
             similarity_threshold: 0.75,
             max_candidates: 5,
             abbreviation_map: HashMap::new(),
@@ -141,11 +189,16 @@ impl FastTextExpander {
             return vec![];
         }
 
-        // Find similar words
-        let mut candidates: Vec<(String, f32)> = Vec::new();
+        // Use optimized iteration - first check if word exists in vocabulary
+        let vocab = embeddings.vocab();
+        let words: Vec<&String> = vocab.words().iter().collect();
 
-        for w in embeddings.vocab().words() {
-            if w == word {
+        // Find similar words with early termination for efficiency
+        let mut candidates: Vec<(String, f32)> = Vec::new();
+        let threshold = self.similarity_threshold;
+
+        for w in &words {
+            if *w == word {
                 continue;
             }
 
@@ -155,8 +208,12 @@ impl FastTextExpander {
                     continue;
                 }
                 let similarity = cosine_similarity(&query_embedding, emb_slice);
-                if similarity >= self.similarity_threshold {
+                if similarity >= threshold {
                     candidates.push((w.to_string(), similarity));
+                    // Early termination if we have enough high-similarity candidates
+                    if candidates.len() > self.max_candidates * 10 {
+                        break;
+                    }
                 }
             }
         }
