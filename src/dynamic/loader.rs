@@ -136,7 +136,7 @@ impl ConfigManager {
 impl Clone for ConfigManager {
     fn clone(&self) -> Self {
         Self {
-            source: Arc::new(NullLoader),
+            source: Arc::clone(&self.source),
             current_version: self.current_version,
         }
     }

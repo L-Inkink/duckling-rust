@@ -34,9 +34,10 @@ impl ServerBuilder {
     ///     .bind(builder.bind_address())?
     ///     .run()
     /// ```
-    pub fn configure() -> impl Fn(&mut web::ServiceConfig) {
-        |cfg: &mut web::ServiceConfig| {
-            cfg.app_data(web::Data::new(AppState::static_only()));
+    pub fn configure(&self) -> impl Fn(&mut web::ServiceConfig) {
+        let state = self.state.clone();
+        move |cfg: &mut web::ServiceConfig| {
+            cfg.app_data(web::Data::new(state.clone()));
             cfg.service(
                 web::resource("/health")
                     .route(web::get().to(health))
