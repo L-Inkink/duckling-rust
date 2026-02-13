@@ -26,21 +26,21 @@ impl ReloadTask {
     {
         let handle = ReloadTaskHandle::new();
 
-        let loader = Arc::new(self.loader);
+        let loader = Arc::clone(&self.loader);
         let poll_interval = self.poll_interval;
         let on_reload = Arc::new(on_reload);
 
         // Spawn background task
         tokio::spawn(async move {
             loop {
-                sleep(poll_interval).await;
-
-                if let Err(e) = self.check_and_reload(&loader, &on_reload) {
-                    log::warn!("Reload check failed: {:?}", e);
-                }
-
                 if handle.is_stopped() {
                     break;
+                }
+
+                sleep(poll_interval).await;
+
+                if let Err(e) = self.check_and_reload(&on_reload) {
+                    log::warn!("Reload check failed: {:?}", e);
                 }
             }
         });
@@ -50,7 +50,6 @@ impl ReloadTask {
 
     fn check_and_reload(
         &self,
-        loader: &Arc<dyn ConfigLoader>,
         on_reload: &Arc<dyn Fn() + Send + Sync>,
     ) -> Result<(), ConfigError> {
         // Check if configuration has changed
