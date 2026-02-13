@@ -116,15 +116,21 @@ pub async fn config_status(
 /// Trigger configuration reload
 pub async fn config_reload(
     state: web::Data<AppState>,
-) -> impl Responder {
-    match state.reload_rules() {
-        Ok(rules) => HttpResponse::Ok().json(serde_json::json!({
+) -> Result<impl Responder, actix_web::Error> {
+    let state_clone = state.clone();
+
+    let result = web::block(move || state_clone.reload_rules())
+        .await
+        .map_err(|_| actix_web::error::ErrorInternalServerError("Failed to reload config"))?;
+
+    match result {
+        Ok(rules) => Ok(HttpResponse::Ok().json(serde_json::json!({
             "status": "reloaded",
             "version": rules.version,
             "rule_count": rules.rules.len(),
-        })),
-        Err(e) => HttpResponse::InternalServerError().json(serde_json::json!({
+        }))),
+        Err(e) => Ok(HttpResponse::InternalServerError().json(serde_json::json!({
             "error": e,
-        })),
+        }))),
     }
 }
