@@ -8,6 +8,7 @@ pub mod engine;
 pub mod loader;
 
 pub use rules::{DynamicRule, DynamicRuleSet, RuleValue};
+pub use engine::{DynamicRuleEngine, HybridParser};
 pub use loader::{
     ConfigLoader, ConfigManager, ConfigSource, ApolloConfig,
     FileLoader, InlineLoader, ApolloLoader,

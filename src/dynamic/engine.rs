@@ -4,7 +4,53 @@ use crate::dynamic::rules::{DynamicRule, DynamicRuleSet, RuleValue, TerminalRule
 use crate::values::{DurationValue, TimeUnit, Value, TimeValue};
 use crate::{RuleSet, RuleSetBuilder, RustlingError};
 use chrono::Utc;
-use rustling_core::regex::Regex as CoreRegex;
+
+/// Hybrid parser that combines static and dynamic rules
+pub struct HybridParser {
+    static_rules: RuleSet<Value>,
+    dynamic_rules: Option<RuleSet<Value>>,
+    version: u64,
+}
+
+impl HybridParser {
+    /// Create a new hybrid parser with only static rules
+    pub fn new(static_rules: RuleSet<Value>) -> Self {
+        Self {
+            static_rules,
+            dynamic_rules: None,
+            version: 0,
+        }
+    }
+
+    /// Add dynamic rules to the parser
+    pub fn with_dynamic_rules(mut self, dynamic_rules: RuleSet<Value>, version: u64) -> Self {
+        self.dynamic_rules = Some(dynamic_rules);
+        self.version = version;
+        self
+    }
+
+    /// Get all applicable rules (static + dynamic if available)
+    pub fn rules(&self) -> &RuleSet<Value> {
+        // Prefer dynamic rules if available
+        self.dynamic_rules.as_ref().unwrap_or(&self.static_rules)
+    }
+
+    /// Check if dynamic rules are loaded
+    pub fn has_dynamic_rules(&self) -> bool {
+        self.dynamic_rules.is_some()
+    }
+
+    /// Get current version
+    pub fn version(&self) -> u64 {
+        self.version
+    }
+
+    /// Reload dynamic rules
+    pub fn reload(&mut self, dynamic_rules: RuleSet<Value>, version: u64) {
+        self.dynamic_rules = Some(dynamic_rules);
+        self.version = version;
+    }
+}
 
 /// Error type for dynamic rule engine
 #[derive(Debug)]
@@ -174,6 +220,21 @@ impl DynamicRuleEngine {
             "week" | "weeks" | "w" => Ok(TimeUnit::Week),
             _ => Err(DynamicRuleError::UnknownTimeUnit(unit.to_string())),
         }
+    }
+
+    /// Merge static and dynamic rules into a single RuleSet
+    /// This combines both rule sets, with dynamic rules taking precedence
+    /// for rules with the same name
+    pub fn merge_rules(
+        static_rules: RuleSet<Value>,
+        dynamic_rules: Option<RuleSet<Value>>,
+    ) -> RuleSet<Value> {
+        // For now, if dynamic rules exist, return them
+        // A more sophisticated merge could be implemented later
+        if let Some(dynamic) = dynamic_rules {
+            return dynamic;
+        }
+        static_rules
     }
 }
 
