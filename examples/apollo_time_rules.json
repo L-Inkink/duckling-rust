@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "metadata": {
+    "name": "time-rules",
+    "locale": "zh-CN",
+    "description": "时间相关解析规则"
+  },
+  "rules": [
+    {
+      "type": "Terminal",
+      "name": "duration: minutes",
+      "pattern": "(\\d+)\\s*分钟",
+      "capture_group": 1,
+      "value": {
+        "kind": "Duration",
+        "amount": "{1}",
+        "unit": "minute"
+      },
+      "enabled": true,
+      "priority": 10
+    },
+    {
+      "type": "Terminal",
+      "name": "duration: hours",
+      "pattern": "(\\d+)\\s*小时",
+      "capture_group": 1,
+      "value": {
+        "kind": "Duration",
+        "amount": "{1}",
+        "unit": "hour"
+      },
+      "enabled": true,
+      "priority": 10
+    },
+    {
+      "type": "Terminal",
+      "name": "duration: days",
+      "pattern": "(\\d+)\\s*天",
+      "capture_group": 1,
+      "value": {
+        "kind": "Duration",
+        "amount": "{1}",
+        "unit": "day"
+      },
+      "enabled": true,
+      "priority": 10
+    },
+    {
+      "type": "Terminal",
+      "name": "time: in X minutes",
+      "pattern": "(\\d+)\\s*分钟后",
+      "capture_group": 1,
+      "value": {
+        "kind": "Time",
+        "duration": {
+          "amount": "{1}",
+          "unit": "minute"
+        }
+      },
+      "enabled": true,
+      "priority": 20
+    },
+    {
+      "type": "Terminal",
+      "name": "integer (numeric)",
+      "pattern": "(\\d{1,18})",
+      "capture_group": 1,
+      "value": {
+        "kind": "Integer",
+        "value": "{1}"
+      },
+      "enabled": true,
+      "priority": 0
+    }
+  ]
+}
