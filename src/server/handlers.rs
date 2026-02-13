@@ -62,3 +62,45 @@ pub async fn parse(
     let count = results.len();
     Ok(HttpResponse::Ok().json(ParseResponse { results, count }))
 }
+
+/// Health check response
+#[derive(Debug, Serialize)]
+pub struct HealthResponse {
+    pub status: String,
+    pub version: String,
+    pub dynamic_enabled: bool,
+}
+
+/// Get health status
+pub async fn health(state: web::Data<AppState>) -> impl Responder {
+    let dynamic_enabled = state.dynamic_enabled;
+
+    HttpResponse::Ok().json(HealthResponse {
+        status: "healthy".to_string(),
+        version: env!("CARGO_PKG_VERSION").to_string(),
+        dynamic_enabled,
+    })
+}
+
+/// Configuration status response
+#[derive(Debug, Serialize)]
+pub struct ConfigStatusResponse {
+    pub dynamic_enabled: bool,
+    pub current_version: u64,
+    pub source: String,
+}
+
+/// Get configuration status
+pub async fn config_status(state: web::Data<AppState>) -> impl Responder {
+    let config = state.config_manager.lock().unwrap();
+
+    HttpResponse::Ok().json(ConfigStatusResponse {
+        dynamic_enabled: state.dynamic_enabled,
+        current_version: config.current_version(),
+        source: if config.has_dynamic_rules() {
+            "apollo".to_string()
+        } else {
+            "static".to_string()
+        },
+    })
+}
