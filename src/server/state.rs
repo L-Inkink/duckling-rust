@@ -6,13 +6,14 @@ use crate::RuleSetBuilder;
 use rustling_core::{BoundariesChecker, RuleSet as CoreRuleSet};
 
 /// Application state shared across HTTP handlers
+#[derive(Clone)]
 pub struct AppState {
     /// Core rule set for parsing
-    pub rule_set: CoreRuleSet<Value>,
+    pub rule_set: std::sync::Arc<CoreRuleSet<Value>>,
     /// Dynamic rule configuration manager
-    pub config_manager: std::sync::Mutex<ConfigManager>,
+    pub config_manager: std::sync::Arc<std::sync::Mutex<ConfigManager>>,
     /// Pattern normalizer for fuzzy matching
-    pub pattern_normalizer: PatternNormalizer,
+    pub pattern_normalizer: std::sync::Arc<PatternNormalizer>,
     /// Whether dynamic rules are enabled
     pub dynamic_enabled: bool,
 }
@@ -28,9 +29,9 @@ impl AppState {
         let rule_set = b.build();
 
         Self {
-            rule_set,
-            config_manager: std::sync::Mutex::new(ConfigManager::static_only()),
-            pattern_normalizer: PatternNormalizer::new(),
+            rule_set: std::sync::Arc::new(rule_set),
+            config_manager: std::sync::Arc::new(std::sync::Mutex::new(ConfigManager::static_only())),
+            pattern_normalizer: std::sync::Arc::new(PatternNormalizer::new()),
             dynamic_enabled: false,
         }
     }

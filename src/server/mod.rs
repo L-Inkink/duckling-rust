@@ -7,5 +7,7 @@
 
 pub mod handlers;
 pub mod state;
+pub mod app;
 
 pub use state::AppState;
+pub use app::ServerBuilder;
