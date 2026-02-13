@@ -1,0 +1,13 @@
+[package]
+name = "rustling-core"
+version = "0.10.0"
+authors = ["hdlj <hubert.delajonquiere@snips.net>", "Mathieu Poumeyrol <kali@zoy.org>"]
+edition = "2021"
+rust-version = "1.70"
+
+[dependencies]
+regex = "1.10"
+smallvec = "1.13"
+thiserror = "1.0"
+string-interner = "0.17"
+serde = { version = "1.0", features = ["derive"] }

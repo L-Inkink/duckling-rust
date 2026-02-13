@@ -1,0 +1,23 @@
+[package]
+name = "rustling"
+version = "0.10.0"
+authors = ["hdlj <hubert.delajonquiere@snips.net>", "Mathieu Poumeyrol <kali@zoy.org>"]
+edition = "2021"
+rust-version = "1.70"
+
+[workspace]
+members = ["core", "ml"]
+
+[dependencies]
+rustling-core = { path = "core" }
+rustling-ml = { path = "ml" }
+thiserror = "1.0"
+fnv = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "parser_bench"
+harness = false
