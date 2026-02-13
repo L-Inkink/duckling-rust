@@ -22,6 +22,7 @@ pub mod values;
 pub mod rules;
 pub mod fuzzy;
 pub mod metrics;
+pub mod dynamic;
 
 pub mod core {
     pub use rustling_core::pattern::{
