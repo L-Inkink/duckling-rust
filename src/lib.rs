@@ -24,6 +24,9 @@ pub mod fuzzy;
 pub mod metrics;
 pub mod dynamic;
 
+// Phase 2: HTTP Server
+pub mod server;
+
 pub mod core {
     pub use rustling_core::pattern::{
         AnyNodePattern, FilterNodePattern, TextNegLHPattern, TextPattern,
