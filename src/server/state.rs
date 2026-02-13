@@ -1,3 +1,4 @@
+use crate::dynamic::rules::DynamicRuleSet;
 use crate::dynamic::ConfigManager;
 use crate::fuzzy::PatternNormalizer;
 use crate::rules;
@@ -34,5 +35,11 @@ impl AppState {
             pattern_normalizer: std::sync::Arc::new(PatternNormalizer::new()),
             dynamic_enabled: false,
         }
+    }
+
+    /// Reload rules from the configuration source
+    pub fn reload_rules(&self) -> Result<DynamicRuleSet, String> {
+        let mut config = self.config_manager.lock().map_err(|e| e.to_string())?;
+        config.load_rules().map_err(|e| e.to_string())
     }
 }

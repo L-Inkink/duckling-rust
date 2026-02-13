@@ -1,6 +1,6 @@
 use actix_web::web;
 
-use super::handlers::{config_status, health, parse};
+use super::handlers::{config_reload, config_status, health, parse};
 use super::AppState;
 
 /// Server builder for configuring and creating the HTTP server
@@ -49,6 +49,10 @@ impl ServerBuilder {
             cfg.service(
                 web::resource("/config/status")
                     .route(web::get().to(config_status))
+            );
+            cfg.service(
+                web::resource("/config/reload")
+                    .route(web::post().to(config_reload))
             );
         }
     }

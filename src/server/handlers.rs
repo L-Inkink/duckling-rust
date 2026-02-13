@@ -112,3 +112,19 @@ pub async fn config_status(
         },
     }))
 }
+
+/// Trigger configuration reload
+pub async fn config_reload(
+    state: web::Data<AppState>,
+) -> impl Responder {
+    match state.reload_rules() {
+        Ok(rules) => HttpResponse::Ok().json(serde_json::json!({
+            "status": "reloaded",
+            "version": rules.version,
+            "rule_count": rules.rules.len(),
+        })),
+        Err(e) => HttpResponse::InternalServerError().json(serde_json::json!({
+            "error": e,
+        })),
+    }
+}
