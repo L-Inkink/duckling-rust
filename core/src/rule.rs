@@ -13,7 +13,8 @@ type PredicateMatches2<M1, M2> = CoreResult<PredicateMatches<(M1, M2)>>;
 type PredicateMatches3<M1, M2, M3> = CoreResult<PredicateMatches<(M1, M2, M3)>>;
 type PredicateMatches4<M1, M2, M3, M4> = CoreResult<PredicateMatches<(M1, M2, M3, M4)>>;
 type PredicateMatches5<M1, M2, M3, M4, M5> = CoreResult<PredicateMatches<(M1, M2, M3, M4, M5)>>;
-type PredicateMatches6<M1, M2, M3, M4, M5, M6> = CoreResult<PredicateMatches<(M1, M2, M3, M4, M5, M6)>>;
+type PredicateMatches6<M1, M2, M3, M4, M5, M6> =
+    CoreResult<PredicateMatches<(M1, M2, M3, M4, M5, M6)>>;
 
 macro_rules! svec {
     ($($item:expr),*) => { {
@@ -1198,7 +1199,7 @@ mod tests {
         use std::str::FromStr;
         let mut st = SymbolTable::default();
         let rule_int = Rule1::new(st.sym("int"), reg!(st, usize, "\\d+"), |a| {
-            Ok(usize::from_str(&*a.group(0))?)
+            Ok(usize::from_str(a.group(0))?)
         });
         assert_eq!(
             svec4![ParsedNode::new(
