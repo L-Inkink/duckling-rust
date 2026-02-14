@@ -19,6 +19,13 @@ chrono = { version = "0.4", features = ["serde"] }
 reqwest = { version = "0.12", features = ["json", "blocking"], optional = true }
 finalfusion = { version = "0.17", optional = true }
 dirs = { version = "5.0", optional = true }
+actix-web = "4.4"
+actix-rt = "2.9"
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+env_logger = "0.11"
+utoipa = { version = "5.3", features = ["actix_extras"] }
+utoipa-swagger-ui = { version = "8.1", features = ["actix-web"] }
 
 [features]
 default = []
@@ -27,6 +34,7 @@ fasttext = ["finalfusion", "dirs", "reqwest"]
 
 [dev-dependencies]
 criterion = "0.5"
+futures = "0.3"
 
 [[bench]]
 name = "parser_bench"

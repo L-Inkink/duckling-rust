@@ -133,7 +133,7 @@ impl DynamicRuleEngine {
             &terminal.name,
             pattern,
             move |text_match| {
-                let text = if capture_group == 0 {
+                let _text = if capture_group == 0 {
                     text_match.group(0)
                 } else {
                     text_match.group(capture_group)
@@ -269,7 +269,7 @@ mod tests {
         let rules = create_test_rules();
         let result: RuleSet<Value> = DynamicRuleEngine::build_ruleset(&rules).unwrap();
         // Verify rules were added
-        assert!(result.rules_syms().len() > 0);
+        assert!(!result.rules_syms().is_empty());
     }
 
     #[test]
