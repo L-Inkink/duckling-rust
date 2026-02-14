@@ -1,48 +1,86 @@
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use crate::server::AppState;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct ParseRequest {
+    /// Text to parse (max 10,000 bytes)
+    #[schema(example = "I need 5 minutes")]
     pub text: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct ParseResponse {
+    /// Parse results
     pub results: Vec<ParseResult>,
+    /// Total number of results
+    #[schema(example = 1)]
     pub count: usize,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct BatchParseRequest {
+    /// List of texts to parse (max 100 items, 10KB each)
+    #[schema(example = json!(["5 minutes", "3 hours", "tomorrow"]))]
     pub texts: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct BatchParseResponse {
+    /// Batch parse results
     pub results: Vec<BatchParseResult>,
+    /// Total number of results across all texts
+    #[schema(example = 3)]
     pub total_count: usize,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct BatchParseResult {
+    /// Index of the text in the request
+    #[schema(example = 0)]
     pub index: usize,
+    /// Original input text
+    #[schema(example = "5 minutes")]
     pub text: String,
+    /// Parse results for this text
     pub results: Vec<ParseResult>,
+    /// Number of results for this text
+    #[schema(example = 1)]
     pub count: usize,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct ParseResult {
+    /// Parsed value representation
+    #[schema(example = "Duration(5, Minute)")]
     pub value: String,
+    /// Byte start position
+    #[schema(example = 0)]
     pub byte_start: usize,
+    /// Byte end position
+    #[schema(example = 9)]
     pub byte_end: usize,
+    /// Character start position
+    #[schema(example = 0)]
     pub char_start: usize,
+    /// Character end position
+    #[schema(example = 9)]
     pub char_end: usize,
 }
 
 /// Parse text and return all matches
+#[utoipa::path(
+    post,
+    path = "/parse",
+    request_body = ParseRequest,
+    responses(
+        (status = 200, description = "Parse successful", body = ParseResponse),
+        (status = 400, description = "Invalid request (text too long)")
+    ),
+    tag = "Parse"
+)]
 pub async fn parse(
     state: web::Data<AppState>,
     req: web::Json<ParseRequest>,
@@ -100,6 +138,16 @@ pub async fn parse(
 }
 
 /// Parse multiple texts in batch
+#[utoipa::path(
+    post,
+    path = "/parse/batch",
+    request_body = BatchParseRequest,
+    responses(
+        (status = 200, description = "Batch parse successful", body = BatchParseResponse),
+        (status = 400, description = "Invalid request (batch too large or text too long)")
+    ),
+    tag = "Parse"
+)]
 pub async fn parse_batch(
     state: web::Data<AppState>,
     req: web::Json<BatchParseRequest>,
@@ -181,14 +229,28 @@ pub async fn parse_batch(
 }
 
 /// Health check response
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct HealthResponse {
+    /// Health status
+    #[schema(example = "healthy")]
     pub status: String,
+    /// Server version
+    #[schema(example = "0.10.0")]
     pub version: String,
+    /// Whether dynamic rules are enabled
+    #[schema(example = false)]
     pub dynamic_enabled: bool,
 }
 
 /// Get health status
+#[utoipa::path(
+    get,
+    path = "/health",
+    responses(
+        (status = 200, description = "Server is healthy", body = HealthResponse)
+    ),
+    tag = "Health"
+)]
 pub async fn health(state: web::Data<AppState>) -> impl Responder {
     let dynamic_enabled = state.dynamic_enabled;
 
@@ -200,14 +262,29 @@ pub async fn health(state: web::Data<AppState>) -> impl Responder {
 }
 
 /// Configuration status response
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct ConfigStatusResponse {
+    /// Whether dynamic rules are enabled
+    #[schema(example = false)]
     pub dynamic_enabled: bool,
+    /// Current configuration version
+    #[schema(example = 0)]
     pub current_version: u64,
+    /// Configuration source
+    #[schema(example = "static")]
     pub source: String,
 }
 
 /// Get configuration status
+#[utoipa::path(
+    get,
+    path = "/config/status",
+    responses(
+        (status = 200, description = "Configuration status retrieved", body = ConfigStatusResponse),
+        (status = 500, description = "Failed to get configuration")
+    ),
+    tag = "Configuration"
+)]
 pub async fn config_status(
     state: web::Data<AppState>,
 ) -> Result<impl Responder, actix_web::Error> {
@@ -235,6 +312,19 @@ pub async fn config_status(
 }
 
 /// Trigger configuration reload (requires API key authentication)
+#[utoipa::path(
+    post,
+    path = "/config/reload",
+    responses(
+        (status = 200, description = "Configuration reloaded successfully"),
+        (status = 403, description = "Invalid or missing API key"),
+        (status = 500, description = "Reload failed")
+    ),
+    security(
+        ("api_key" = [])
+    ),
+    tag = "Configuration"
+)]
 pub async fn config_reload(
     state: web::Data<AppState>,
     req: actix_web::HttpRequest,

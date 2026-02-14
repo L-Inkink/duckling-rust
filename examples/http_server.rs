@@ -27,6 +27,7 @@
 //! - `POST /parse` - Parse text (max 10KB)
 //! - `POST /parse/batch` - Parse multiple texts (max 100 items, 10KB each)
 //! - `POST /config/reload` - Reload configuration (requires API key)
+//! - `GET /swagger-ui/` - Interactive API documentation (Swagger UI)
 //!
 //! ## Example Requests
 //!
@@ -112,6 +113,7 @@ async fn main() -> std::io::Result<()> {
     log::info!("  POST /parse           - Parse text (max 10KB)");
     log::info!("  POST /parse/batch     - Parse batch (max 100 items)");
     log::info!("  POST /config/reload   - Reload configuration (requires API key)");
+    log::info!("  GET  /swagger-ui/     - Interactive API documentation");
 
     HttpServer::new(|| {
         // Create server builder and configure routes

@@ -1,5 +1,8 @@
 use actix_web::web;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
+use super::docs::ApiDoc;
 use super::handlers::{config_reload, config_status, health, parse, parse_batch};
 use super::AppState;
 
@@ -36,10 +39,20 @@ impl ServerBuilder {
     /// ```
     pub fn configure(&self) -> impl Fn(&mut web::ServiceConfig) {
         let state = self.state.clone();
+        let openapi = ApiDoc::openapi();
+
         move |cfg: &mut web::ServiceConfig| {
             cfg.app_data(web::Data::new(state.clone()));
             // Configure JSON payload limit to prevent large request attacks
             cfg.app_data(web::JsonConfig::default().limit(65_536)); // 64KB max
+
+            // Swagger UI
+            cfg.service(
+                SwaggerUi::new("/swagger-ui/{_:.*}")
+                    .url("/api-docs/openapi.json", openapi.clone())
+            );
+
+            // API endpoints
             cfg.service(
                 web::resource("/health")
                     .route(web::get().to(health))
