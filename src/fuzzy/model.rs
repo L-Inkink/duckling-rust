@@ -212,8 +212,7 @@ mod tests {
     #[test]
     fn test_list_cached_empty() {
         let manager = ModelManager::new("/tmp/rustling_test_cache");
-        let cached = manager.list_cached();
-        // Should be empty or error gracefully
-        assert!(cached.is_empty() || cached.len() >= 0);
+        let _cached = manager.list_cached();
+        // Should not panic - test passes if we get here
     }
 }
