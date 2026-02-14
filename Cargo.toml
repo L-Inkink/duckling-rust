@@ -34,6 +34,7 @@ fasttext = ["finalfusion", "dirs", "reqwest"]
 
 [dev-dependencies]
 criterion = "0.5"
+futures = "0.3"
 
 [[bench]]
 name = "parser_bench"
