@@ -1,5 +1,5 @@
 use crate::values::Value;
-use rustling_core::{RuleSetBuilder, RuleResult, rustling_error};
+use rustling_core::{RuleSetBuilder, rustling_error};
 
 pub fn rules(b: &RuleSetBuilder<Value>) {
     // Rule: Match 1-18 digit integers

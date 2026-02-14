@@ -38,6 +38,8 @@ impl ServerBuilder {
         let state = self.state.clone();
         move |cfg: &mut web::ServiceConfig| {
             cfg.app_data(web::Data::new(state.clone()));
+            // Configure JSON payload limit to prevent large request attacks
+            cfg.app_data(web::JsonConfig::default().limit(65_536)); // 64KB max
             cfg.service(
                 web::resource("/health")
                     .route(web::get().to(health))

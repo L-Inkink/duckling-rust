@@ -5,9 +5,11 @@
 //! - Configuration management
 //! - Health checks
 
-pub mod handlers;
-pub mod state;
 pub mod app;
+pub mod handlers;
+pub mod reload;
+pub mod state;
 
-pub use state::AppState;
 pub use app::ServerBuilder;
+pub use reload::{ReloadTask, ReloadTaskHandle};
+pub use state::AppState;
