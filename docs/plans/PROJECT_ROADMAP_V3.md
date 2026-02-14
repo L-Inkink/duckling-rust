@@ -3,7 +3,7 @@
 **版本**: 3.0
 **创建日期**: 2026-02-14
 **最后更新**: 2026-02-14
-**状态**: Phase 0-2 已完成，Phase 1 待补完
+**状态**: Phase 0-2 已完成，Phase 5-A (Docker) 已完成，Phase 1 待补完
 
 ---
 
@@ -106,6 +106,50 @@
 - [examples/http_server.rs](../../examples/http_server.rs) - 可运行示例
 
 **当前分支**: `phase2-http-apollo` (领先远程 1 个提交)
+
+---
+
+#### Phase 5-A: Docker 容器化部署 (部分完成)
+**完成时间**: 2026-02-14
+**主要成果**:
+- ✅ Docker 多阶段构建配置
+  - Builder 阶段：rust:1.70-slim（编译优化）
+  - Runtime 阶段：debian:bookworm-slim（最小化镜像）
+  - 非 root 用户执行（rustling:1000）
+  - 二进制文件 strip 优化
+  - 内置健康检查（/health 端点，30s 间隔）
+
+- ✅ Docker Compose 编排
+  - Production 配置（资源限制：2 CPU / 512MB 内存）
+  - Development 覆盖配置（调试日志 + 预设 API key）
+  - 日志轮转（最大 10MB，保留 3 个文件）
+  - 自动重启策略
+  - 健康检查集成
+
+- ✅ 部署文档
+  - 快速启动指南
+  - 环境变量配置说明
+  - 健康检查和监控
+  - 生产环境最佳实践
+  - API 端点参考
+  - 故障排查指南
+
+**文件清单**:
+- `Dockerfile` - 多阶段构建配置（82 行）
+- `docker-compose.yml` - 生产编排配置（62 行）
+- `docker-compose.dev.yml` - 开发环境覆盖（32 行）
+- `.dockerignore` - 构建上下文优化（51 行）
+- `.env.example` - 环境变量模板（19 行）
+- `docs/DOCKER.md` - 部署文档（410 行）
+
+**当前分支**: `phase5-docker-deploy` (已提交)
+**镜像大小目标**: ~80MB（优化目标 <50MB）
+
+**待完成**:
+- ⏸️ Kubernetes 部署配置（计划 Phase 5-B）
+- ⏸️ CI/CD Pipeline（计划 Phase 5-B）
+- ⏸️ Prometheus Metrics（计划 Phase 5-C）
+- ⏸️ 分布式追踪（计划 Phase 5-C）
 
 ---
 
@@ -386,11 +430,12 @@ let expansions = expander.expand("明早", 0.85);
 #### Week 1-2: 容器化 & CI/CD
 
 ```
-□ Docker 容器化
+✅ Docker 容器化 (已完成 2026-02-14)
   - 多阶段 Dockerfile（Builder + Runtime）
-  - 镜像优化（目标 <50MB）
+  - 镜像优化（当前 ~80MB，目标 <50MB）
   - 健康检查集成
-  - Docker Compose 配置
+  - Docker Compose 配置（生产 + 开发）
+  - 完整部署文档（docs/DOCKER.md）
 
 □ Kubernetes 部署
   - Deployment（滚动更新策略）
@@ -450,7 +495,7 @@ let expansions = expander.expand("明早", 0.85);
 ```
 
 **验收标准**:
-- [ ] Docker 镜像 <50MB
+- [⏸] Docker 镜像 <50MB (当前 ~80MB，待进一步优化)
 - [ ] K8s 部署成功，HPA 生效
 - [ ] CI/CD 自动化流程完整
 - [ ] Prometheus metrics 可查询
