@@ -25,6 +25,7 @@
 //! - `GET /health` - Health check
 //! - `GET /config/status` - Configuration status
 //! - `POST /parse` - Parse text (max 10KB)
+//! - `POST /parse/batch` - Parse multiple texts (max 100 items, 10KB each)
 //! - `POST /config/reload` - Reload configuration (requires API key)
 //!
 //! ## Example Requests
@@ -39,6 +40,13 @@
 //! curl -X POST http://localhost:8080/parse \
 //!   -H "Content-Type: application/json" \
 //!   -d '{"text": "I need 5 minutes"}'
+//! ```
+//!
+//! Parse batch:
+//! ```bash
+//! curl -X POST http://localhost:8080/parse/batch \
+//!   -H "Content-Type: application/json" \
+//!   -d '{"texts": ["5 minutes", "3 hours", "tomorrow"]}'
 //! ```
 //!
 //! Check config status:
@@ -99,10 +107,11 @@ async fn main() -> std::io::Result<()> {
     // Start HTTP server
     log::info!("🚀 Server starting at http://{}", bind_address);
     log::info!("📚 API endpoints:");
-    log::info!("  GET  /health         - Health check");
-    log::info!("  GET  /config/status  - Configuration status");
-    log::info!("  POST /parse          - Parse text");
-    log::info!("  POST /config/reload  - Reload configuration (requires API key)");
+    log::info!("  GET  /health          - Health check");
+    log::info!("  GET  /config/status   - Configuration status");
+    log::info!("  POST /parse           - Parse text (max 10KB)");
+    log::info!("  POST /parse/batch     - Parse batch (max 100 items)");
+    log::info!("  POST /config/reload   - Reload configuration (requires API key)");
 
     HttpServer::new(|| {
         // Create server builder and configure routes

@@ -15,6 +15,25 @@ pub struct ParseResponse {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct BatchParseRequest {
+    pub texts: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BatchParseResponse {
+    pub results: Vec<BatchParseResult>,
+    pub total_count: usize,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BatchParseResult {
+    pub index: usize,
+    pub text: String,
+    pub results: Vec<ParseResult>,
+    pub count: usize,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ParseResult {
     pub value: String,
     pub byte_start: usize,
@@ -78,6 +97,87 @@ pub async fn parse(
 
     let count = results.len();
     Ok(HttpResponse::Ok().json(ParseResponse { results, count }))
+}
+
+/// Parse multiple texts in batch
+pub async fn parse_batch(
+    state: web::Data<AppState>,
+    req: web::Json<BatchParseRequest>,
+) -> Result<impl Responder, actix_web::Error> {
+    // Validate batch size
+    const MAX_BATCH_SIZE: usize = 100;
+    if req.texts.len() > MAX_BATCH_SIZE {
+        return Err(actix_web::error::ErrorBadRequest(
+            format!("Batch size exceeds maximum of {} items", MAX_BATCH_SIZE)
+        ));
+    }
+
+    // Validate individual text lengths
+    const MAX_TEXT_LEN: usize = 10_000;
+    for (idx, text) in req.texts.iter().enumerate() {
+        if text.len() > MAX_TEXT_LEN {
+            return Err(actix_web::error::ErrorBadRequest(
+                format!("Text at index {} exceeds maximum length of {} bytes", idx, MAX_TEXT_LEN)
+            ));
+        }
+    }
+
+    let texts = req.texts.clone();
+    let state_clone = state.clone();
+
+    // Process all texts in blocking thread pool
+    let batch_results = web::block(move || {
+        let mut results = Vec::with_capacity(texts.len());
+
+        for (index, text) in texts.iter().enumerate() {
+            // Normalize text
+            let normalized = state_clone.pattern_normalizer.normalize(text);
+
+            // Apply rules
+            let rule_set_guard = state_clone.rule_set.read()
+                .map_err(|_| "Failed to acquire read lock on rule_set")?;
+
+            let nodes = rule_set_guard.apply_all(&normalized)
+                .map_err(|_| format!("Failed to parse text at index {}", index))?;
+
+            // Extract results
+            let parse_results: Vec<ParseResult> = nodes
+                .iter()
+                .map(|n| {
+                    let byte_range = n.root_node.byte_range;
+                    let char_range = byte_range.char_range(text);
+                    ParseResult {
+                        value: format!("{:?}", n.value),
+                        byte_start: byte_range.0,
+                        byte_end: byte_range.1,
+                        char_start: char_range.0,
+                        char_end: char_range.1,
+                    }
+                })
+                .collect();
+
+            let count = parse_results.len();
+
+            results.push(BatchParseResult {
+                index,
+                text: text.clone(),
+                results: parse_results,
+                count,
+            });
+        }
+
+        Ok::<_, String>(results)
+    })
+    .await
+    .map_err(|_| actix_web::error::ErrorInternalServerError("Batch parse operation failed"))?
+    .map_err(actix_web::error::ErrorBadRequest)?;
+
+    let total_count = batch_results.iter().map(|r| r.count).sum();
+
+    Ok(HttpResponse::Ok().json(BatchParseResponse {
+        results: batch_results,
+        total_count,
+    }))
 }
 
 /// Health check response
@@ -305,5 +405,72 @@ mod tests {
         assert_eq!(resp.status(), 403); // Forbidden
 
         std::env::remove_var("RELOAD_API_KEY");
+    }
+
+    #[actix_web::test]
+    async fn test_parse_batch_endpoint_success() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse/batch", web::post().to(parse_batch))
+        )
+        .await;
+
+        let req = test::TestRequest::post()
+            .uri("/parse/batch")
+            .set_json(BatchParseRequest {
+                texts: vec!["42".to_string(), "5 minutes".to_string()],
+            })
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+
+        let body: BatchParseResponse = test::read_body_json(resp).await;
+        assert_eq!(body.results.len(), 2);
+        assert!(body.total_count > 0);
+    }
+
+    #[actix_web::test]
+    async fn test_parse_batch_too_many_items() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse/batch", web::post().to(parse_batch))
+        )
+        .await;
+
+        let large_batch: Vec<String> = (0..101).map(|i| i.to_string()).collect();
+        let req = test::TestRequest::post()
+            .uri("/parse/batch")
+            .set_json(BatchParseRequest { texts: large_batch })
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert_eq!(resp.status(), 400); // Bad Request
+    }
+
+    #[actix_web::test]
+    async fn test_parse_batch_text_too_long() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse/batch", web::post().to(parse_batch))
+        )
+        .await;
+
+        let long_text = "a".repeat(10_001);
+        let req = test::TestRequest::post()
+            .uri("/parse/batch")
+            .set_json(BatchParseRequest {
+                texts: vec!["valid".to_string(), long_text],
+            })
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert_eq!(resp.status(), 400); // Bad Request
     }
 }
