@@ -4,7 +4,7 @@
 //! Generates Rust source code from extracted JSON rule definitions.
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use tera::{Context, Tera};
@@ -18,7 +18,7 @@ struct RuleFile {
     metadata: Option<Metadata>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct Rule {
     name: String,
     rule_type: String,
@@ -29,7 +29,7 @@ struct Rule {
     metadata: Option<serde_json::Value>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct Production {
     value_extractor: String,
     function: Option<String>,
@@ -99,7 +99,57 @@ impl CodeGenerator {
         let mut context = Context::new();
         context.insert("locale", locale);
         context.insert("dimension", &rule_file.dimension);
-        context.insert("rules", &rule_file.rules);
+
+        // Build dictionary type map for reference resolution
+        let mut dict_type_map: HashMap<String, String> = HashMap::new();
+        for rule in &rule_file.rules {
+            if rule.rule_type == "dictionary" {
+                if let Some(entries) = rule.pattern.get("entries").and_then(|v| v.as_object()) {
+                    let value_type = infer_dict_value_type(entries);
+                    // Map exact rule name
+                    dict_type_map.insert(rule.name.clone(), value_type.clone());
+
+                    // If rule name ends with "_dictionary", also map the base name + "Map"
+                    if let Some(base_name) = rule.name.strip_suffix("_dictionary") {
+                        dict_type_map.insert(format!("{}Map", base_name), value_type);
+                    }
+                }
+            }
+        }
+
+        // Enrich rules with type information
+        let enriched_rules: Vec<_> = rule_file.rules.iter().map(|rule| {
+            let mut enriched = rule.clone();
+
+            // Add inferred value type for dictionary rules
+            if rule.rule_type == "dictionary" {
+                if let Some(entries) = rule.pattern.get("entries").and_then(|v| v.as_object()) {
+                    let value_type = infer_dict_value_type(entries);
+                    if enriched.metadata.is_none() {
+                        enriched.metadata = Some(serde_json::json!({}));
+                    }
+                    enriched.metadata.as_mut().unwrap().as_object_mut().unwrap()
+                        .insert("value_type".to_string(), serde_json::Value::String(value_type));
+                }
+            }
+
+            // Add referenced dictionary type for dict_ref rules
+            if rule.rule_type == "regex" {
+                if let Some(dict_ref) = rule.production.dictionary_ref.as_ref() {
+                    if let Some(value_type) = dict_type_map.get(dict_ref) {
+                        if enriched.metadata.is_none() {
+                            enriched.metadata = Some(serde_json::json!({}));
+                        }
+                        enriched.metadata.as_mut().unwrap().as_object_mut().unwrap()
+                            .insert("ref_value_type".to_string(), serde_json::Value::String(value_type.clone()));
+                    }
+                }
+            }
+
+            enriched
+        }).collect();
+
+        context.insert("rules", &enriched_rules);
         context.insert("source_file", &rule_file.source_file);
 
         // Choose template based on dimension
@@ -154,6 +204,32 @@ impl CodeGenerator {
         fs::write(&mod_file, content)?;
 
         Ok(())
+    }
+}
+
+fn infer_dict_value_type(entries: &serde_json::Map<String, serde_json::Value>) -> String {
+    let mut has_float = false;
+    let mut has_int = false;
+
+    for value_obj in entries.values() {
+        if let Some(value) = value_obj.get("value") {
+            match value {
+                serde_json::Value::Number(n) => {
+                    if n.as_f64().map(|f| f.fract() != 0.0).unwrap_or(false) {
+                        has_float = true;
+                    } else {
+                        has_int = true;
+                    }
+                },
+                _ => {}
+            }
+        }
+    }
+
+    if has_float {
+        "f64".to_string()
+    } else {
+        "i64".to_string()
     }
 }
 

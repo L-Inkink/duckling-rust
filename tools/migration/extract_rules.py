@@ -119,6 +119,27 @@ class DucklingRuleExtractor:
         return rules
 
     @staticmethod
+    def _convert_octal_escapes(text: str) -> str:
+        r"""Convert Haskell octal escape sequences to actual Unicode characters.
+
+        Example: "\\537apte" -> "șapte" (where \\537 is octal for U+015F)
+        """
+        def replace_octal(match):
+            octal_str = match.group(1)
+            try:
+                # Convert octal to integer, then to Unicode character
+                char_code = int(octal_str, 8)
+                return chr(char_code)
+            except (ValueError, OverflowError):
+                # If conversion fails, keep original
+                return match.group(0)
+
+        # Match \NNN where N is 0-7 (octal digits)
+        # Haskell allows \NNN for octal escapes
+        pattern = r'\\([0-7]{1,4})'
+        return re.sub(pattern, replace_octal, text)
+
+    @staticmethod
     def sanitize_regex(pattern: str) -> str:
         """
         Convert capturing groups to non-capturing groups in regex patterns.
@@ -175,6 +196,8 @@ class DucklingRuleExtractor:
 
         for match in re.finditer(pattern, entries_text):
             key = match.group(1)
+            # Convert Haskell octal escapes (\NNN) to actual Unicode characters
+            key = self._convert_octal_escapes(key)
             value_str = match.group(2).strip()
 
             # Parse value based on type

@@ -1,4 +1,4 @@
-// Auto-generated from /Users/link/Project/duckling/Duckling/Numeral/TR/Rules.hs
+// Auto-generated from Duckling/Numeral/TR/Rules.hs
 // DO NOT EDIT MANUALLY - Use tools/migration/codegen.rs
 //
 // Dimension: Numeral
@@ -248,12 +248,12 @@ lazy_static! {
 
 // Dictionary: numeralSuffixesHalfsuffixText_dictionary
 lazy_static! {
-    static ref NUMERALSUFFIXESHALFSUFFIXTEXT_DICTIONARY: HashMap<&'static str, i64> = {
+    static ref NUMERALSUFFIXESHALFSUFFIXTEXT_DICTIONARY: HashMap<&'static str, f64> = {
         let mut map = HashMap::new();
         
         map.insert("altıbuçuk", 6.5);
         
-        map.insert("be\351buçuk", 5.5);
+        map.insert("beébuçuk", 5.5);
         
         map.insert("bibuçuk", 1.5);
         
@@ -269,7 +269,7 @@ lazy_static! {
         
         map.insert("yedibuçuk", 7.5);
         
-        map.insert("ü\231buçuk", 3.5);
+        map.insert("übuçuk", 3.5);
         
         map
     };
@@ -565,7 +565,7 @@ lazy_static! {
 
 // Dictionary: integer9_dictionary
 lazy_static! {
-    static ref INTEGER9_DICTIONARY: HashMap<&'static str, i64> = {
+    static ref INTEGER9_DICTIONARY: HashMap<&'static str, f64> = {
         let mut map = HashMap::new();
         
         map.insert("altmışaltıbuçuk", 66.5);
@@ -789,9 +789,9 @@ lazy_static! {
         
         map.insert("iki", 2);
         
-        map.insert("s\305f\305r", 0);
-        
         map.insert("sekiz", 8);
+        
+        map.insert("sÅfÅr", 0);
         
         map.insert("tek", 1);
         
@@ -811,7 +811,7 @@ lazy_static! {
 
 // Dictionary: numeralSuffixesHalfsuffixText2_dictionary
 lazy_static! {
-    static ref NUMERALSUFFIXESHALFSUFFIXTEXT2_DICTIONARY: HashMap<&'static str, i64> = {
+    static ref NUMERALSUFFIXESHALFSUFFIXTEXT2_DICTIONARY: HashMap<&'static str, f64> = {
         let mut map = HashMap::new();
         
         map.insert("altmışbuçuk", 60.5);
@@ -872,9 +872,9 @@ lazy_static! {
 ///
 /// Auto-generated rules:
 ///   - 10 dictionary rules
-///   - 0 constant regex rules
+///   - 5 constant regex rules
 ///   - 10 dictionary-reference regex rules
-///   - 14 complex rules (manual implementation required)
+///   - 9 complex rules (manual implementation required)
 pub fn rules(b: &RuleSetBuilder<Value>) {
     
     // ========================================
@@ -900,16 +900,16 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     
 
     // Rule: numeralSuffixesHalfsuffixText_dictionary
-    // Examples: birbuçuk, bibuçuk, ikibuçuk, ü\231buçuk, dörtbuçuk
+    // Examples: birbuçuk, bibuçuk, ikibuçuk, übuçuk, dörtbuçuk
     {
         let dict = &*NUMERALSUFFIXESHALFSUFFIXTEXT_DICTIONARY;
         b.rule_1_terminal(
             "tr:numeralSuffixesHalfsuffixText_dictionary",
-            b.reg(r"(?i)altıbuçuk|be\351buçuk|bibuçuk|birbuçuk|dokuzbuçuk|dörtbuçuk|ikibuçuk|sekizbuçuk|yedibuçuk|ü\231buçuk").unwrap(),
+            b.reg(r"(?i)altıbuçuk|beébuçuk|bibuçuk|birbuçuk|dokuzbuçuk|dörtbuçuk|ikibuçuk|sekizbuçuk|yedibuçuk|übuçuk").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| Value::Float(value))
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );
@@ -994,7 +994,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| Value::Float(value))
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );
@@ -1002,12 +1002,12 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     
 
     // Rule: oneToNine_dictionary
-    // Examples: s\305f\305r, yok, hiç, bir, bi
+    // Examples: sÅfÅr, yok, hiç, bir, bi
     {
         let dict = &*ONETONINE_DICTIONARY;
         b.rule_1_terminal(
             "tr:oneToNine_dictionary",
-            b.reg(r"(?i)altı|beş|bi|bir|dokuz|dört|hiç|iki|s\305f\305r|sekiz|tek|yedi|yek|yok|üç|üçü").unwrap(),
+            b.reg(r"(?i)altı|beş|bi|bir|dokuz|dört|hiç|iki|sekiz|sÅfÅr|tek|yedi|yek|yok|üç|üçü").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
@@ -1028,7 +1028,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| Value::Float(value))
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );
@@ -1053,6 +1053,61 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     
     
 
+    
+    // ========================================
+    // Constant Value Regex Rules (5)
+    // ========================================
+    
+
+    // Rule: ACoupleOf → 2
+    b.rule_1_terminal(
+        "tr:ACoupleOf",
+        b.reg(r"(?i)(bir )?çift").unwrap(),
+        |_| {
+            Ok(Value::Integer(2))
+        }
+    );
+    
+
+    // Rule: Few → 3
+    b.rule_1_terminal(
+        "tr:Few",
+        b.reg(r"(?i)(bir)?az").unwrap(),
+        |_| {
+            Ok(Value::Integer(3))
+        }
+    );
+    
+
+    // Rule: Ten → 10
+    b.rule_1_terminal(
+        "tr:Ten",
+        b.reg(r"(?i)on").unwrap(),
+        |_| {
+            Ok(Value::Integer(10))
+        }
+    );
+    
+
+    // Rule: Dozen → 12
+    b.rule_1_terminal(
+        "tr:Dozen",
+        b.reg(r"(?i)düzine").unwrap(),
+        |_| {
+            Ok(Value::Integer(12))
+        }
+    );
+    
+
+    // Rule: GroupOfTens → 10
+    b.rule_1_terminal(
+        "tr:GroupOfTens",
+        b.reg(r"(?i)deste").unwrap(),
+        |_| {
+            Ok(Value::Integer(10))
+        }
+    );
+    
     
 
     
@@ -1086,11 +1141,11 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*NUMERALSUFFIXESHALFSUFFIXTEXT_DICTIONARY;
         b.rule_1_terminal(
             "tr:NumeralSuffixesHalfsuffixText",
-            b.reg(r"(?i)((bir?|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(buçuk))").unwrap(),
+            b.reg(r"(?i)(?:(?:bir?|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(?:buçuk))").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| Value::Float(value))
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );
@@ -1104,7 +1159,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*TENTONINTYNINE_DICTIONARY;
         b.rule_1_terminal(
             "tr:Integer3",
-            b.reg(r"(?i)((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(bir|bi|iki|üç|dört|beş|altı|yedi|sekiz|dokuz))").unwrap(),
+            b.reg(r"(?i)(?:(?:on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(?:bir|bi|iki|üç|dört|beş|altı|yedi|sekiz|dokuz))").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
@@ -1176,11 +1231,11 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*INTEGER9_DICTIONARY;
         b.rule_1_terminal(
             "tr:Integer9",
-            b.reg(r"(?i)((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(bir|bi|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(buçuk))").unwrap(),
+            b.reg(r"(?i)(?:(?:on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(?:bir|bi|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(?:buçuk))").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| Value::Float(value))
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );
@@ -1194,7 +1249,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*ONETONINE_DICTIONARY;
         b.rule_1_terminal(
             "tr:Integer",
-            b.reg(r"(?i)(yok|hi(ç)|s(ı)f(ı)r|bir?|[ty]ek|iki|(ü)(ç)(ü)?|d(ö)rt|be(ş)|alt(ı)|yedi|sekiz|dokuz)").unwrap(),
+            b.reg(r"(?i)(?:yok|hi(?:ç)|s(?:ı)f(?:ı)r|bir?|[ty]ek|iki|(?:ü)(?:ç)(?:ü)?|d(?:ö)rt|be(?:ş)|alt(?:ı)|yedi|sekiz|dokuz)").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
@@ -1212,11 +1267,11 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*NUMERALSUFFIXESHALFSUFFIXTEXT2_DICTIONARY;
         b.rule_1_terminal(
             "tr:NumeralSuffixesHalfsuffixText2",
-            b.reg(r"(?i)((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(buçuk))").unwrap(),
+            b.reg(r"(?i)(?:(?:on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(?:buçuk))").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| Value::Float(value))
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );
@@ -1244,34 +1299,13 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
 
     
     // ========================================
-    // Complex Rules - Manual Implementation Required (14)
+    // Complex Rules - Manual Implementation Required (9)
     // ========================================
     
 
     // TODO: NumeralsPrefixWithNegativeOrMinus (regex)
     
     //   Original: numbers prefix with -, negative or minus
-    
-    // Manual implementation required
-    
-
-    // TODO: ACoupleOf (regex)
-    
-    //   Original: a couple (of)
-    
-    // Manual implementation required
-    
-
-    // TODO: Few (regex)
-    
-    //   Original: few
-    
-    // Manual implementation required
-    
-
-    // TODO: Ten (regex)
-    
-    //   Original: ten
     
     // Manual implementation required
     
@@ -1300,20 +1334,6 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     // TODO: Half (regex)
     
     //   Original: half
-    
-    // Manual implementation required
-    
-
-    // TODO: Dozen (regex)
-    
-    //   Original: dozen
-    
-    // Manual implementation required
-    
-
-    // TODO: GroupOfTens (regex)
-    
-    //   Original: group of ten(s)
     
     // Manual implementation required
     
@@ -1347,7 +1367,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     
 
     
-    eprintln!("⚠️  tr/numeral has 14 unimplemented complex rules");
+    eprintln!("⚠️  tr/numeral has 9 unimplemented complex rules");
     
     
 }
@@ -1402,8 +1422,8 @@ mod tests {
     fn test_tr_numeral_stats() {
         // Generation statistics
         let total_rules = 34;
-        let auto_generated = 20;
-        let manual_needed = 14;
+        let auto_generated = 25;
+        let manual_needed = 9;
 
         assert_eq!(total_rules, auto_generated + manual_needed);
 

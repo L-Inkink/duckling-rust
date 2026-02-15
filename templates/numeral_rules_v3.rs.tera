@@ -39,7 +39,7 @@ use lazy_static::lazy_static;
 {% for rule in dictionary_rules %}
 // Dictionary: {{ rule.name }}
 lazy_static! {
-    static ref {{ rule.name | upper }}: HashMap<&'static str, i64> = {
+    static ref {{ rule.name | upper }}: HashMap<&'static str, {% if rule.metadata.value_type %}{{ rule.metadata.value_type }}{% else %}i64{% endif %}> = {
         let mut map = HashMap::new();
         {% for key, value in rule.pattern.entries %}
         map.insert("{{ key }}", {{ value.value }});
@@ -73,7 +73,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| {% if rule.metadata.value_type == "f64" %}Value::Float(value){% else %}Value::Integer(value){% endif %})
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );
@@ -115,7 +115,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
+                    .map(|&value| {% if rule.metadata and rule.metadata.ref_value_type and rule.metadata.ref_value_type == "f64" %}Value::Float(value){% else %}Value::Integer(value){% endif %})
                     .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
             }
         );

@@ -94,10 +94,6 @@ lazy_static! {
     static ref ZEROTEN_DICTIONARY: HashMap<&'static str, i64> = {
         let mut map = HashMap::new();
         
-        map.insert("\537apte", 7);
-        
-        map.insert("\537ase", 6);
-        
         map.insert("cinci", 5);
         
         map.insert("doi", 2);
@@ -156,6 +152,10 @@ lazy_static! {
         
         map.insert("întâi", 1);
         
+        map.insert("şapte", 7);
+        
+        map.insert("şase", 6);
+        
         map
     };
 }
@@ -164,12 +164,6 @@ lazy_static! {
 lazy_static! {
     static ref ELEVENNINETEEN_DICTIONARY: HashMap<&'static str, i64> = {
         let mut map = HashMap::new();
-        
-        map.insert("\537ai", 16);
-        
-        map.insert("\537apte", 17);
-        
-        map.insert("\537apti", 17);
         
         map.insert("cin", 15);
         
@@ -197,6 +191,12 @@ lazy_static! {
         
         map.insert("un", 11);
         
+        map.insert("şai", 16);
+        
+        map.insert("şapte", 17);
+        
+        map.insert("şapti", 17);
+        
         map
     };
 }
@@ -222,7 +222,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*ZEROTEN_DICTIONARY;
         b.rule_1_terminal(
             "ro:zeroTen_dictionary",
-            b.reg(r"(?i)\537apte|\537ase|cinci|doi|doua|două|intai|intâi|nici o|nici una|nici unu|nici unul|nicio|nimic|noua|nouă|o|opt|patru|sapte|sase|trei|un|una|unu|unul|zece|zeci|zero|întai|întâi").unwrap(),
+            b.reg(r"(?i)cinci|doi|doua|două|intai|intâi|nici o|nici una|nici unu|nici unul|nicio|nimic|noua|nouă|o|opt|patru|sapte|sase|trei|un|una|unu|unul|zece|zeci|zero|întai|întâi|şapte|şase").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
@@ -239,7 +239,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*ELEVENNINETEEN_DICTIONARY;
         b.rule_1_terminal(
             "ro:elevenNineteen_dictionary",
-            b.reg(r"(?i)\537ai|\537apte|\537apti|cin|cinci|doi|noua|nouă|opt|opti|pai|sai|sapte|sapti|trei|un").unwrap(),
+            b.reg(r"(?i)cin|cinci|doi|noua|nouă|opt|opti|pai|sai|sapte|sapti|trei|un|şai|şapte|şapti").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
@@ -266,7 +266,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*ZEROTEN_DICTIONARY;
         b.rule_1_terminal(
             "ro:IntegerZeroTen",
-            b.reg(r"(?i)(zero|nimic|nici(\\s?o|\\sun(a|ul?))|una|unul?|doi|dou(a|ă)|trei|patru|cinci|(s|ș)ase|(s|ș)apte|opt|nou(a|ă)|zec[ei]|(i|î)nt(a|â)i|un|o)").unwrap(),
+            b.reg(r"(?i)(?:zero|nimic|nici(?:\\s?o|\\sun(?:a|ul?))|una|unul?|doi|dou(?:a|ă)|trei|patru|cinci|(?:s|ș)ase|(?:s|ș)apte|opt|nou(?:a|ă)|zec[ei]|(?:i|î)nt(?:a|â)i|un|o)").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
@@ -284,7 +284,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         let dict = &*ELEVENNINETEEN_DICTIONARY;
         b.rule_1_terminal(
             "ro:Integer",
-            b.reg(r"(?i)(cin|sapti|opti)(s|ș)pe|(cinci|(s|ș)apte|opt)sprezece|(un|doi|trei|pai|(s|ș)ai|nou(a|ă))((s|ș)pe|sprezece)").unwrap(),
+            b.reg(r"(?i)(?:cin|sapti|opti)(?:s|ș)pe|(?:cinci|(?:s|ș)apte|opt)sprezece|(?:un|doi|trei|pai|(?:s|ș)ai|nou(?:a|ă))(?:(?:s|ș)pe|sprezece)").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())

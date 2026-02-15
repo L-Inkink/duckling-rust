@@ -78,13 +78,13 @@
           "sase": {
             "value": 6
           },
-          "\\537ase": {
+          "şase": {
             "value": 6
           },
           "sapte": {
             "value": 7
           },
-          "\\537apte": {
+          "şapte": {
             "value": 7
           },
           "opt": {
@@ -144,19 +144,19 @@
           "sai": {
             "value": 16
           },
-          "\\537ai": {
+          "şai": {
             "value": 16
           },
           "sapti": {
             "value": 17
           },
-          "\\537apti": {
+          "şapti": {
             "value": 17
           },
           "sapte": {
             "value": 17
           },
-          "\\537apte": {
+          "şapte": {
             "value": 17
           },
           "opti": {
@@ -209,7 +209,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
+        "value": "(?:\\\\d+(?:\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
         "flags": "i"
       },
       "production": {
@@ -245,7 +245,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(sut(a|e|ă)?|milio(n|ane)?|miliar(de?)?|mi[ei]?)",
+        "value": "(?:sut(?:a|e|ă)?|milio(?:n|ane)?|miliar(?:de?)?|mi[ei]?)",
         "flags": "i"
       },
       "production": {
@@ -263,7 +263,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(zero|nimic|nici(\\\\s?o|\\\\sun(a|ul?))|una|unul?|doi|dou(a|ă)|trei|patru|cinci|(s|ș)ase|(s|ș)apte|opt|nou(a|ă)|zec[ei]|(i|î)nt(a|â)i|un|o)",
+        "value": "(?:zero|nimic|nici(?:\\\\s?o|\\\\sun(?:a|ul?))|una|unul?|doi|dou(?:a|ă)|trei|patru|cinci|(?:s|ș)ase|(?:s|ș)apte|opt|nou(?:a|ă)|zec[ei]|(?:i|î)nt(?:a|â)i|un|o)",
         "flags": "i"
       },
       "production": {
@@ -280,7 +280,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(cin|sapti|opti)(s|ș)pe|(cinci|(s|ș)apte|opt)sprezece|(un|doi|trei|pai|(s|ș)ai|nou(a|ă))((s|ș)pe|sprezece)",
+        "value": "(?:cin|sapti|opti)(?:s|ș)pe|(?:cinci|(?:s|ș)apte|opt)sprezece|(?:un|doi|trei|pai|(?:s|ș)ai|nou(?:a|ă))(?:(?:s|ș)pe|sprezece)",
         "flags": "i"
       },
       "production": {
@@ -374,7 +374,7 @@
     }
   ],
   "metadata": {
-    "extracted_at": "2026-02-14T23:27:26.148005",
+    "extracted_at": "2026-02-15T20:18:20.649756",
     "extractor_version": "1.0.0",
     "extraction_method": "python_regex",
     "rules_needing_review": 7,

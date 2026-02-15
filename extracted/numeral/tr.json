@@ -1,7 +1,7 @@
 {
   "dimension": "Numeral",
   "locale": "tr",
-  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/TR/Rules.hs",
+  "source_file": "Duckling/Numeral/TR/Rules.hs",
   "rules": [
     {
       "name": "hundreds_dictionary",
@@ -66,13 +66,13 @@
           "ikibuçuk": {
             "value": 2.5
           },
-          "ü\\231buçuk": {
+          "übuçuk": {
             "value": 3.5
           },
           "dörtbuçuk": {
             "value": 4.5
           },
-          "be\\351buçuk": {
+          "beébuçuk": {
             "value": 5.5
           },
           "altıbuçuk": {
@@ -98,7 +98,7 @@
         "birbuçuk",
         "bibuçuk",
         "ikibuçuk",
-        "ü\\231buçuk",
+        "übuçuk",
         "dörtbuçuk"
       ]
     },
@@ -885,7 +885,7 @@
       "pattern": {
         "type": "dictionary",
         "entries": {
-          "s\\305f\\305r": {
+          "sÅfÅr": {
             "value": 0
           },
           "yok": {
@@ -941,7 +941,7 @@
         "confidence": 1.0
       },
       "examples": [
-        "s\\305f\\305r",
+        "sÅfÅr",
         "yok",
         "hiç",
         "bir",
@@ -1094,13 +1094,12 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "custom",
-        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2 >>= withGrain 1\n  ",
+        "value_extractor": "constant",
+        "constant_value": 2,
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "a couple (of)",
-        "_needs_manual_review": true
+        "original_name": "a couple (of)"
       }
     },
     {
@@ -1112,13 +1111,12 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "custom",
-        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "value_extractor": "constant",
+        "constant_value": 3,
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "few",
-        "_needs_manual_review": true
+        "original_name": "few"
       }
     },
     {
@@ -1130,13 +1128,12 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "custom",
-        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10 >>= withGrain 1 >>= withMultipliable\n  ",
+        "value_extractor": "constant",
+        "constant_value": 10,
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "ten",
-        "_needs_manual_review": true
+        "original_name": "ten"
       }
     },
     {
@@ -1144,7 +1141,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
+        "value": "(?:\\\\d+(?:\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
         "flags": "i"
       },
       "production": {
@@ -1180,7 +1177,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "((bir?|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(buçuk))",
+        "value": "(?:(?:bir?|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(?:buçuk))",
         "flags": "i"
       },
       "production": {
@@ -1197,7 +1194,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(bir|bi|iki|üç|dört|beş|altı|yedi|sekiz|dokuz))",
+        "value": "(?:(?:on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(?:bir|bi|iki|üç|dört|beş|altı|yedi|sekiz|dokuz))",
         "flags": "i"
       },
       "production": {
@@ -1231,7 +1228,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(y(ü)z|bin|milyon)",
+        "value": "(?:y(?:ü)z|bin|milyon)",
         "flags": "i"
       },
       "production": {
@@ -1301,7 +1298,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(bir|bi|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(buçuk))",
+        "value": "(?:(?:on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(?:bir|bi|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(?:buçuk))",
         "flags": "i"
       },
       "production": {
@@ -1322,13 +1319,12 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "custom",
-        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withGrain 1 >>= withMultipliable\n  ",
+        "value_extractor": "constant",
+        "constant_value": 12,
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "dozen",
-        "_needs_manual_review": true
+        "original_name": "dozen"
       }
     },
     {
@@ -1336,7 +1332,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(yok|hi(ç)|s(ı)f(ı)r|bir?|[ty]ek|iki|(ü)(ç)(ü)?|d(ö)rt|be(ş)|alt(ı)|yedi|sekiz|dokuz)",
+        "value": "(?:yok|hi(?:ç)|s(?:ı)f(?:ı)r|bir?|[ty]ek|iki|(?:ü)(?:ç)(?:ü)?|d(?:ö)rt|be(?:ş)|alt(?:ı)|yedi|sekiz|dokuz)",
         "flags": "i"
       },
       "production": {
@@ -1353,7 +1349,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(buçuk))",
+        "value": "(?:(?:on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(?:buçuk))",
         "flags": "i"
       },
       "production": {
@@ -1374,13 +1370,12 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "custom",
-        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10 >>= withGrain 1 >>= withMultipliable\n  ",
+        "value_extractor": "constant",
+        "constant_value": 10,
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "group of ten(s)",
-        "_needs_manual_review": true
+        "original_name": "group of ten(s)"
       }
     },
     {
@@ -1483,10 +1478,10 @@
     }
   ],
   "metadata": {
-    "extracted_at": "2026-02-14T23:27:26.172333",
+    "extracted_at": "2026-02-15T20:21:51.276539",
     "extractor_version": "1.0.0",
     "extraction_method": "python_regex",
-    "rules_needing_review": 14,
+    "rules_needing_review": 9,
     "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
   }
 }
