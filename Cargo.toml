@@ -28,14 +28,14 @@ once_cell = "1.19"
 utoipa = { version = "5.3", features = ["actix_extras"] }
 utoipa-swagger-ui = { version = "8.1", features = ["actix-web"] }
 tera = { version = "1.19", optional = true }
-lazy_static = { version = "1.4", optional = true }
+lazy_static = "1.4"  # Required for language rules (dictionaries)
 glob = { version = "0.3", optional = true }
 
 [features]
 default = []
 apollo = ["reqwest"]
 fasttext = ["finalfusion", "dirs", "reqwest"]
-migration-tools = ["tera", "lazy_static", "glob"]
+migration-tools = ["tera", "glob"]
 
 [dev-dependencies]
 criterion = "0.5"

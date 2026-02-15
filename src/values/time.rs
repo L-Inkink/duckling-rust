@@ -1,8 +1,9 @@
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-use std::hash::Hash;
+// Re-export the comprehensive TimeValue from rustling_core
+// This provides full Time dimension support including:
+// - Grain (Second, Minute, Hour, Day, Week, Month, Quarter, Year)
+// - Instant vs Interval distinction
+// - Latency (requires context)
+// - Form (DayOfWeek, Month, etc.)
+// - Holiday support
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub struct TimeValue {
-    pub timestamp: DateTime<Utc>,
-}
+pub use rustling_core::time::TimeValue;

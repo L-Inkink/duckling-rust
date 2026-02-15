@@ -27,9 +27,10 @@ pub mod dynamic;
 // Phase 2: HTTP Server
 pub mod server;
 
-// Phase 1: Multi-language support (auto-generated)
+// Multi-language support
+// Phase 1: Numeral (48 languages)
+// Phase 2: Time (EN pilot in progress)
 #[path = "../languages/mod.rs"]
-#[cfg(feature = "migration-tools")]
 pub mod languages;
 
 pub mod core {

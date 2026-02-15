@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use super::grain::Grain;
 
 /// Direction for time shifts
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Direction {
     /// Before/past direction
     Before,
@@ -13,7 +13,7 @@ pub enum Direction {
 }
 
 /// Form of time expression
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Form {
     /// Unspecified form
     Unspecified,
@@ -30,6 +30,8 @@ pub enum Form {
     /// Part of day (morning, afternoon, etc.)
     PartOfDay,
 }
+
+use std::hash::{Hash, Hasher};
 
 /// Core time data structure
 ///
@@ -151,6 +153,42 @@ impl TimeValue {
 impl Default for Form {
     fn default() -> Self {
         Form::Unspecified
+    }
+}
+
+// Eq and Hash implementations for TimeData and TimeValue
+// These are needed for using Time values in HashMaps and as part of Value enum
+
+impl Eq for TimeData {}
+
+impl Hash for TimeData {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        // Hash datetime as timestamp (i64)
+        self.datetime.timestamp().hash(state);
+        self.datetime.timestamp_subsec_nanos().hash(state);
+        self.grain.hash(state);
+        self.latent.hash(state);
+        // Form is Copy + Hash, so we can hash it directly
+        self.form.hash(state);
+        self.holiday.hash(state);
+    }
+}
+
+impl Eq for TimeValue {}
+
+impl Hash for TimeValue {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        match self {
+            TimeValue::Instant(td) => {
+                0u8.hash(state);
+                td.hash(state);
+            }
+            TimeValue::Interval { from, to } => {
+                1u8.hash(state);
+                from.hash(state);
+                to.hash(state);
+            }
+        }
     }
 }
 

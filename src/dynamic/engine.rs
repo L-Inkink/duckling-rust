@@ -176,7 +176,14 @@ impl DynamicRuleEngine {
                     TimeUnit::Week => chrono::Duration::weeks(amount_val),
                 };
                 let future = Utc::now() + chrono_duration;
-                Ok(Value::Time(TimeValue { timestamp: future }))
+                let grain = match time_unit {
+                    TimeUnit::Second => rustling_core::time::Grain::Second,
+                    TimeUnit::Minute => rustling_core::time::Grain::Minute,
+                    TimeUnit::Hour => rustling_core::time::Grain::Hour,
+                    TimeUnit::Day => rustling_core::time::Grain::Day,
+                    TimeUnit::Week => rustling_core::time::Grain::Week,
+                };
+                Ok(Value::Time(TimeValue::instant(future, grain)))
             }
             RuleValue::Custom { .. } => {
                 Err(DynamicRuleError::CustomValueNotSupported)

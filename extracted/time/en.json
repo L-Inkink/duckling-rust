@@ -1,0 +1,1772 @@
+{
+  "dimension": "Time",
+  "locale": "en",
+  "source_file": "/Users/link/Project/duckling/Duckling/Time/EN/Rules.hs",
+  "rules": [
+    {
+      "name": "AbsorbOnDay",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "on",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:_) -> Just token\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "on <day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "AbsorbOnADOW",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "on a",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:_) -> Just token\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "on a <named-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "AbsorbInMonthYear",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "in|during",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ notLatent td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "in|during <named-month>|year",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Now",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "now|at\\\\sthe\\\\smoment|atm",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> tt now\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "now",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "ASAP",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "asap|as\\\\ssoon\\\\sas\\\\spossible",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> tt $ withDirection TTime.After now\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "as soon as possible",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NextDOW",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(this|next)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (\n        Token RegexMatch (GroupMatch (match:_)):\n        Token Time dow:\n        _) -> do\n          td <- case Text.toLower match of\n                  \"this\" -> Just $ predNth 0 T",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "this|next <day-of-week>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "ThisTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "this|current|coming",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ predNth 0 False td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "this <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NextTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "next",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ predNth 0 True td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "next <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "LastTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(this past|last|previous)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ predNth (- 1) False td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "last <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "LastWeekendOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "last\\\\s(?:week(?:\\\\s|-)?end|wkend)\\\\s(?:of|in)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td2:_) -> tt $ predLastOf weekend td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "last weekend of <named-month>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "LastDOWOfTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "last",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (\n        _:\n        Token Time td1:\n        _:\n        Token Time td2:\n        _) -> tt $ predLastOf td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "last <day-of-week> of <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "LastCycleOfTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "last",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token TimeGrain grain:_:Token Time td:_) ->\n        tt $ cycleLastOf grain td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "last <cycle> of <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "LastNight",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(late )?last night",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        let hours = if Text.toLower match == \"late \" then 3 else 6\n            start = durationBefore (DurationDat",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "last night",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TheNthTimeOfTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Ordinal od:Token Time td1:_:Token Time td2:_) -> Token Time .\n         predNth (TOrdinal.value od - 1) False <$> intersect td2 td1\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the nth <day-of-week> of <month-or-greater>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TheNthTimeAfterTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Ordinal od:Token Time td1:_:Token Time td2:_) ->\n        tt $ predNthAfter (TOrdinal.value od - 1) td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the nth <time> after <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TheDOMNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:_) -> do\n        n <- getIntValue token\n        tt $ mkLatent $ dayOfMonth n\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <day-of-month> (number)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TheDOMOrdinal",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:\n       Token Ordinal OrdinalData{TOrdinal.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <day-of-month> (ordinal)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TheDOMOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:_:Token Time td:_) -> Token Time <$> intersectDOM td token\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <day-of-month> (ordinal or number) of <named-month>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IdesOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the ides? of",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td@TimeData {TTime.form = Just (TTime.Month m)",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the ides of <named-month>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "AtTOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "at|@",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ notLatent td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "at <time-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HHMM",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:(?:[01]?\\\\d)|(?:2[0-3]))[:.](?:[0-5]\\\\d)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (hh:mm:_)):_) -> do\n        h <- parseInt hh\n        m <- parseInt mm\n        tt $ hourMinute (h /= 0 && h < 12) h m\n      _ -> Not",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "hh:mm",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HHhMM",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?<!/)(?:(?:[01]?\\\\d)|(?:2[0-3]))h(?:(?:[0-5]\\\\d)|(?!\\\\d))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (hh:mm:_)):_) -> do\n        h <- parseInt hh\n        m <- parseInt mm <|> Just 0\n        tt $ hourMinute False h m\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "hhhmm",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HHMMLatent",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:(?:[01]?\\\\d)|(?:2[0-3]))(?:[0-5]\\\\d)(?!.\\\\d)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (hh:mm:_)):_) -> do\n        h <- parseInt hh\n        m <- parseInt mm\n        tt $ mkLatent $ hourMinute (h < 12) h m\n      _ -> No",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "hhmm (latent)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HHMMSS",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:(?:[01]?\\\\d)|(?:2[0-3]))[:.](?:[0-5]\\\\d)[:.](?:[0-5]\\\\d)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (hh:mm:ss:_)):_) -> do\n        h <- parseInt hh\n        m <- parseInt mm\n        s <- parseInt ss\n        tt $ hourMinuteSecond (h ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "hh:mm:ss",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "MilitaryAMPM",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:(?:1[012]|0?\\\\d))(?:[0-5]\\\\d)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (hh:mm:_)):\n       Token RegexMatch (GroupMatch (ap:_)):\n       _) -> do\n        h <- parseInt hh\n        m <- parseInt mm\n        ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "hhmm (military) am|pm",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HalfToHOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "half (to|till|before|of)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> Token Time <$> minutesBefore 30 td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "half to|till|before <hour-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "QuarterToHOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:a|one)? ?quarter (?:to|till|before|of)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> Token Time <$> minutesBefore 15 td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "quarter to|till|before <hour-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HalfAfterHOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "half (after|past)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> Token Time <$> minutesAfter 30 td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "half after|past <hour-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "QuarterAfterHOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:for )?(?:(?:a|one) )?quarter (?:after|past)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> Token Time <$> minutesAfter 15 td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "quarter after|past <hour-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HalfHOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "half",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> Token Time <$> minutesAfter 30 td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "half <integer> (UK style hour-of-day)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NoonMidnightEOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:noon|midni(?:ght|te)|(?:the )?(?:EOD|end of (?:the )?day))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> tt $ hour False $\n        if Text.toLower match == \"noon\" then 12 else 0\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "noon|midnight|EOD|end of day",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PartOfDays",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:morning|after ?noo?n(?:ish)?|evening|night|(?:at )?lunch)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> do\n        let (start, end) = case Text.toLower match of\n              \"morning\"  -> (hour False 0, hour False 12)",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "part of days",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "EarlyMorning",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "early (?:(?:in|hours of) the )?morning",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> Token Time . partOfDay . mkLatent <$>\n      interval TTime.Open (hour False 0) (hour False 9)\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "early morning",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PODIn",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:in|during)(?: the)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ notLatent td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "in|during the <part-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PODThis",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "this",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> Token Time . partOfDay . notLatent <$>\n        intersect today td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "this <part-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Tonight",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:late )?toni(?:ght|gth|te)s?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> do\n        let h = if Text.toLower match == \"late \" then 21 else 18\n        evening <- interval TTime.Open (hour F",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "tonight",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "AfterPartofday",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "after[\\\\s-]?(lunch|work|school)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> do\n        (start, end) <- case Text.toLower match of\n          \"lunch\"  -> Just (hour False 13, hour False 17)\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "after lunch/work/school",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Weekend",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:week(?:\\\\s|-)?end|wkend)s?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> tt $ mkOkForThisNext weekend\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "week-end",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Week",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(all|rest of the|the) week",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n     (Token RegexMatch (GroupMatch (match:_)):_) ->\n       let end = cycleNthAfter True TG.Day (-2) $ cycleNth TG.Week 1\n           period = case Text.toLower match of\n                   ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "week",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Season",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(this|current|next|last|past|previous) seasons?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> do\n        n <- case Text.toLower match of\n               \"this\" -> Just 0\n               \"current\" -> Just 0\n               \"last\" ->",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "last|this|next <season>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PrecisionTOD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(about|around|approximately|exactly)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ notLatent td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "about|exactly <time-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalFromMonthDDDD",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "from",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:\n       Token Time td:\n       token1:\n       _:\n       token2:\n       _) -> do\n        dom1 <- intersectDOM td token1\n        dom2 <- intersectDOM td token2\n ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "from <month> dd-dd (interval)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalFromDDDDMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "from( the)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:\n       token1:\n       _:\n       token2:\n       Token Time td:\n       _) -> do\n        dom1 <- intersectDOM td token1\n        dom2 <- intersectDOM td token2\n ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "from the <day-of-month> (ordinal or number) to the <day-of-month> (ordinal or number) <named-month> (interval)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalFromDDDDOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "from( the)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:\n       token1:\n       _:\n       token2:\n       _:\n       Token Time td:\n       _) -> do\n        dom1 <- intersectDOM td token1\n        dom2 <- intersectDOM t",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "from the <day-of-month> (ordinal or number) to the <day-of-month> (ordinal or number) of <named-month> (interval)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalFrom",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "from",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td1:_:Token Time td2:_) ->\n        Token Time <$> interval TTime.Closed td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "from <datetime> - <datetime> (interval)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalBetween",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "between",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td1:_:Token Time td2:_) ->\n        Token Time <$> interval TTime.Closed td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "between <time> and <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalTODFrom",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:later than|from|(?:in[\\\\s-])?between)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td1:_:Token Time td2:_) ->\n        Token Time <$> interval TTime.Closed td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "from <time-of-day> - <time-of-day> (interval)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalTODAMPM",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:from )?(?:(?:[01]?\\\\d)|(?:2[0-3]))(?:[:.](?:[0-5]\\\\d))?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n     (Token RegexMatch (GroupMatch (hh:_:mm:_)):\n      _:\n      Token Time td2:\n      Token RegexMatch (GroupMatch (_:ap:_)):\n      _) -> do\n       h <- parseInt hh\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "hh(:mm) - <time-of-day> am|pm",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalTODBetween",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "between",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Time td1:_:Token Time td2:_) ->\n        Token Time <$> interval TTime.Closed td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "between <time-of-day> and <time-of-day> (interval)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalBy",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "by",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Time td:_) -> Token Time <$> interval TTime.Open now td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "by <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalByTheEndOf",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "by (the )?end of",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> Token Time <$> interval TTime.Closed now td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "by the end of <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalUntilTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:anytime |sometimes? )?(?:before|(?:un)?til(?:l)?|through|up to)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ withDirection TTime.Before $ notLatent td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "until <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalAfterFromSinceTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "from|since|(anytime |sometimes? )?after",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td:_) -> tt $ withDirection TTime.After $ notLatent td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "from|since|after <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PartOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:early|mid|late)-?(?: of)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):Token Time td:_) -> do\n        (sd, ed) <- case Text.toLower match of\n          \"early\" -> Just (1, 10)\n          \"mid\" ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "part of <named-month>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "EndOrBeginningOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:at the )?(?:beginning|end) of",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (_:match:_)):Token Time td:_) -> do\n        (sd, ed) <- case Text.toLower match of\n          \"beginning\" -> Just (1, 10)\n          ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "at the beginning|end of <named-month>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "EndOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:by (?:the )?|(?:at )?the )?(?:EOM|end of (?:the )?month)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_)\n        | (Just start, Just end) <- parsed ->\n          Token Time <$> interval TTime.Open start end\n        where\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "end of month",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "BeginningOfMonth",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:(?:at )?the )?(?:BOM|beginning of (?:the )?month)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> do\n      start <- intersect (dayOfMonth 1) $ cycleNth TG.Month 0\n      end <- intersect (dayOfMonth 10) $ cycleNth TG.Month 0\n      Token Time <$> interval TTime.Open start end\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "beginning of month",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "EndOrBeginningOfYear",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:at the )?(?:beginning|end) of",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (_:match:_)):Token Time td:_) -> do\n        (sd, ed) <- case Text.toLower match of\n          \"beginning\" -> Just (1, 4)\n          \"",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "at the beginning|end of <year>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "EndOfYear",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:by (?:the )?|(?:at )?the )?(?:EOY|end of (?:the )?year)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> do\n        start <- std\n        end <- intersect (month 1) $ cycleYear 1\n        Token Time <$> interval TTime.Ope",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "end of year",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "BeginningOfYear",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:(?:at )?the )?(?:BOY|beginning of (?:the )?year)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> do\n      start <- intersect (month 1) $ cycleNth TG.Year 0\n      end <- intersect (month 4) $ cycleNth TG.Year 0\n      Token Time <$> interval TTime.Open start end\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "beginning of year",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "EndOrBeginningOfWeek",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:at the )?(?:beginning|end) of",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (_:match1:_)):Token Time td:_) -> do\n        (sd, ed) <- case Text.toLower match1 of\n          \"beginning\" -> Just (1, 3)\n         ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "at the beginning|end of <week>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Closest",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the\\\\s+closest",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Time td1:_:Token Time td2:_) ->\n        tt $ predNthClosest 0 td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the closest <day> to <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NthClosest",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:token:_:Token Time td1:_:Token Time td2:_) -> do\n        n <- getIntValue token\n        tt $ predNthClosest (n - 1) td1 td2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <ordinal> closest <day> to <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleThisLastNext",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:this|current|coming|next|(?:the(?: following)?)|last|past|previous|upcoming)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (\n        Token RegexMatch (GroupMatch (match:_)):\n        Token TimeGrain grain:\n        _) ->\n          case Text.toLower match of\n            \"this\"          -> tt $ cycleNth gra",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "this|last|next <cycle>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleTheAfterBeforeTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (  _\n       : Token TimeGrain grain\n       : Token RegexMatch (GroupMatch (match:_))\n       : Token Time td\n       : _) ->\n        let n = if Text.toLower match ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <cycle> after|before <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleTheOrdinalOfTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:Token TimeGrain grain:_:Token Time td:_) -> do\n        n <- getIntValue token\n        tt $ cycleNthAfter True grain (n - 1) td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <ordinal> <cycle> of <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleTheLastOrdinalOfTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:_:Token TimeGrain grain:_:Token Time td:_) -> do\n        n <- getIntValue token\n        tt $ cycleNthAfter True grain (-n) $ cycleNthAfter True (timeGra",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <ordinal> last <cycle> of <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleTheOfTimeGrain",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token TimeGrain grain:_:Token TimeGrain time:_) ->\n        tt $ cycleNthAfter True grain 0 $ cycleNth time 0\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <cycle> of the <time grain>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleTheOfTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token TimeGrain grain:_:Token Time td:_) ->\n        tt $ cycleNthAfter True grain 0 td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <cycle> of <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleTheOrdinalAfterTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:Token TimeGrain grain:_:Token Time td:_) -> do\n        n <- getIntValue token\n        tt $ cycleNthAfter True grain (n - 1) td\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "<ordinal> <cycle> after <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleTheOrdinalQuarter",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "the",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:token:_) -> do\n        n <- getIntValue token\n        tt $ cycleNthAfter True TG.Quarter (n - 1) $\n          cycleNth TG.Year 0\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "the <ordinal> quarter",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DurationInWithinAfter",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(in|within|after)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       Token Duration dd:\n       _) -> case Text.toLower match of\n         \"within\" -> Token Time <$> interval TTime.Op",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "in|within|after <duration>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DurationLastNext",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "([lp]ast|next)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       Token Duration DurationData{TDuration.grain, TDuration.value",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "last|past|next <duration>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "InDurationAtTime",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "in",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Duration dd:_:Token Time td:_) ->\n        Token Time <$> intersect td (inDurationInterval dd)\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "in <duration> at <time-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "InNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "in",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "in <number> (implicit minutes)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalForDurationFrom",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "for",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Duration dd:_:Token Time td1:_) ->\n        Token Time <$> interval TTime.Closed td1 (durationAfter dd td1)\n      _ -> Nothing\n",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "for <duration> from <time>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalFromTimeForDuration",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(from|starting|beginning|after|starting from)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Time td1:_:Token Duration dd:_) ->\n        Token Time <$> interval TTime.Closed td1 (durationAfter dd td1)\n      _ -> Nothing\n",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "from <time> for <duration>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "MidDay",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:the )?mid(?:\\\\s)?day",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> tt $ hour False 12\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "Mid-day",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "UpcomingGrain",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "upcoming",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      ( _:\n        Token Numeral NumeralData{ TNumeral.value = numOfTimeGrain ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "upcoming <integer> <cycle>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ isGrainFinerThan TG.Year\n    , Predicate $ or . sequence [isNotLatent, isGrainOfTime TG.Year",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NamedDOMOrdinal",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ or . sequence [isAMonth, isADayOfWeek",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<named-month>|<named-day> <day-of-month> (ordinal)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "MonthDOMNumeral",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isAMonth\n    , Predicate isDOMInteger\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<named-month> <day-of-month> (non ordinal)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DOMMonth",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isDOMValue\n    , Predicate isAMonth\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<day-of-month> (ordinal or number) <named-month>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PODintersectTODlatent",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isAPartOfDay\n    , Predicate isATimeOfDay\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<part-of-day> <latent-time-of-day> (latent)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "HONumeral",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isAnHourOfDay\n    , Predicate $ isIntegerBetween 10 59\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<hour-of-day> <integer>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TimePOD",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Time\n    , Predicate isAPartOfDay\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<time> <part-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TODPOD",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isATimeOfDay\n    , Predicate isAPartOfDay\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<time-of-day> <part-of-day>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalTODDash",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [isNotLatent, isATimeOfDay",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<time-of-day> - <time-of-day> (interval)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleOrdinalQuarter",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Ordinal\n    , Predicate $ isGrain TG.Quarter\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<ordinal> quarter",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CycleOrdinalQuarterYear",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Ordinal\n    , Predicate $ isGrain TG.Quarter\n    , dimension Time\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<ordinal> quarter <year>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DayDurationHenceAgo",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ or . sequence [isGrainOfTime TG.Day, isGrainOfTime TG.Month",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<day> <duration> hence|ago",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DayInDuration",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ or . sequence [isGrainOfTime TG.Day, isGrainOfTime TG.Month",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<day> in <duration>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Timezone",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [isNotLatent, isATimeOfDay, hasNoTimezone",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<time> timezone",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TimezoneBracket",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [isNotLatent, isATimeOfDay, hasNoTimezone",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<time> (timezone)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntervalDashTimezone",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [isATimeOfDay, hasNoTimezone",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<datetime> - <datetime> (interval) timezone",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-15T22:09:18.490985",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 95,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}
