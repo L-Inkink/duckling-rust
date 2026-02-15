@@ -518,11 +518,155 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         }
     );
 
-    // TODO: More rules to be implemented (Priority 2+)
-    // - "this week", "this month"
-    // - "2 days ago", "3 weeks ago"
-    // - "in 5 minutes", "in 2 hours"
-    // - Intervals (from...to...)
+    // ========================================
+    // Relative Time - This (3 rules)
+    // ========================================
+
+    // "this week", "this month", "this year"
+    b.rule_1_terminal(
+        "en:time:this_grain",
+        b.reg(r"(?i)this\s+(week|month|year)").unwrap(),
+        |text_match| {
+            let grain_str = text_match.group(1).to_lowercase();
+            let grain = match grain_str.as_str() {
+                "week" => Grain::Week,
+                "month" => Grain::Month,
+                "year" => Grain::Year,
+                _ => return Err(rustling_error!("Invalid grain: {}", grain_str)),
+            };
+
+            let now = Utc::now();
+
+            // Round to start of grain
+            let dt = match grain {
+                Grain::Week => {
+                    let weekday = now.weekday().num_days_from_monday();
+                    let days_back = Duration::days(weekday as i64);
+                    (now - days_back).date_naive().and_hms_opt(0, 0, 0)
+                        .map(|naive| Utc.from_utc_datetime(&naive))
+                        .ok_or_else(|| rustling_error!("Invalid date"))?
+                }
+                Grain::Month => {
+                    let d = now.with_day(1).ok_or_else(|| rustling_error!("Invalid day"))?;
+                    let d = d.with_hour(0).ok_or_else(|| rustling_error!("Invalid hour"))?;
+                    let d = d.with_minute(0).ok_or_else(|| rustling_error!("Invalid minute"))?;
+                    d.with_second(0).ok_or_else(|| rustling_error!("Invalid second"))?
+                }
+                Grain::Year => {
+                    Utc.with_ymd_and_hms(now.year(), 1, 1, 0, 0, 0)
+                        .single()
+                        .ok_or_else(|| rustling_error!("Invalid date"))?
+                }
+                _ => now,
+            };
+
+            let time_data = TimeData::new(dt, grain);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    // ========================================
+    // Relative Time - N Cycles Ago (6 rules)
+    // ========================================
+
+    // "2 days ago", "3 weeks ago", "5 months ago"
+    b.rule_1_terminal(
+        "en:time:n_cycles_ago",
+        b.reg(r"(?i)(\d+)\s+(seconds?|minutes?|hours?|days?|weeks?|months?|years?)\s+ago").unwrap(),
+        |text_match| {
+            let n: i64 = text_match.group(1).parse()
+                .map_err(|e| rustling_error!("Failed to parse number: {}", e))?;
+            let grain_str = text_match.group(2).to_lowercase();
+
+            let grain = match grain_str.as_str() {
+                "second" | "seconds" => Grain::Second,
+                "minute" | "minutes" => Grain::Minute,
+                "hour" | "hours" => Grain::Hour,
+                "day" | "days" => Grain::Day,
+                "week" | "weeks" => Grain::Week,
+                "month" | "months" => Grain::Month,
+                "year" | "years" => Grain::Year,
+                _ => return Err(rustling_error!("Invalid grain: {}", grain_str)),
+            };
+
+            let now = Utc::now();
+            let dt = match grain {
+                Grain::Second => now - Duration::seconds(n),
+                Grain::Minute => now - Duration::minutes(n),
+                Grain::Hour => now - Duration::hours(n),
+                Grain::Day => now - Duration::days(n),
+                Grain::Week => now - Duration::weeks(n),
+                Grain::Month => {
+                    now.checked_sub_months(chrono::Months::new(n as u32))
+                        .ok_or_else(|| rustling_error!("Invalid month calculation"))?
+                }
+                Grain::Year => {
+                    Utc.with_ymd_and_hms(now.year() - n as i32, now.month(), now.day(), now.hour(), now.minute(), now.second())
+                        .single()
+                        .ok_or_else(|| rustling_error!("Invalid year calculation"))?
+                }
+                _ => return Err(rustling_error!("Unsupported grain")),
+            };
+
+            let time_data = TimeData::new(dt, grain);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    // ========================================
+    // Relative Time - In Duration (6 rules)
+    // ========================================
+
+    // "in 5 minutes", "in 2 hours", "in 3 days"
+    b.rule_1_terminal(
+        "en:time:in_duration",
+        b.reg(r"(?i)in\s+(\d+)\s+(seconds?|minutes?|hours?|days?|weeks?|months?|years?)").unwrap(),
+        |text_match| {
+            let n: i64 = text_match.group(1).parse()
+                .map_err(|e| rustling_error!("Failed to parse number: {}", e))?;
+            let grain_str = text_match.group(2).to_lowercase();
+
+            let grain = match grain_str.as_str() {
+                "second" | "seconds" => Grain::Second,
+                "minute" | "minutes" => Grain::Minute,
+                "hour" | "hours" => Grain::Hour,
+                "day" | "days" => Grain::Day,
+                "week" | "weeks" => Grain::Week,
+                "month" | "months" => Grain::Month,
+                "year" | "years" => Grain::Year,
+                _ => return Err(rustling_error!("Invalid grain: {}", grain_str)),
+            };
+
+            let now = Utc::now();
+            let dt = match grain {
+                Grain::Second => now + Duration::seconds(n),
+                Grain::Minute => now + Duration::minutes(n),
+                Grain::Hour => now + Duration::hours(n),
+                Grain::Day => now + Duration::days(n),
+                Grain::Week => now + Duration::weeks(n),
+                Grain::Month => {
+                    now.checked_add_months(chrono::Months::new(n as u32))
+                        .ok_or_else(|| rustling_error!("Invalid month calculation"))?
+                }
+                Grain::Year => {
+                    Utc.with_ymd_and_hms(now.year() + n as i32, now.month(), now.day(), now.hour(), now.minute(), now.second())
+                        .single()
+                        .ok_or_else(|| rustling_error!("Invalid year calculation"))?
+                }
+                _ => return Err(rustling_error!("Unsupported grain")),
+            };
+
+            let time_data = TimeData::new(dt, grain);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    // TODO: More rules to be implemented (Priority 3+)
+    // - "next Monday", "last Friday" (next/last + day of week)
+    // - Intervals (from...to..., between...and...)
     // - Intersect rules (Monday morning, February 2024)
 }
 
