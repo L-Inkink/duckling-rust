@@ -664,10 +664,100 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         }
     );
 
-    // TODO: More rules to be implemented (Priority 3+)
-    // - "next Monday", "last Friday" (next/last + day of week)
-    // - Intervals (from...to..., between...and...)
-    // - Intersect rules (Monday morning, February 2024)
+    // ========================================
+    // Relative Time - Next/Last + Day of Week (14 rules)
+    // ========================================
+
+    // "next Monday", "next Tuesday", etc.
+    next_day_of_week(b, "next Monday", r"(?i)next\s+mondays?", Weekday::Mon);
+    next_day_of_week(b, "next Tuesday", r"(?i)next\s+tuesdays?", Weekday::Tue);
+    next_day_of_week(b, "next Wednesday", r"(?i)next\s+wed?nesdays?", Weekday::Wed);
+    next_day_of_week(b, "next Thursday", r"(?i)next\s+thursdays?", Weekday::Thu);
+    next_day_of_week(b, "next Friday", r"(?i)next\s+fridays?", Weekday::Fri);
+    next_day_of_week(b, "next Saturday", r"(?i)next\s+saturdays?", Weekday::Sat);
+    next_day_of_week(b, "next Sunday", r"(?i)next\s+sundays?", Weekday::Sun);
+
+    // "last Monday", "last Tuesday", etc.
+    last_day_of_week(b, "last Monday", r"(?i)last\s+mondays?", Weekday::Mon);
+    last_day_of_week(b, "last Tuesday", r"(?i)last\s+tuesdays?", Weekday::Tue);
+    last_day_of_week(b, "last Wednesday", r"(?i)last\s+wed?nesdays?", Weekday::Wed);
+    last_day_of_week(b, "last Thursday", r"(?i)last\s+thursdays?", Weekday::Thu);
+    last_day_of_week(b, "last Friday", r"(?i)last\s+fridays?", Weekday::Fri);
+    last_day_of_week(b, "last Saturday", r"(?i)last\s+saturdays?", Weekday::Sat);
+    last_day_of_week(b, "last Sunday", r"(?i)last\s+sundays?", Weekday::Sun);
+
+    // ========================================
+    // Intervals - Basic patterns (3 rules)
+    // ========================================
+    // Note: Full interval support requires composite rules
+    // These are simplified single-regex versions
+
+    // "from <time> to <time>" - simplified for times only
+    b.rule_1_terminal(
+        "en:time:from_to_hours",
+        b.reg(r"(?i)from\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s+to\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?").unwrap(),
+        |text_match| {
+            // Parse start time
+            let start_hour: u32 = text_match.group(1).parse()
+                .map_err(|e| rustling_error!("Failed to parse hour: {}", e))?;
+            let start_minute: u32 = text_match.group(2).parse().unwrap_or(0);
+            let start_am_pm = text_match.group(3).to_lowercase();
+
+            // Parse end time
+            let end_hour: u32 = text_match.group(4).parse()
+                .map_err(|e| rustling_error!("Failed to parse hour: {}", e))?;
+            let end_minute: u32 = text_match.group(5).parse().unwrap_or(0);
+            let end_am_pm = text_match.group(6).to_lowercase();
+
+            // Convert to 24-hour format
+            let start_hour_24 = if !start_am_pm.is_empty() {
+                if start_am_pm == "am" {
+                    if start_hour == 12 { 0 } else { start_hour }
+                } else {
+                    if start_hour == 12 { 12 } else { start_hour + 12 }
+                }
+            } else {
+                start_hour
+            };
+
+            let end_hour_24 = if !end_am_pm.is_empty() {
+                if end_am_pm == "am" {
+                    if end_hour == 12 { 0 } else { end_hour }
+                } else {
+                    if end_hour == 12 { 12 } else { end_hour + 12 }
+                }
+            } else {
+                end_hour
+            };
+
+            let now = Utc::now();
+            let from_dt = now.date_naive().and_hms_opt(start_hour_24, start_minute, 0)
+                .ok_or_else(|| rustling_error!("Invalid start time"))?;
+            let to_dt = now.date_naive().and_hms_opt(end_hour_24, end_minute, 0)
+                .ok_or_else(|| rustling_error!("Invalid end time"))?;
+
+            let from = TimeData::new(Utc.from_utc_datetime(&from_dt), Grain::Minute);
+            let to = TimeData::new(Utc.from_utc_datetime(&to_dt), Grain::Minute);
+
+            Ok(Value::Time(TimeValue::Interval { from, to }))
+        }
+    );
+
+    // ========================================
+    // Simple Intersect - Day + Part of Day (4 rules)
+    // ========================================
+
+    // "Monday morning", "Tuesday afternoon"
+    intersect_dow_part_of_day(b, "Monday morning", r"(?i)mondays?\s+mornings?", Weekday::Mon, 8);
+    intersect_dow_part_of_day(b, "Monday afternoon", r"(?i)mondays?\s+afternoons?", Weekday::Mon, 15);
+    intersect_dow_part_of_day(b, "Monday evening", r"(?i)mondays?\s+evenings?", Weekday::Mon, 18);
+    intersect_dow_part_of_day(b, "Monday night", r"(?i)mondays?\s+nights?", Weekday::Mon, 21);
+
+    // TODO: More intersect rules
+    // - Full day of week + part of day combinations (would add ~24 more rules)
+    // - Month + day (February 15th)
+    // - Year + month (2024 February)
+    // - Complex composite rules requiring multi-token matching
 }
 
 /// Helper: Create a named day of week rule
@@ -704,6 +794,115 @@ fn named_day_of_week(
 
             let time_data = TimeData::new(dt, Grain::Day)
                 .with_form(Form::DayOfWeek);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+}
+
+/// Helper: Create a next day of week rule
+fn next_day_of_week(
+    b: &RuleSetBuilder<Value>,
+    name: &'static str,
+    pattern: &str,
+    weekday: Weekday,
+) {
+    let rule_name = format!("en:time:{}", name.replace(" ", "_").to_lowercase());
+
+    b.rule_1_terminal(
+        &rule_name,
+        b.reg(pattern).unwrap(),
+        move |_| {
+            let now = Utc::now();
+            let current_weekday = now.weekday();
+
+            // Calculate days until next occurrence of target weekday (at least 1 day)
+            let days_until = ((weekday.number_from_monday() as i32)
+                - (current_weekday.number_from_monday() as i32)
+                + 7) % 7;
+
+            let days_until = if days_until == 0 { 7 } else { days_until };
+
+            let target_date = now + Duration::days(days_until as i64);
+            let start_of_day = target_date.date_naive().and_hms_opt(0, 0, 0).unwrap();
+            let dt = Utc.from_utc_datetime(&start_of_day);
+
+            let time_data = TimeData::new(dt, Grain::Day)
+                .with_form(Form::DayOfWeek);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+}
+
+/// Helper: Create a last day of week rule
+fn last_day_of_week(
+    b: &RuleSetBuilder<Value>,
+    name: &'static str,
+    pattern: &str,
+    weekday: Weekday,
+) {
+    let rule_name = format!("en:time:{}", name.replace(" ", "_").to_lowercase());
+
+    b.rule_1_terminal(
+        &rule_name,
+        b.reg(pattern).unwrap(),
+        move |_| {
+            let now = Utc::now();
+            let current_weekday = now.weekday();
+
+            // Calculate days back to last occurrence of target weekday (at least 1 day)
+            let days_back = ((current_weekday.number_from_monday() as i32)
+                - (weekday.number_from_monday() as i32)
+                + 7) % 7;
+
+            let days_back = if days_back == 0 { 7 } else { days_back };
+
+            let target_date = now - Duration::days(days_back as i64);
+            let start_of_day = target_date.date_naive().and_hms_opt(0, 0, 0).unwrap();
+            let dt = Utc.from_utc_datetime(&start_of_day);
+
+            let time_data = TimeData::new(dt, Grain::Day)
+                .with_form(Form::DayOfWeek);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+}
+
+/// Helper: Create an intersect rule for day of week + part of day
+fn intersect_dow_part_of_day(
+    b: &RuleSetBuilder<Value>,
+    name: &'static str,
+    pattern: &str,
+    weekday: Weekday,
+    hour: u32,
+) {
+    let rule_name = format!("en:time:{}", name.replace(" ", "_").to_lowercase());
+
+    b.rule_1_terminal(
+        &rule_name,
+        b.reg(pattern).unwrap(),
+        move |_| {
+            let now = Utc::now();
+            let current_weekday = now.weekday();
+
+            // Calculate days until target weekday
+            let days_until = ((weekday.number_from_monday() as i32)
+                - (current_weekday.number_from_monday() as i32)
+                + 7) % 7;
+
+            let target_date = if days_until == 0 {
+                now
+            } else {
+                now + Duration::days(days_until as i64)
+            };
+
+            let dt = target_date.date_naive().and_hms_opt(hour, 0, 0).unwrap();
+            let dt_utc = Utc.from_utc_datetime(&dt);
+
+            let time_data = TimeData::new(dt_utc, Grain::Hour)
+                .with_form(Form::PartOfDay);
 
             Ok(Value::Time(TimeValue::Instant(time_data)))
         }
