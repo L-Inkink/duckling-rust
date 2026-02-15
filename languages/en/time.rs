@@ -744,20 +744,152 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     );
 
     // ========================================
-    // Simple Intersect - Day + Part of Day (4 rules)
+    // Simple Intersect - Day + Part of Day (28 rules)
     // ========================================
 
-    // "Monday morning", "Tuesday afternoon"
+    // Monday
     intersect_dow_part_of_day(b, "Monday morning", r"(?i)mondays?\s+mornings?", Weekday::Mon, 8);
     intersect_dow_part_of_day(b, "Monday afternoon", r"(?i)mondays?\s+afternoons?", Weekday::Mon, 15);
     intersect_dow_part_of_day(b, "Monday evening", r"(?i)mondays?\s+evenings?", Weekday::Mon, 18);
     intersect_dow_part_of_day(b, "Monday night", r"(?i)mondays?\s+nights?", Weekday::Mon, 21);
 
-    // TODO: More intersect rules
-    // - Full day of week + part of day combinations (would add ~24 more rules)
-    // - Month + day (February 15th)
-    // - Year + month (2024 February)
-    // - Complex composite rules requiring multi-token matching
+    // Tuesday
+    intersect_dow_part_of_day(b, "Tuesday morning", r"(?i)tuesdays?\s+mornings?", Weekday::Tue, 8);
+    intersect_dow_part_of_day(b, "Tuesday afternoon", r"(?i)tuesdays?\s+afternoons?", Weekday::Tue, 15);
+    intersect_dow_part_of_day(b, "Tuesday evening", r"(?i)tuesdays?\s+evenings?", Weekday::Tue, 18);
+    intersect_dow_part_of_day(b, "Tuesday night", r"(?i)tuesdays?\s+nights?", Weekday::Tue, 21);
+
+    // Wednesday
+    intersect_dow_part_of_day(b, "Wednesday morning", r"(?i)wed?nesdays?\s+mornings?", Weekday::Wed, 8);
+    intersect_dow_part_of_day(b, "Wednesday afternoon", r"(?i)wed?nesdays?\s+afternoons?", Weekday::Wed, 15);
+    intersect_dow_part_of_day(b, "Wednesday evening", r"(?i)wed?nesdays?\s+evenings?", Weekday::Wed, 18);
+    intersect_dow_part_of_day(b, "Wednesday night", r"(?i)wed?nesdays?\s+nights?", Weekday::Wed, 21);
+
+    // Thursday
+    intersect_dow_part_of_day(b, "Thursday morning", r"(?i)thursdays?\s+mornings?", Weekday::Thu, 8);
+    intersect_dow_part_of_day(b, "Thursday afternoon", r"(?i)thursdays?\s+afternoons?", Weekday::Thu, 15);
+    intersect_dow_part_of_day(b, "Thursday evening", r"(?i)thursdays?\s+evenings?", Weekday::Thu, 18);
+    intersect_dow_part_of_day(b, "Thursday night", r"(?i)thursdays?\s+nights?", Weekday::Thu, 21);
+
+    // Friday
+    intersect_dow_part_of_day(b, "Friday morning", r"(?i)fridays?\s+mornings?", Weekday::Fri, 8);
+    intersect_dow_part_of_day(b, "Friday afternoon", r"(?i)fridays?\s+afternoons?", Weekday::Fri, 15);
+    intersect_dow_part_of_day(b, "Friday evening", r"(?i)fridays?\s+evenings?", Weekday::Fri, 18);
+    intersect_dow_part_of_day(b, "Friday night", r"(?i)fridays?\s+nights?", Weekday::Fri, 21);
+
+    // Saturday
+    intersect_dow_part_of_day(b, "Saturday morning", r"(?i)saturdays?\s+mornings?", Weekday::Sat, 8);
+    intersect_dow_part_of_day(b, "Saturday afternoon", r"(?i)saturdays?\s+afternoons?", Weekday::Sat, 15);
+    intersect_dow_part_of_day(b, "Saturday evening", r"(?i)saturdays?\s+evenings?", Weekday::Sat, 18);
+    intersect_dow_part_of_day(b, "Saturday night", r"(?i)saturdays?\s+nights?", Weekday::Sat, 21);
+
+    // Sunday
+    intersect_dow_part_of_day(b, "Sunday morning", r"(?i)sundays?\s+mornings?", Weekday::Sun, 8);
+    intersect_dow_part_of_day(b, "Sunday afternoon", r"(?i)sundays?\s+afternoons?", Weekday::Sun, 15);
+    intersect_dow_part_of_day(b, "Sunday evening", r"(?i)sundays?\s+evenings?", Weekday::Sun, 18);
+    intersect_dow_part_of_day(b, "Sunday night", r"(?i)sundays?\s+nights?", Weekday::Sun, 21);
+
+    // ========================================
+    // Additional Useful Patterns (6 rules)
+    // ========================================
+
+    // "tonight"
+    b.rule_1_terminal(
+        "en:time:tonight",
+        b.reg(r"(?i)tonights?").unwrap(),
+        |_| {
+            let now = Utc::now();
+            let dt = now.date_naive().and_hms_opt(21, 0, 0).unwrap();
+            let dt_utc = Utc.from_utc_datetime(&dt);
+
+            let time_data = TimeData::new(dt_utc, Grain::Hour)
+                .with_form(Form::PartOfDay);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    // "this morning", "this afternoon", "this evening"
+    b.rule_1_terminal(
+        "en:time:this_morning",
+        b.reg(r"(?i)this\s+mornings?").unwrap(),
+        |_| {
+            let now = Utc::now();
+            let dt = now.date_naive().and_hms_opt(8, 0, 0).unwrap();
+            let dt_utc = Utc.from_utc_datetime(&dt);
+
+            let time_data = TimeData::new(dt_utc, Grain::Hour)
+                .with_form(Form::PartOfDay);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    b.rule_1_terminal(
+        "en:time:this_afternoon",
+        b.reg(r"(?i)this\s+afternoons?").unwrap(),
+        |_| {
+            let now = Utc::now();
+            let dt = now.date_naive().and_hms_opt(15, 0, 0).unwrap();
+            let dt_utc = Utc.from_utc_datetime(&dt);
+
+            let time_data = TimeData::new(dt_utc, Grain::Hour)
+                .with_form(Form::PartOfDay);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    b.rule_1_terminal(
+        "en:time:this_evening",
+        b.reg(r"(?i)this\s+evenings?").unwrap(),
+        |_| {
+            let now = Utc::now();
+            let dt = now.date_naive().and_hms_opt(18, 0, 0).unwrap();
+            let dt_utc = Utc.from_utc_datetime(&dt);
+
+            let time_data = TimeData::new(dt_utc, Grain::Hour)
+                .with_form(Form::PartOfDay);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    // "noon", "midnight"
+    b.rule_1_terminal(
+        "en:time:noon",
+        b.reg(r"(?i)noons?|middays?").unwrap(),
+        |_| {
+            let now = Utc::now();
+            let dt = now.date_naive().and_hms_opt(12, 0, 0).unwrap();
+            let dt_utc = Utc.from_utc_datetime(&dt);
+
+            let time_data = TimeData::new(dt_utc, Grain::Hour)
+                .with_form(Form::TimeOfDay);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    b.rule_1_terminal(
+        "en:time:midnight",
+        b.reg(r"(?i)midnights?").unwrap(),
+        |_| {
+            let now = Utc::now();
+            let dt = now.date_naive().and_hms_opt(0, 0, 0).unwrap();
+            let dt_utc = Utc.from_utc_datetime(&dt);
+
+            let time_data = TimeData::new(dt_utc, Grain::Hour)
+                .with_form(Form::TimeOfDay);
+
+            Ok(Value::Time(TimeValue::Instant(time_data)))
+        }
+    );
+
+    // TODO: More complex rules requiring multi-token matching
+    // - Month + day combinations (February 15th)
+    // - Year + month combinations (2024 February)
+    // - Full composite rules from Duckling
 }
 
 /// Helper: Create a named day of week rule
