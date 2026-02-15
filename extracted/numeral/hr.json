@@ -1,0 +1,335 @@
+{
+  "dimension": "Numeral",
+  "locale": "hr",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/HR/Rules.hs",
+  "rules": [
+    {
+      "name": "NumbersPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|minus|negativ",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Few",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "nekoliko",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "few",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Ten",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "deset|cener",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "ten",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+\\\\,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        in parseDouble fmt >>= double\n ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumber",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(sto|dvjest(o|a)|tristo|(c|č)etiristo|petsto|(š|s)esto|sedamsto|osamsto|devetsto)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"sto\" -> integer 100\n        \"dvjesta\" -> integer 200\n        \"dvjesto\" -> inte",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (100..900)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Single",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "sam",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "single",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(stotin(u|a|e)|tisu(c|ć)(a|u|e)|milij(u|o)na?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"stotinu\" -> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"stotina\" ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "APair",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "par",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a pair",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "tucet?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dozen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ni(s|š)ta|ni(s|š)tica|nula|jedanaest|dvanaest|trinaest|jeda?n(a|u|o(ga?)?)?|dv(i?je)?(a|o)?(ma)?|tri(ma)?|(č|c)etiri|(č|c)etrnaest|petnaest|pet|(s|š)esnaest|(š|s)est|sedamnaest|sedam|osamnaest|osam|devetnaest|devet)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"ni\\353ta\" -> integer 0\n        \"ni\\353tica\" -> integer 0\n        \"nistica\" -> ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(dvadeset|trideset|(c|č)etrdeset|pedeset|(š|s)esdeset|sedamdeset|osamdeset|devedeset)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"dvadeset\" -> integer 20\n        \"trideset\" -> integer 30\n        \"cetrdeset\" -",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumbersI",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "numbers i",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer4",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numbers",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ numberBetween 1 10\n    , numberWith TNumeral.value (== 100)\n    , Predicate $ numberBetween 0 100\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "numbers 100..999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.153893",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 17,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "dimension": "Numeral",
+  "locale": "unknown",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/Rules.hs",
+  "rules": [
+    {
+      "name": "Fractions",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+)/(\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (numerator:denominator:_)):_) -> do\n        n <- parseDecimal False numerator\n        d <- parseDecimal False denominator\n        d",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "fractional number",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.133091",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 1,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

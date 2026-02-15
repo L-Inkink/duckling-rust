@@ -1,0 +1,352 @@
+{
+  "dimension": "Numeral",
+  "locale": "ja",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/JA/Rules.hs",
+  "rules": [
+    {
+      "name": "integer_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "零": {
+            "value": 0
+          },
+          "ゼロ": {
+            "value": 0
+          },
+          "一": {
+            "value": 1
+          },
+          "二": {
+            "value": 2
+          },
+          "三": {
+            "value": 3
+          },
+          "四": {
+            "value": 4
+          },
+          "五": {
+            "value": 5
+          },
+          "六": {
+            "value": 6
+          },
+          "七": {
+            "value": 7
+          },
+          "八": {
+            "value": 8
+          },
+          "九": {
+            "value": 9
+          },
+          "十": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "零",
+        "ゼロ",
+        "一",
+        "二",
+        "三"
+      ]
+    },
+    {
+      "name": "Integer5",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "百",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 100\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (100)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|マイナス\\\\s?|負\\\\s?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer10",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "千",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (1000..1999)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer13",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "万",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (10000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer6",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "百",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (100..199)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer14",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "万",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (10000..19999)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer9",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "千",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (1000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ゼロ|零|一|二|三|四|五|六|七|八|九|十)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..10)"
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "十",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (11..19)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer12",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [3000, 9000, 7000, 8000, 2000, 4000, 6000, 5000",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 2001..9999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer8",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [300, 600, 500, 800, 200, 900, 700, 400",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 201..999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer16",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20000, 40000, 80000, 60000, 30000, 70000, 90000, 50000",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 20001..99999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer4",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.142592",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 14,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

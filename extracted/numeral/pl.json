@@ -1,0 +1,944 @@
+{
+  "dimension": "Numeral",
+  "locale": "pl",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/PL/Rules.hs",
+  "rules": [
+    {
+      "name": "Sixteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "szesna(s|ś)(tu|cie|toma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 16\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "sixteen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Fourteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "czterna(s|ś)(tu|cie|toma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 14\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "fourteen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Two",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dw(a|(o|ó)(ch|m)|oma|iema|ie)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "two",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sixty",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "sze(ść)dziesi(ą)t|sze(ść)dziesi(ę)ci(u|oma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 60\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "sixty",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Seventy",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "siedemdziesi((a|ą)t|(e|ę)ci(u|oma))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 70\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "seventy",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Eighty",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "osiemdziesi((a|ą)t|(e|ę)ci(u|oma))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 80\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "eighty",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Ninety",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dziewi(e|ę)(c|ć)dziesi((a|ą)|(e|ę))(t|ci(u|oma))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 90\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "ninety",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|minus|negative",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "One",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "jed(en|nego|nemu|nym|nej|n(a|ą))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "one",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Ten",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dzisi(e|ę)(ć|c)(iu|ioma)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "ten",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Nine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dziewi(e|ę)(ć|c)(iu|ioma)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 9\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "nine",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral8",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(osiem(set| setek))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 800 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 800",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Twelve",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dwunast(u|oma)|dwana(ś|s)cie",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "twelve",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Fifteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "pi(ę)tna(s|ś)(ta|tu|cie|toma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 15\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "fifteen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Eleven",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "jedena(stu|(s|ś)cie|stoma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 11\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "eleven",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Thirteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "trzyna(ś|s)(tu|cie|toma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 13\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "thirteen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Thirty",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "trzydzie(ś)ci|trzydziest(u|oma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 30\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "thirty",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dwie((ś)cie| setki)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 200 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 200",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Seventeen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "siedemna(s|ś)(tu|cie|toma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 17\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "seventeen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(sto|setki)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 100 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 100",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral9",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dziewi(ęć)(set| setek)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 900 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 900",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Single",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "pojedynczy",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "single",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Twenty",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dwadzie(ś|s)cia|dwudziest(u|oma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 20\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "twenty",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "AFew",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "kilk(a|u)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a few",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Eight",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "o(s|ś)(iem|miu|mioma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 8\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "eight",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral5",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "pi(ęć)(set| setek)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 500 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 500",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral3",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(trzy(sta| setki))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 300 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 300",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Zero",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(zero|nic)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 0\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "zero",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Thousand",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "ty(s|ś)i(a|ą|ę)c(e|y)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1000 >>= withGrain 3 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "thousand",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Million",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "milion(y|(ó)w)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1000000 >>= withGrain 6 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "million",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Three",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "trz(y|ema|ech)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "three",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Four",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "czter(ej|y|ech|em|ema)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 4\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "four",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral7",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(siedem(set| setek))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 700 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 700",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "APair",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "para?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a pair",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Couple",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "pare",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "couple",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Six",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "sze(s|ś)(c|ć)(iu|oma|u)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 6\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "six",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral6",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(sześć(set| setek))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 600 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 600",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral4",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(cztery(sta| setki))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 400 >>= withGrain 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 400",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Five",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "pi(e|ę)(c|ć)(iu|oma|u)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 5\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "five",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Fourty",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "czterdzie(ś)ci|czterdziest(u|oma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 40\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "fou?rty",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "tuzin",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dozen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Seven",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "sied(miu|em|mioma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 7\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "seven",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Nineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dziewietna(s|ś)(tu|cie|toma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 19\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "nineteen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Eighteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "osiemna(s|ś)(tu|cie|toma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 18\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "eighteen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Fifty",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "pi(ęć)dziesi(ą)t|pi(ęć)dziesi(ę)ci(u|oma)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 50\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "fifty",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "SpecialCompositionForMissingHundredsLikeInOneTwentyTwo",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ numberBetween 1 10\n    , Predicate $ numberBetween 10 100\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "special composition for missing hundreds like in one twenty two",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.135704",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 51,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

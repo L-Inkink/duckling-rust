@@ -27,11 +27,15 @@ env_logger = "0.11"
 once_cell = "1.19"
 utoipa = { version = "5.3", features = ["actix_extras"] }
 utoipa-swagger-ui = { version = "8.1", features = ["actix-web"] }
+tera = { version = "1.19", optional = true }
+lazy_static = { version = "1.4", optional = true }
+glob = { version = "0.3", optional = true }
 
 [features]
 default = []
 apollo = ["reqwest"]
 fasttext = ["finalfusion", "dirs", "reqwest"]
+migration-tools = ["tera", "lazy_static", "glob"]
 
 [dev-dependencies]
 criterion = "0.5"
@@ -40,3 +44,8 @@ futures = "0.3"
 [[bench]]
 name = "parser_bench"
 harness = false
+
+[[bin]]
+name = "codegen"
+path = "tools/migration/codegen.rs"
+required-features = ["migration-tools"]

@@ -1,0 +1,347 @@
+{
+  "dimension": "Numeral",
+  "locale": "af",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/AF/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroAndTen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "nul": {
+            "value": 0
+          },
+          "geen": {
+            "value": 0
+          },
+          "niks": {
+            "value": 0
+          },
+          "zero": {
+            "value": 0
+          },
+          "tien": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "nul",
+        "geen",
+        "niks",
+        "zero",
+        "tien"
+      ]
+    },
+    {
+      "name": "oneToNine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "een": {
+            "value": 1
+          },
+          "twee": {
+            "value": 2
+          },
+          "drie": {
+            "value": 3
+          },
+          "vier": {
+            "value": 4
+          },
+          "vyf": {
+            "value": 5
+          },
+          "ses": {
+            "value": 6
+          },
+          "sewe": {
+            "value": 7
+          },
+          "agt": {
+            "value": 8
+          },
+          "ag": {
+            "value": 8
+          },
+          "nege": {
+            "value": 9
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "een",
+        "twee",
+        "drie",
+        "vier",
+        "vyf"
+      ]
+    },
+    {
+      "name": "elevenToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "elf": {
+            "value": 11
+          },
+          "twaalf": {
+            "value": 12
+          },
+          "dertien": {
+            "value": 13
+          },
+          "veertien": {
+            "value": 14
+          },
+          "vyftien": {
+            "value": 15
+          },
+          "sestien": {
+            "value": 16
+          },
+          "sewentien": {
+            "value": 17
+          },
+          "agtien": {
+            "value": 18
+          },
+          "negentien": {
+            "value": 19
+          },
+          "neentien": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "elf",
+        "twaalf",
+        "dertien",
+        "veertien",
+        "vyftien"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "twin": {
+            "value": 20
+          },
+          "der": {
+            "value": 30
+          },
+          "veer": {
+            "value": 40
+          },
+          "vyf": {
+            "value": 50
+          },
+          "ses": {
+            "value": 60
+          },
+          "sewen": {
+            "value": 70
+          },
+          "tag": {
+            "value": 80
+          },
+          "negen": {
+            "value": 90
+          },
+          "neen": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "twin",
+        "der",
+        "veer",
+        "vyf",
+        "ses"
+      ]
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(nul|geen|niks|zero|tien|een|twee|drie|vier|vyf|ses|sewe|agt?|nege)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "oneToNineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..10)"
+      }
+    },
+    {
+      "name": "ElevenToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(elf|twaalf|dertien|veertien|vyftien|sestien|sewentien|agtien|neg?entien)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "elevenToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (11..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(twin|der|veer|vyf|ses|sewen|tag|neg?en)tig",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20,30..90)"
+      }
+    },
+    {
+      "name": "Decimals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(honderd|duisend)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"honderd\" -> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"duisend\" -> double 1e3 >>= wi",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dosyn",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withMultipliable >>= notOkForAnyTime\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a dozen of",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [hasGrain, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.157733",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 5,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

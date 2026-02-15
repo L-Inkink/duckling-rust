@@ -1,0 +1,261 @@
+{
+  "dimension": "Numeral",
+  "locale": "te",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/TE/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroToNine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "సున్న": {
+            "value": 0
+          },
+          "ఒకటి": {
+            "value": 1
+          },
+          "రెండు": {
+            "value": 2
+          },
+          "మూడు": {
+            "value": 3
+          },
+          "నాలుగు": {
+            "value": 4
+          },
+          "ఐదు": {
+            "value": 5
+          },
+          "ఆరు": {
+            "value": 6
+          },
+          "ఏడు": {
+            "value": 7
+          },
+          "ఎనిమిది": {
+            "value": 8
+          },
+          "తొమ్మిది": {
+            "value": 9
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "సున్న",
+        "ఒకటి",
+        "రెండు",
+        "మూడు",
+        "నాలుగు"
+      ]
+    },
+    {
+      "name": "tenToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "పది": {
+            "value": 10
+          },
+          "పదకొండు": {
+            "value": 11
+          },
+          "పన్నెండు": {
+            "value": 12
+          },
+          "పదమూడు": {
+            "value": 13
+          },
+          "పద్నాల్గు": {
+            "value": 14
+          },
+          "పదిహేను": {
+            "value": 15
+          },
+          "పదహారు": {
+            "value": 16
+          },
+          "పదిహేడు": {
+            "value": 17
+          },
+          "పద్దెనిమిది": {
+            "value": 18
+          },
+          "పంతొమ్మిది": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "పది",
+        "పదకొండు",
+        "పన్నెండు",
+        "పదమూడు",
+        "పద్నాల్గు"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ఇరవై": {
+            "value": 20
+          },
+          "ముప్పై": {
+            "value": 30
+          },
+          "నలబై": {
+            "value": 40
+          },
+          "యాబై": {
+            "value": 50
+          },
+          "అరవై": {
+            "value": 60
+          },
+          "డెబ్బై": {
+            "value": 70
+          },
+          "ఎనబై": {
+            "value": 80
+          },
+          "తొంబై": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ఇరవై",
+        "ముప్పై",
+        "నలబై",
+        "యాబై",
+        "అరవై"
+      ]
+    },
+    {
+      "name": "hundreds_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "వంద": {
+            "value": 100
+          },
+          "వెయ్యి": {
+            "value": 1000
+          },
+          "లక్ష": {
+            "value": 100000
+          },
+          "కోటి": {
+            "value": 10000000
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "వంద",
+        "వెయ్యి",
+        "లక్ష",
+        "కోటి"
+      ]
+    },
+    {
+      "name": "ZeroToNine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(సున్న|ఒకటి|రెండు|మూడు|నాలుగు|ఐదు|ఆరు|ఏడు|ఎనిమిది|తొమ్మిది)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroToNineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..9)"
+      }
+    },
+    {
+      "name": "TenToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(పదకొండు|పన్నెండు|పదమూడు|పద్నాల్గు|పదిహేను|పదహారు|పదిహేడు|పద్దెనిమిది|పంతొమ్మిది|పది)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tenToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (10..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ఇరవై|ముప్పై|నలబై|యాబై|అరవై|డెబ్బై|ఎనబై|తొంబై)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "hundreds",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(వంద|వెయ్యి|లక్ష|కోటి)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "hundredsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (100,1000,100000,10000000)"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.146371",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

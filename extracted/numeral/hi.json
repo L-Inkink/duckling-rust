@@ -1,0 +1,477 @@
+{
+  "dimension": "Numeral",
+  "locale": "hi",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/HI/Rules.hs",
+  "rules": [
+    {
+      "name": "ruleZeroToNinetyNine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "शून्य": {
+            "value": 0
+          },
+          "एक": {
+            "value": 1
+          },
+          "दो": {
+            "value": 2
+          },
+          "तीन": {
+            "value": 3
+          },
+          "चार": {
+            "value": 4
+          },
+          "पाँच": {
+            "value": 5
+          },
+          "छः": {
+            "value": 6
+          },
+          "छह": {
+            "value": 6
+          },
+          "सात": {
+            "value": 7
+          },
+          "आठ": {
+            "value": 8
+          },
+          "नौ": {
+            "value": 9
+          },
+          "ग्यारह": {
+            "value": 11
+          },
+          "बारह": {
+            "value": 12
+          },
+          "तेरह": {
+            "value": 13
+          },
+          "चौदह": {
+            "value": 14
+          },
+          "पन्द्रह": {
+            "value": 15
+          },
+          "सोलह": {
+            "value": 16
+          },
+          "सत्रह": {
+            "value": 17
+          },
+          "अठारह": {
+            "value": 18
+          },
+          "उन्नीस": {
+            "value": 19
+          },
+          "इक्कीस": {
+            "value": 21
+          },
+          "बाईस": {
+            "value": 22
+          },
+          "तेईस": {
+            "value": 23
+          },
+          "चौबीस": {
+            "value": 24
+          },
+          "पच्चीस": {
+            "value": 25
+          },
+          "छब्बीस": {
+            "value": 26
+          },
+          "सत्ताईस": {
+            "value": 27
+          },
+          "अट्ठाईस": {
+            "value": 28
+          },
+          "उनतीस": {
+            "value": 29
+          },
+          "इकतीस": {
+            "value": 31
+          },
+          "इकत्तीस": {
+            "value": 31
+          },
+          "बत्तीस": {
+            "value": 32
+          },
+          "तैंतीस": {
+            "value": 33
+          },
+          "चौंतीस": {
+            "value": 34
+          },
+          "पैंतीस": {
+            "value": 35
+          },
+          "छत्तीस": {
+            "value": 36
+          },
+          "सैंतीस": {
+            "value": 37
+          },
+          "अड़तीस": {
+            "value": 38
+          },
+          "उनतालीस": {
+            "value": 39
+          },
+          "इकतालीस": {
+            "value": 41
+          },
+          "बयालीस": {
+            "value": 42
+          },
+          "तैंतालीस": {
+            "value": 43
+          },
+          "चौवालीस": {
+            "value": 44
+          },
+          "पैंतालीस": {
+            "value": 45
+          },
+          "छियालीस": {
+            "value": 46
+          },
+          "सैंतालीस": {
+            "value": 47
+          },
+          "अड़तालीस": {
+            "value": 48
+          },
+          "उनचास": {
+            "value": 49
+          },
+          "इक्यावन": {
+            "value": 51
+          },
+          "बावन": {
+            "value": 52
+          },
+          "तिरेपन": {
+            "value": 53
+          },
+          "चौवन": {
+            "value": 54
+          },
+          "पचपन": {
+            "value": 55
+          },
+          "छप्पन": {
+            "value": 56
+          },
+          "सत्तावन": {
+            "value": 57
+          },
+          "अट्ठावन": {
+            "value": 58
+          },
+          "उनसठ": {
+            "value": 59
+          },
+          "इकसठ": {
+            "value": 61
+          },
+          "बासठ": {
+            "value": 62
+          },
+          "तिरेसठ": {
+            "value": 63
+          },
+          "चौंसठ": {
+            "value": 64
+          },
+          "पैंसठ": {
+            "value": 65
+          },
+          "छियासठ": {
+            "value": 66
+          },
+          "सड़सठ": {
+            "value": 67
+          },
+          "अड़सठ": {
+            "value": 68
+          },
+          "उनहत्तर": {
+            "value": 69
+          },
+          "इकहत्तर": {
+            "value": 71
+          },
+          "बहत्तर": {
+            "value": 72
+          },
+          "तिहत्तर": {
+            "value": 73
+          },
+          "चौहत्तर": {
+            "value": 74
+          },
+          "पचहत्तर": {
+            "value": 75
+          },
+          "छिहत्तर": {
+            "value": 76
+          },
+          "सतहत्तर": {
+            "value": 77
+          },
+          "अठहत्तर": {
+            "value": 78
+          },
+          "उनासी": {
+            "value": 79
+          },
+          "इक्यासी": {
+            "value": 81
+          },
+          "बयासी": {
+            "value": 82
+          },
+          "तिरासी": {
+            "value": 83
+          },
+          "चौरासी": {
+            "value": 84
+          },
+          "पचासी": {
+            "value": 85
+          },
+          "छियासी": {
+            "value": 86
+          },
+          "सतासी": {
+            "value": 87
+          },
+          "अट्ठासी": {
+            "value": 88
+          },
+          "नवासी": {
+            "value": 89
+          },
+          "इक्यानवे": {
+            "value": 91
+          },
+          "बानवे": {
+            "value": 92
+          },
+          "तिरानवे": {
+            "value": 93
+          },
+          "चौरानवे": {
+            "value": 94
+          },
+          "पचानवे": {
+            "value": 95
+          },
+          "छियानवे": {
+            "value": 96
+          },
+          "सत्तानवे": {
+            "value": 97
+          },
+          "अट्ठानवे": {
+            "value": 98
+          },
+          "निन्यानवे": {
+            "value": 99
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "शून्य",
+        "एक",
+        "दो",
+        "तीन",
+        "चार"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "दस": {
+            "value": 10
+          },
+          "बीस": {
+            "value": 20
+          },
+          "तीस": {
+            "value": 30
+          },
+          "चालीस": {
+            "value": 40
+          },
+          "पचास": {
+            "value": 50
+          },
+          "साठ": {
+            "value": 60
+          },
+          "सत्तर": {
+            "value": 70
+          },
+          "अस्सी": {
+            "value": 80
+          },
+          "नब्बे": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "दस",
+        "बीस",
+        "तीस",
+        "चालीस",
+        "पचास"
+      ]
+    },
+    {
+      "name": "ZeroToNinetyNine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(शून्य|एक|दो|तीन|चार|पाँच|छे|छह|सात|आठ|नौ|ग्यारह|बारह|तेरह|चौदह|पन्द्रह|सोलह|सत्रह|अठारह|उन्नीस|इक्कीस|बाईस|तेईस|चौबीस|पच्चीस|छब्बीस|सत्ताईस|अट्ठाईस|उनतीस|इकतीस|बत्तीस|तैंतीस|चौंतीस|पैंतीस|छत्तीस|सैंतीस|अड़तीस|उनतालीस|इकतालीस|बयालीस|तैंतालीस|चौवालीस|पैंतालीस|छियालीस|सैंतालीस|अड़तालीस|उनचास|इक्यावन|बावन|तिरेपन|चौवन|पचपन|छप्पन|सत्तावन|अट्ठावन|उनसठ|इकसठ|बासठ|तिरेसठ|चौंसठ|पैंसठ|छियासठ|सड़सठ|अड़सठ|उनहत्तर|इकहत्तर|बहत्तर|तिहत्तर|चौहत्तर|पचहत्तर|छिहत्तर|सतहत्तर|अठहत्तर|उनासी|इक्यासी|बयासी|तिरासी|चौरासी|पचासी|छियासी|सतासी|अट्ठासी|नवासी|इक्यानवे|बानवे|तिरानवे|चौरानवे|पचानवे|छियानवे|सत्तानवे|अट्ठानवे|निन्यानवे)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "ruleZeroToNinetyNineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..99)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(दस|बीस|तीस|चालीस|पचास|साठ|सत्तर|अस्सी|नब्बे)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20,30..90)"
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(सौ|हज़ार|हज़ार)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match : _)) : _) ->\n        case Text.toLower match of\n          \"सौ\" -> double 1e2 >>= withGrain 2 >>= withMultipliable\n         ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isPositive\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeHundreds",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [100,200..5000",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 100s..",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeThousands",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [1000,2000..50000",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 100s..",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.159864",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 4,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

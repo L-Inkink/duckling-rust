@@ -1,0 +1,231 @@
+{
+  "dimension": "Numeral",
+  "locale": "my",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/MY/Rules.hs",
+  "rules": [
+    {
+      "name": "integer09_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "၀": {
+            "value": 0
+          },
+          "၁": {
+            "value": 1
+          },
+          "၂": {
+            "value": 2
+          },
+          "၃": {
+            "value": 3
+          },
+          "၄": {
+            "value": 4
+          },
+          "၅": {
+            "value": 5
+          },
+          "၆": {
+            "value": 6
+          },
+          "၇": {
+            "value": 7
+          },
+          "၈": {
+            "value": 8
+          },
+          "၉": {
+            "value": 9
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "၀",
+        "၁",
+        "၂",
+        "၃",
+        "၄"
+      ]
+    },
+    {
+      "name": "integerPali_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ပထမ": {
+            "value": 1
+          },
+          "ဒုတိယ": {
+            "value": 2
+          },
+          "တတိယ": {
+            "value": 3
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ပထမ",
+        "ဒုတိယ",
+        "တတိယ"
+      ]
+    },
+    {
+      "name": "integer2_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "တစ်": {
+            "value": 1
+          },
+          "နှစ်": {
+            "value": 2
+          },
+          "သုံး": {
+            "value": 3
+          },
+          "လေး": {
+            "value": 4
+          },
+          "ငါး": {
+            "value": 5
+          },
+          "ခြေါက်": {
+            "value": 6
+          },
+          "ခုနှစ်": {
+            "value": 7
+          },
+          "ရှစ်": {
+            "value": 8
+          },
+          "ကိုး": {
+            "value": 9
+          },
+          "တစ်ဆယ်": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "တစ်",
+        "နှစ်",
+        "သုံး",
+        "လေး",
+        "ငါး"
+      ]
+    },
+    {
+      "name": "Integer09",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(၀|၁|၂|၃|၄|၅|၆|၇|၈|၉)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integer09Map",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..9) - numeric"
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "ဆယ့်",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (11..19) ",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntegerPali",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ပထမ|ဒုတိယ|တတိယ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerPaliMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (1..3) - pali"
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "သုံည|မရှိ",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 0\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 0",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(တစ်|နှစ်|သုံး|လေး|ငါး|ခြေါက်|ခုနှစ်|ရှစ်|ကိုး|တစ်ဆယ်)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integer2Map",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (1..10)"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.151903",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 2,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

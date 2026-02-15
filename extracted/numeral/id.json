@@ -1,0 +1,298 @@
+{
+  "dimension": "Numeral",
+  "locale": "id",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/ID/Rules.hs",
+  "rules": [
+    {
+      "name": "ruleInteger_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "kosong": {
+            "value": 0
+          },
+          "nol": {
+            "value": 0
+          },
+          "satu": {
+            "value": 1
+          },
+          "dua": {
+            "value": 2
+          },
+          "tiga": {
+            "value": 3
+          },
+          "empat": {
+            "value": 4
+          },
+          "lima": {
+            "value": 5
+          },
+          "enam": {
+            "value": 6
+          },
+          "tujuh": {
+            "value": 7
+          },
+          "delapan": {
+            "value": 8
+          },
+          "sembilan": {
+            "value": 9
+          },
+          "sebelas": {
+            "value": 11
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "kosong",
+        "nol",
+        "satu",
+        "dua",
+        "tiga"
+      ]
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|minus|negatif",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Ten",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(se)?puluh",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "ten",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        in parseDouble fmt >>= double\n ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Somefewcouple",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "beberapa",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "some/few/couple",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(se)?(ratus|ribu|juta)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (_:match:_)):_) -> case Text.toLower match of\n        \"ratus\"-> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"ribu\" -> d",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(se)?lusin",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withGrain 1 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dozen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(kosong|nol|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sebelas)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "ruleIntegerMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..9 11)"
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ numberBetween 2 10\n    , numberWith TNumeral.value (== 10)\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 20..90",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.164462",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 11,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

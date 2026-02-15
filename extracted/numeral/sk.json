@@ -1,0 +1,390 @@
+{
+  "dimension": "Numeral",
+  "locale": "sk",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/SK/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "nula": {
+            "value": 0
+          },
+          "jeden": {
+            "value": 1
+          },
+          "jedna": {
+            "value": 1
+          },
+          "jedno": {
+            "value": 1
+          },
+          "dva": {
+            "value": 2
+          },
+          "dve": {
+            "value": 2
+          },
+          "tri": {
+            "value": 3
+          },
+          "štyri": {
+            "value": 4
+          },
+          "päť": {
+            "value": 5
+          },
+          "šesť": {
+            "value": 6
+          },
+          "sedem": {
+            "value": 7
+          },
+          "osem": {
+            "value": 8
+          },
+          "deväť": {
+            "value": 9
+          },
+          "desať": {
+            "value": 10
+          },
+          "jedenásť": {
+            "value": 11
+          },
+          "dvanásť": {
+            "value": 12
+          },
+          "trinásť": {
+            "value": 13
+          },
+          "štrnásť": {
+            "value": 14
+          },
+          "pätnásť": {
+            "value": 15
+          },
+          "šestnásť": {
+            "value": 16
+          },
+          "sedemnásť": {
+            "value": 17
+          },
+          "osemnásť": {
+            "value": 18
+          },
+          "devätnásť": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "nula",
+        "jeden",
+        "jedna",
+        "jedno",
+        "dva"
+      ]
+    },
+    {
+      "name": "dozen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "dvadsať": {
+            "value": 20
+          },
+          "tridsať": {
+            "value": 30
+          },
+          "štyridsať": {
+            "value": 40
+          },
+          "päťdesiat": {
+            "value": 50
+          },
+          "šesťdesiat": {
+            "value": 60
+          },
+          "sedemdesiat": {
+            "value": 70
+          },
+          "osemdesiat": {
+            "value": 80
+          },
+          "devätdesiat": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "dvadsať",
+        "tridsať",
+        "štyridsať",
+        "päťdesiat",
+        "šesťdesiat"
+      ]
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|mínus|záporné",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:\n       Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Few",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(zo)?pár",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "few",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+\\\\,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        in parseDouble fmt >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Single",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "jed(en|no|na)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "single",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(sto(vky)?|tisíce?|milióny?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"sto\"     -> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"stovky\"  -> double 1e2 >>= wi",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Couple",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "páry?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "couple, a pair",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "tucet",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withGrain 1 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dozen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(nula|jed(enásť|en|na|no)|dv(anásť|a|e)|trinásť|tri|štrnásť|štyri|pätnásť|päť|šestnásť|šesť|sedemnásť|sedem|osemnásť|osem|devätnásť|deväť|desať)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((dva|tri|štyri)dsať|(päť|šesť|sedem|osem|devät)desiat)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "dozenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "IntegerCompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30..90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.133896",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 11,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

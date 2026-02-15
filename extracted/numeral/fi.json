@@ -1,0 +1,229 @@
+{
+  "dimension": "Numeral",
+  "locale": "fi",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/FI/Rules.hs",
+  "rules": [
+    {
+      "name": "numeral_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "nolla": {
+            "value": 0
+          },
+          "yksi": {
+            "value": 1
+          },
+          "kaksi": {
+            "value": 2
+          },
+          "kolme": {
+            "value": 3
+          },
+          "neljä": {
+            "value": 4
+          },
+          "viisi": {
+            "value": 5
+          },
+          "kuusi": {
+            "value": 6
+          },
+          "seitsemän": {
+            "value": 7
+          },
+          "kahdeksan": {
+            "value": 8
+          },
+          "yhdeksän": {
+            "value": 9
+          },
+          "kymmenen": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "nolla",
+        "yksi",
+        "kaksi",
+        "kolme",
+        "neljä"
+      ]
+    },
+    {
+      "name": "elevenToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "yksitoista": {
+            "value": 11
+          },
+          "kaksitoista": {
+            "value": 12
+          },
+          "kolmetoista": {
+            "value": 13
+          },
+          "neljätoista": {
+            "value": 14
+          },
+          "viisitoista": {
+            "value": 15
+          },
+          "kuusitoista": {
+            "value": 16
+          },
+          "seitsemäntoista": {
+            "value": 17
+          },
+          "kahdeksantoista": {
+            "value": 18
+          },
+          "yhdeksäntoista": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "yksitoista",
+        "kaksitoista",
+        "kolmetoista",
+        "neljätoista",
+        "viisitoista"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "kaksikymmentä": {
+            "value": 20
+          },
+          "kolmekymmentä": {
+            "value": 30
+          },
+          "neljäkymmentä": {
+            "value": 40
+          },
+          "viisikymmentä": {
+            "value": 50
+          },
+          "kuusikymmentä": {
+            "value": 60
+          },
+          "seitsemänkymmentä": {
+            "value": 70
+          },
+          "kahdeksankymmentä": {
+            "value": 80
+          },
+          "yhdeksänkymmentä": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "kaksikymmentä",
+        "kolmekymmentä",
+        "neljäkymmentä",
+        "viisikymmentä",
+        "kuusikymmentä"
+      ]
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(nolla|yksi|kaksi|kolme|neljä|viisi|kuusi|seitsemän|kahdeksan|yhdeksän|kymmenen)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "numeralMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..10)"
+      }
+    },
+    {
+      "name": "ElevenToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(yksitoista|kaksitoista|kolmetoista|neljätoista|viisitoista|kuusitoista|seitsemäntoista|kahdeksantoista|yhdeksäntoista)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "elevenToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (11..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(kaksikymmentä|kolmekymmentä|neljäkymmentä|viisikymmentä|kuusikymmentä|seitsemänkymmentä|kahdeksankymmentä|yhdeksänkymmentä)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20,30..90)"
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(kaksikymmentä|kolmekymmentä|neljäkymmentä|viisikymmentä|kuusikymmentä|seitsemänkymmentä|kahdeksankymmentä|yhdeksänkymmentä)(yksi|kaksi|kolme|neljä|viisi|kuusi|seitsemän|kahdeksan|yhdeksän)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer ([2-9][1-9])"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.163800",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

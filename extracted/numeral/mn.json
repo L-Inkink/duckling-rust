@@ -1,0 +1,393 @@
+{
+  "dimension": "Numeral",
+  "locale": "mn",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/MN/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "нуль": {
+            "value": 0
+          },
+          "тэг": {
+            "value": 0
+          },
+          "нойл": {
+            "value": 0
+          },
+          "нэг": {
+            "value": 1
+          },
+          "ганц": {
+            "value": 1
+          },
+          "хоёр": {
+            "value": 2
+          },
+          "гурав": {
+            "value": 3
+          },
+          "дөрөв": {
+            "value": 4
+          },
+          "тав": {
+            "value": 5
+          },
+          "зургаа": {
+            "value": 6
+          },
+          "долоо": {
+            "value": 7
+          },
+          "найм": {
+            "value": 8
+          },
+          "ес": {
+            "value": 9
+          },
+          "арван": {
+            "value": 10
+          },
+          "арав": {
+            "value": 10
+          },
+          "арван нэг": {
+            "value": 11
+          },
+          "арван хоёр": {
+            "value": 12
+          },
+          "арван гурав": {
+            "value": 13
+          },
+          "арван дөрөв": {
+            "value": 14
+          },
+          "арван тав": {
+            "value": 15
+          },
+          "арван зургаа": {
+            "value": 16
+          },
+          "арван долоо": {
+            "value": 17
+          },
+          "арван найм": {
+            "value": 18
+          },
+          "арван ес": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "нуль",
+        "тэг",
+        "нойл",
+        "нэг",
+        "ганц"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "хорь": {
+            "value": 20
+          },
+          "гуч": {
+            "value": 30
+          },
+          "дөч": {
+            "value": 40
+          },
+          "тавь": {
+            "value": 50
+          },
+          "жар": {
+            "value": 60
+          },
+          "дал": {
+            "value": 70
+          },
+          "ная": {
+            "value": 80
+          },
+          "ер": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "хорь",
+        "гуч",
+        "дөч",
+        "тавь",
+        "жар"
+      ]
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|хасах|сөрөг",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Few",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "хэдхэн",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "few",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Ten",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "арав",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "ten",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+\\\\,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        in parseDouble fmt >>= double\n ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(хорин|гучин|дөчин|тавин|жаран|далан|наян|ерэн) ?(нэг|хоёр|гурав|дөрөв|тав|зургаа|долоо|найм|ес)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (m1:m2:_)):_) -> do\n        v1 <- case Text.toLower m1 of\n          \"хорин\" -> Just 20\n          \"гучин\" -> Just 30\n          \"дөчи",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer ([2-9][1-9])",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Couple",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "хос",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "couple",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(зуу?|мянга?|сая?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"зуу\"   -> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"зуун\"  -> d",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "ZeroToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(нуль|тэг|нойл|нэг|ганц|хоёр|гурав|дөрөв|тав|зургаа|долоо|найм|ес|арван нэг|арван хоёр|арван гурав|арван дөрөв|арван тав|арван зургаа|арван долоо|арван найм|арван ес|арав|арван)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(хорь|гуч|дөч|тавь|жар|дал|ная|ер)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralsUnd",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "numbers und",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.141805",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 11,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

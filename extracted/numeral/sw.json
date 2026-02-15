@@ -1,0 +1,174 @@
+{
+  "dimension": "Numeral",
+  "locale": "sw",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/SW/Rules.hs",
+  "rules": [
+    {
+      "name": "ruleNumeral_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "sufuri": {
+            "value": 0
+          },
+          "zero": {
+            "value": 0
+          },
+          "moja": {
+            "value": 1
+          },
+          "mbili": {
+            "value": 2
+          },
+          "tatu": {
+            "value": 3
+          },
+          "nne": {
+            "value": 4
+          },
+          "tano": {
+            "value": 5
+          },
+          "sita": {
+            "value": 6
+          },
+          "saba": {
+            "value": 7
+          },
+          "nane": {
+            "value": 8
+          },
+          "tisa": {
+            "value": 9
+          },
+          "kumi": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "sufuri",
+        "zero",
+        "moja",
+        "mbili",
+        "tatu"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ishirini": {
+            "value": 20
+          },
+          "thelathini": {
+            "value": 30
+          },
+          "arubaini": {
+            "value": 40
+          },
+          "arobaini": {
+            "value": 40
+          },
+          "hamsini": {
+            "value": 50
+          },
+          "sitini": {
+            "value": 60
+          },
+          "sabini": {
+            "value": 70
+          },
+          "themanini": {
+            "value": 80
+          },
+          "tisini": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ishirini",
+        "thelathini",
+        "arubaini",
+        "arobaini",
+        "hamsini"
+      ]
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(sufuri|zero|moja|mbili|tatu|nne|tano|sita|saba|nane|tisa|kumi)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "ruleNumeralMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..10)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ishirini|thelathini|arubaini|arobaini|hamsini|sitini|sabini|themanini|tisini)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20,30..90)"
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": "oneOf [20,30..90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 11..19 21..29 .. 91..99",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.134600",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 1,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

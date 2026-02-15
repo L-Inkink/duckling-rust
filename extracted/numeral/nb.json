@@ -1,0 +1,743 @@
+{
+  "dimension": "Numeral",
+  "locale": "nb",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/NB/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "null": {
+            "value": 0
+          },
+          "ingen": {
+            "value": 0
+          },
+          "intet": {
+            "value": 0
+          },
+          "en": {
+            "value": 1
+          },
+          "ett": {
+            "value": 1
+          },
+          "én": {
+            "value": 1
+          },
+          "to": {
+            "value": 2
+          },
+          "tre": {
+            "value": 3
+          },
+          "fire": {
+            "value": 4
+          },
+          "fem": {
+            "value": 5
+          },
+          "seks": {
+            "value": 6
+          },
+          "sju": {
+            "value": 7
+          },
+          "syv": {
+            "value": 7
+          },
+          "åtte": {
+            "value": 8
+          },
+          "ni": {
+            "value": 9
+          },
+          "ti": {
+            "value": 10
+          },
+          "elleve": {
+            "value": 11
+          },
+          "tolv": {
+            "value": 12
+          },
+          "tretten": {
+            "value": 13
+          },
+          "fjorten": {
+            "value": 14
+          },
+          "femten": {
+            "value": 15
+          },
+          "seksten": {
+            "value": 16
+          },
+          "søtten": {
+            "value": 17
+          },
+          "sytten": {
+            "value": 17
+          },
+          "atten": {
+            "value": 18
+          },
+          "nitten": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "null",
+        "ingen",
+        "intet",
+        "en",
+        "ett"
+      ]
+    },
+    {
+      "name": "twentyToHundred_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "tjueen": {
+            "value": 21
+          },
+          "tjueén": {
+            "value": 21
+          },
+          "tjueto": {
+            "value": 22
+          },
+          "tjuetre": {
+            "value": 23
+          },
+          "tjuefire": {
+            "value": 24
+          },
+          "tjuefem": {
+            "value": 25
+          },
+          "tjueseks": {
+            "value": 26
+          },
+          "tjuesju": {
+            "value": 27
+          },
+          "tjuesyv": {
+            "value": 27
+          },
+          "tjueåtte": {
+            "value": 28
+          },
+          "tjueni": {
+            "value": 29
+          },
+          "trettien": {
+            "value": 31
+          },
+          "trettién": {
+            "value": 31
+          },
+          "trettito": {
+            "value": 32
+          },
+          "trettitre": {
+            "value": 33
+          },
+          "trettifire": {
+            "value": 34
+          },
+          "trettifem": {
+            "value": 35
+          },
+          "trettiseks": {
+            "value": 36
+          },
+          "trettisju": {
+            "value": 37
+          },
+          "trettisyv": {
+            "value": 37
+          },
+          "trettiåtte": {
+            "value": 38
+          },
+          "trettini": {
+            "value": 39
+          },
+          "førtien": {
+            "value": 41
+          },
+          "førtién": {
+            "value": 41
+          },
+          "førtito": {
+            "value": 42
+          },
+          "førtitre": {
+            "value": 43
+          },
+          "førtifire": {
+            "value": 44
+          },
+          "førtifem": {
+            "value": 45
+          },
+          "førtiseks": {
+            "value": 46
+          },
+          "førtisju": {
+            "value": 47
+          },
+          "førtisyv": {
+            "value": 47
+          },
+          "førtiåtte": {
+            "value": 48
+          },
+          "førtini": {
+            "value": 49
+          },
+          "femtien": {
+            "value": 51
+          },
+          "femtién": {
+            "value": 51
+          },
+          "femtito": {
+            "value": 52
+          },
+          "femtitre": {
+            "value": 53
+          },
+          "femtifire": {
+            "value": 54
+          },
+          "femtifem": {
+            "value": 55
+          },
+          "femtiseks": {
+            "value": 56
+          },
+          "femtisju": {
+            "value": 57
+          },
+          "femtisyv": {
+            "value": 57
+          },
+          "femtiåtte": {
+            "value": 58
+          },
+          "femtini": {
+            "value": 59
+          },
+          "sekstien": {
+            "value": 61
+          },
+          "sekstién": {
+            "value": 61
+          },
+          "sekstito": {
+            "value": 62
+          },
+          "sekstitre": {
+            "value": 63
+          },
+          "sekstifire": {
+            "value": 64
+          },
+          "sekstifem": {
+            "value": 65
+          },
+          "sekstiseks": {
+            "value": 66
+          },
+          "sekstisju": {
+            "value": 67
+          },
+          "sekstisyv": {
+            "value": 67
+          },
+          "sekstiåtte": {
+            "value": 68
+          },
+          "sekstini": {
+            "value": 69
+          },
+          "syttien": {
+            "value": 71
+          },
+          "syttién": {
+            "value": 71
+          },
+          "syttito": {
+            "value": 72
+          },
+          "syttitre": {
+            "value": 73
+          },
+          "syttifire": {
+            "value": 74
+          },
+          "syttifem": {
+            "value": 75
+          },
+          "syttiseks": {
+            "value": 76
+          },
+          "syttisju": {
+            "value": 77
+          },
+          "syttisyv": {
+            "value": 77
+          },
+          "syttiåtte": {
+            "value": 78
+          },
+          "syttini": {
+            "value": 79
+          },
+          "søttien": {
+            "value": 71
+          },
+          "søttién": {
+            "value": 71
+          },
+          "søttito": {
+            "value": 72
+          },
+          "søttitre": {
+            "value": 73
+          },
+          "søttifire": {
+            "value": 74
+          },
+          "søttifem": {
+            "value": 75
+          },
+          "søttiseks": {
+            "value": 76
+          },
+          "søttisju": {
+            "value": 77
+          },
+          "søttisyv": {
+            "value": 77
+          },
+          "søttiåtte": {
+            "value": 78
+          },
+          "søttini": {
+            "value": 79
+          },
+          "åttien": {
+            "value": 81
+          },
+          "åttién": {
+            "value": 81
+          },
+          "åttito": {
+            "value": 82
+          },
+          "åttitre": {
+            "value": 83
+          },
+          "åttifire": {
+            "value": 84
+          },
+          "åttifem": {
+            "value": 85
+          },
+          "åttiseks": {
+            "value": 86
+          },
+          "åttisju": {
+            "value": 87
+          },
+          "åttisyv": {
+            "value": 87
+          },
+          "åttiåtte": {
+            "value": 88
+          },
+          "åttini": {
+            "value": 89
+          },
+          "nittien": {
+            "value": 91
+          },
+          "nittién": {
+            "value": 91
+          },
+          "nittito": {
+            "value": 92
+          },
+          "nittitre": {
+            "value": 93
+          },
+          "nittifire": {
+            "value": 94
+          },
+          "nittifem": {
+            "value": 95
+          },
+          "nittiseks": {
+            "value": 96
+          },
+          "nittisju": {
+            "value": 97
+          },
+          "nittisyv": {
+            "value": 97
+          },
+          "nittiåtte": {
+            "value": 98
+          },
+          "nittini": {
+            "value": 99
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "tjueen",
+        "tjueén",
+        "tjueto",
+        "tjuetre",
+        "tjuefire"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "tyve": {
+            "value": 20
+          },
+          "tjue": {
+            "value": 20
+          },
+          "tredve": {
+            "value": 30
+          },
+          "tretti": {
+            "value": 30
+          },
+          "førti": {
+            "value": 40
+          },
+          "femti": {
+            "value": 50
+          },
+          "seksti": {
+            "value": 60
+          },
+          "sytti": {
+            "value": 70
+          },
+          "søtti": {
+            "value": 70
+          },
+          "åtti": {
+            "value": 80
+          },
+          "nitti": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "tyve",
+        "tjue",
+        "tredve",
+        "tretti",
+        "førti"
+      ]
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|minus|negativ",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Few",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(noen )?få",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "few",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+\\\\,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        in parseDouble fmt >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Single",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "enkelt",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "single",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(hundre(de)?|tusen?|million(er)?|milliard(?:er)?|billion(?:er)?|billiard(?:er)?|trillion(?:er)?|trilliard(?:er)?|kvadrillion(?:er)?|kvadrilliard(?:er)?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"hundre\"    -> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"hundrede\"  -> double 1e2 >>",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "APair",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "et par",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a pair",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "dusin",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withGrain 1 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dozen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(intet|ingen|null|en|ett|én|to|tretten|tre|fire|femten|fem|seksten|seks|syv|sju|åtte|nitten|ni|ti|elleve|tolv|fjorten|sytten|søtten|atten)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "Integer4",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(tjueen|tjueén|tjueto|tjuetre|tjuefire|tjuefem|tjueseks|tjuesju|tjuesyv|tjueåtte|tjueni            |trettien|trettién|trettito|trettitre|trettifire|trettifem|trettiseks|trettisju|trettisyv|trettiåtte|trettini            |førtien|førtién|førtito|førtitre|førtifire|førtifem|førtiseks|førtisju|førtisyv|førtiåtte|førtini            |femtien|femtién|femtito|femtitre|femtifire|femtifem|femtiseks|femtisju|femtisyv|femtiåtte|femtini            |sekstien|sekstién|sekstito|sekstitre|sekstifire|sekstifem|sekstiseks|sekstisju|sekstisyv|sekstiåtte|sekstini            |syttien|syttién|syttito|syttitre|syttifire|syttifem|syttiseks|syttisju|syttisyv|syttiåtte|syttini            |søttien|søttién|søttito|søttitre|søttifire|søttifem|søttiseks|søttisju|søttisyv|søttiåtte|søttini            |åttien|åttién|åttito|åttitre|åttifire|åttifem|åttiseks|åttisju|åttisyv|åttiåtte|åttini            |nittien|nittién|nittito|nittitre|nittifire|nittifem|nittiseks|nittisju|nittisyv|nittiåtte|nittini            )",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyToHundredMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (21..99)"
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(tyve|tjue|tredve|tretti|førti|femti|seksti|sytti|søtti|åtti|nitti)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.158711",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 11,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

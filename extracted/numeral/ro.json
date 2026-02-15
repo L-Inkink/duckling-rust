@@ -1,0 +1,383 @@
+{
+  "dimension": "Numeral",
+  "locale": "ro",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/RO/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroTen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "zero": {
+            "value": 0
+          },
+          "nimic": {
+            "value": 0
+          },
+          "nicio": {
+            "value": 0
+          },
+          "nici o": {
+            "value": 0
+          },
+          "nici una": {
+            "value": 0
+          },
+          "nici unu": {
+            "value": 0
+          },
+          "nici unul": {
+            "value": 0
+          },
+          "un": {
+            "value": 1
+          },
+          "una": {
+            "value": 1
+          },
+          "unu": {
+            "value": 1
+          },
+          "unul": {
+            "value": 1
+          },
+          "intai": {
+            "value": 1
+          },
+          "întai": {
+            "value": 1
+          },
+          "intâi": {
+            "value": 1
+          },
+          "întâi": {
+            "value": 1
+          },
+          "o": {
+            "value": 1
+          },
+          "doi": {
+            "value": 2
+          },
+          "doua": {
+            "value": 2
+          },
+          "două": {
+            "value": 2
+          },
+          "trei": {
+            "value": 3
+          },
+          "patru": {
+            "value": 4
+          },
+          "cinci": {
+            "value": 5
+          },
+          "sase": {
+            "value": 6
+          },
+          "şase": {
+            "value": 6
+          },
+          "sapte": {
+            "value": 7
+          },
+          "şapte": {
+            "value": 7
+          },
+          "opt": {
+            "value": 8
+          },
+          "noua": {
+            "value": 9
+          },
+          "nouă": {
+            "value": 9
+          },
+          "zece": {
+            "value": 10
+          },
+          "zeci": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "zero",
+        "nimic",
+        "nicio",
+        "nici o",
+        "nici una"
+      ]
+    },
+    {
+      "name": "elevenNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "un": {
+            "value": 11
+          },
+          "doi": {
+            "value": 12
+          },
+          "trei": {
+            "value": 13
+          },
+          "pai": {
+            "value": 14
+          },
+          "cin": {
+            "value": 15
+          },
+          "cinci": {
+            "value": 15
+          },
+          "sai": {
+            "value": 16
+          },
+          "şai": {
+            "value": 16
+          },
+          "sapti": {
+            "value": 17
+          },
+          "şapti": {
+            "value": 17
+          },
+          "sapte": {
+            "value": 17
+          },
+          "şapte": {
+            "value": 17
+          },
+          "opti": {
+            "value": 18
+          },
+          "opt": {
+            "value": 18
+          },
+          "noua": {
+            "value": 19
+          },
+          "nouă": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "un",
+        "doi",
+        "trei",
+        "pai",
+        "cin"
+      ]
+    },
+    {
+      "name": "NumeralsPrefixWithOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|minus",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with - or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:\\\\d+(?:\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        in parseDouble fmt >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:sut(?:a|e|ă)?|milio(?:n|ane)?|miliar(?:de?)?|mi[ei]?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"suta\"      -> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"sute\"      -> double 1e2 >>",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntegerZeroTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:zero|nimic|nici(?:\\\\s?o|\\\\sun(?:a|ul?))|una|unul?|doi|dou(?:a|ă)|trei|patru|cinci|(?:s|ș)ase|(?:s|ș)apte|opt|nou(?:a|ă)|zec[ei]|(?:i|î)nt(?:a|â)i|un|o)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroTenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..10)"
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:cin|sapti|opti)(?:s|ș)pe|(?:cinci|(?:s|ș)apte|opt)sprezece|(?:un|doi|trei|pai|(?:s|ș)ai|nou(?:a|ă))(?:(?:s|ș)pe|sprezece)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "elevenNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (11..19)"
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(dou[aă]|trei|patru|cinci|[sș]ai|[sș]apte|opt|nou[aă])\\\\s?zeci",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroTenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-15T20:18:20.649756",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 7,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

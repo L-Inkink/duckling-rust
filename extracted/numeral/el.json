@@ -1,0 +1,403 @@
+{
+  "dimension": "Numeral",
+  "locale": "el",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/EL/Rules.hs",
+  "rules": [
+    {
+      "name": "oneOrTwoDigits_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "μηδέν": {
+            "value": 0
+          },
+          "ένα": {
+            "value": 1
+          },
+          "ένας": {
+            "value": 1
+          },
+          "ενός": {
+            "value": 1
+          },
+          "μία": {
+            "value": 1
+          },
+          "μια": {
+            "value": 1
+          },
+          "δύο": {
+            "value": 2
+          },
+          "δυο": {
+            "value": 2
+          },
+          "τρία": {
+            "value": 3
+          },
+          "τρεις": {
+            "value": 3
+          },
+          "τέσσερα": {
+            "value": 4
+          },
+          "τέσσερις": {
+            "value": 4
+          },
+          "πέντε": {
+            "value": 5
+          },
+          "έξι": {
+            "value": 6
+          },
+          "επτά": {
+            "value": 7
+          },
+          "εφτά": {
+            "value": 7
+          },
+          "οκτώ": {
+            "value": 8
+          },
+          "οχτώ": {
+            "value": 8
+          },
+          "εννιά": {
+            "value": 9
+          },
+          "εννέα": {
+            "value": 9
+          },
+          "δέκα": {
+            "value": 10
+          },
+          "δεκαριά": {
+            "value": 10
+          },
+          "έντεκα": {
+            "value": 11
+          },
+          "ένδεκα": {
+            "value": 11
+          },
+          "δώδεκα": {
+            "value": 12
+          },
+          "ντουζίνα": {
+            "value": 12
+          },
+          "ντουζίνες": {
+            "value": 12
+          },
+          "δεκατρία": {
+            "value": 13
+          },
+          "δεκατέσσερα": {
+            "value": 14
+          },
+          "δεκαπέντε": {
+            "value": 15
+          },
+          "δεκαέξι": {
+            "value": 16
+          },
+          "δεκαεπτά": {
+            "value": 17
+          },
+          "δεκαοκτώ": {
+            "value": 18
+          },
+          "δεκαεννέα": {
+            "value": 19
+          },
+          "δεκαεννιά": {
+            "value": 19
+          },
+          "είκοσι": {
+            "value": 20
+          },
+          "τριάντα": {
+            "value": 30
+          },
+          "σαράντα": {
+            "value": 40
+          },
+          "πενήντα": {
+            "value": 50
+          },
+          "εξήντα": {
+            "value": 60
+          },
+          "εβδομήντα": {
+            "value": 70
+          },
+          "ογδόντα": {
+            "value": 80
+          },
+          "ενενήντα": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "μηδέν",
+        "ένα",
+        "ένας",
+        "ενός",
+        "μία"
+      ]
+    },
+    {
+      "name": "hundreds_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "δι": {
+            "value": 200
+          },
+          "τρι": {
+            "value": 300
+          },
+          "τετρ": {
+            "value": 400
+          },
+          "πεντ": {
+            "value": 500
+          },
+          "εξ": {
+            "value": 600
+          },
+          "επτ": {
+            "value": 700
+          },
+          "εφτ": {
+            "value": 700
+          },
+          "οκτ": {
+            "value": 800
+          },
+          "οχτ": {
+            "value": 800
+          },
+          "εννι": {
+            "value": 900
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "δι",
+        "τρι",
+        "τετρ",
+        "πεντ",
+        "εξ"
+      ]
+    },
+    {
+      "name": "Few",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "μερικ(ά|ές|οί)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "few",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Hundred",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(εκατόν?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch _):_) -> integer 100 >>= withGrain 2\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (100)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Hundreds",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(δι|τρι|τετρ|πεντ|εξ|ε(π|φ)τ|ο(χ|κ)τ|εννι)ακόσι(α|ες|οι)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "hundredsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (200..900)"
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(χίλι(α|οι|ες)|χιλιάδες|εκατομμύρι(ο|α)|δις|δισεκατομμύριο)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"χίλια\"          -> double 1e3 >>= withGrain 3 >>= withMultipliable\n        \"χι",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Negative",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|μείον",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "negative numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Decimals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDecimal True (Text.replace \",\" \".\" match)\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dots",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+(,\\\\d+)?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (\n          Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        ) >>= double\n    ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dot-separated numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20,30..90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.143257",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 9,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

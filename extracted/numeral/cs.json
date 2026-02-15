@@ -1,0 +1,94 @@
+{
+  "dimension": "Numeral",
+  "locale": "cs",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/CS/Rules.hs",
+  "rules": [
+    {
+      "name": "ruleNumeral_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "nula": {
+            "value": 0
+          },
+          "jeden": {
+            "value": 1
+          },
+          "jedna": {
+            "value": 1
+          },
+          "jedno": {
+            "value": 1
+          },
+          "dva": {
+            "value": 2
+          },
+          "dv\\x0115": {
+            "value": 2
+          },
+          "t\\x0159i": {
+            "value": 3
+          },
+          "čty\\x0159i": {
+            "value": 4
+          },
+          "p\\x0115t": {
+            "value": 5
+          },
+          "šest": {
+            "value": 6
+          },
+          "sedm": {
+            "value": 7
+          },
+          "osm": {
+            "value": 8
+          },
+          "dev\\x0115t": {
+            "value": 9
+          },
+          "deset": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "nula",
+        "jeden",
+        "jedna",
+        "jedno",
+        "dva"
+      ]
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(nula|jed(en|n[ao])|dv(a|\\x0115)|t(\\x0159)i|(č)ty(\\x0159)i|p(\\x0115)t|(š)est|sedm|osm|dev(\\x0115)t|deset)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "ruleNumeralMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..10)"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.146022",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

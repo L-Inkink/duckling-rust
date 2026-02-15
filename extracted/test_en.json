@@ -1,0 +1,567 @@
+{
+  "dimension": "Numeral",
+  "locale": "en",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/EN/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "naught": {
+            "value": 0
+          },
+          "nil": {
+            "value": 0
+          },
+          "nought": {
+            "value": 0
+          },
+          "none": {
+            "value": 0
+          },
+          "zero": {
+            "value": 0
+          },
+          "zilch": {
+            "value": 0
+          },
+          "one": {
+            "value": 1
+          },
+          "two": {
+            "value": 2
+          },
+          "three": {
+            "value": 3
+          },
+          "four": {
+            "value": 4
+          },
+          "five": {
+            "value": 5
+          },
+          "six": {
+            "value": 6
+          },
+          "seven": {
+            "value": 7
+          },
+          "eight": {
+            "value": 8
+          },
+          "nine": {
+            "value": 9
+          },
+          "ten": {
+            "value": 10
+          },
+          "eleven": {
+            "value": 11
+          },
+          "twelve": {
+            "value": 12
+          },
+          "thirteen": {
+            "value": 13
+          },
+          "fourteen": {
+            "value": 14
+          },
+          "fifteen": {
+            "value": 15
+          },
+          "sixteen": {
+            "value": 16
+          },
+          "seventeen": {
+            "value": 17
+          },
+          "eighteen": {
+            "value": 18
+          },
+          "nineteen": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "naught",
+        "nil",
+        "nought",
+        "none",
+        "zero"
+      ]
+    },
+    {
+      "name": "informal_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "single": {
+            "value": 1
+          },
+          "a couple": {
+            "value": 2
+          },
+          "a couple of": {
+            "value": 2
+          },
+          "couple": {
+            "value": 2
+          },
+          "couples": {
+            "value": 2
+          },
+          "couple of": {
+            "value": 2
+          },
+          "couples of": {
+            "value": 2
+          },
+          "a pair": {
+            "value": 2
+          },
+          "a pair of": {
+            "value": 2
+          },
+          "pair": {
+            "value": 2
+          },
+          "pairs": {
+            "value": 2
+          },
+          "pair of": {
+            "value": 2
+          },
+          "pairs of": {
+            "value": 2
+          },
+          "a few": {
+            "value": 3
+          },
+          "few": {
+            "value": 3
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "single",
+        "a couple",
+        "a couple of",
+        "couple",
+        "couples"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "twenty": {
+            "value": 20
+          },
+          "thirty": {
+            "value": 30
+          },
+          "forty": {
+            "value": 40
+          },
+          "fourty": {
+            "value": 40
+          },
+          "fifty": {
+            "value": 50
+          },
+          "sixty": {
+            "value": 60
+          },
+          "seventy": {
+            "value": 70
+          },
+          "eighty": {
+            "value": 80
+          },
+          "ninety": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "twenty",
+        "thirty",
+        "forty",
+        "fourty",
+        "fifty"
+      ]
+    },
+    {
+      "name": "powersOfTens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "hundred": {
+            "value": "2"
+          },
+          "thousand": {
+            "value": "3"
+          },
+          "lakh": {
+            "value": "5"
+          },
+          "lkh": {
+            "value": "5"
+          },
+          "l": {
+            "value": "5"
+          },
+          "lac": {
+            "value": "5"
+          },
+          "million": {
+            "value": "6"
+          },
+          "cr": {
+            "value": "7"
+          },
+          "crore": {
+            "value": "7"
+          },
+          "krore": {
+            "value": "7"
+          },
+          "kr": {
+            "value": "7"
+          },
+          "koti": {
+            "value": "7"
+          },
+          "billion": {
+            "value": "9"
+          },
+          "trillion": {
+            "value": "12"
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "hundred",
+        "thousand",
+        "lakh",
+        "lkh",
+        "l"
+      ]
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(a )?dozens?( of)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withMultipliable >>= notOkForAnyTime\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a dozen of",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "ToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(none|zilch|naught|nought|nil|zero|one|single|two|(a )?(pair|couple)s?( of)?|three|(a )?few|fourteen|four|fifteen|five|sixteen|six|seventeen|seven|eighteen|eight|nineteen|nine|ten|eleven|twelve|thirteen)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(twenty|thirty|fou?rty|fifty|sixty|seventy|eighty|ninety)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(hundred|thousand|l(ac|(a?kh)?)|million|((k|c)r(ore)?|koti)|billion)s?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "powersOfTensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens"
+      }
+    },
+    {
+      "name": "SkipHundreds1",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(one|two|three|four|five|six|seven|eight|nine)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "one eleven"
+      }
+    },
+    {
+      "name": "SkipHundreds2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(one|two|three|four|five|six|seven|eight|nine)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "one twenty two"
+      }
+    },
+    {
+      "name": "LeadingDotSpelledOut",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "point|dot",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double . decimalsToDouble $ TNumeral.value nd\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "point 77",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Decimals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Commas",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+(\\\\.\\\\d+)?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "comma-separated numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Negative",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(-|minus|negative)(?!\\\\s*-)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "negative numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20,30..90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [hasGrain, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "SumAnd",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [hasGrain, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers (with and)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isPositive\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "LegalParentheses",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " numberWith TNumeral.value $ and . sequence [isInteger, (>0)",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<integer> '('<integer>')'",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:23:42.190469",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 10,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

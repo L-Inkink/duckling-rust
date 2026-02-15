@@ -1,0 +1,242 @@
+{
+  "dimension": "Numeral",
+  "locale": "ne",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/NE/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "शुन्य": {
+            "value": 0
+          },
+          "सुन्ना": {
+            "value": 0
+          },
+          "एक": {
+            "value": 1
+          },
+          "दुई": {
+            "value": 2
+          },
+          "तीन": {
+            "value": 3
+          },
+          "चार": {
+            "value": 4
+          },
+          "पाँच": {
+            "value": 5
+          },
+          "छ": {
+            "value": 6
+          },
+          "सात": {
+            "value": 7
+          },
+          "आठ": {
+            "value": 8
+          },
+          "नौ": {
+            "value": 9
+          },
+          "दश": {
+            "value": 10
+          },
+          "एघार": {
+            "value": 11
+          },
+          "बाह्र": {
+            "value": 12
+          },
+          "तेह्र": {
+            "value": 13
+          },
+          "चौध": {
+            "value": 14
+          },
+          "पन्ध्र": {
+            "value": 15
+          },
+          "सोह्र": {
+            "value": 16
+          },
+          "सत्र": {
+            "value": 17
+          },
+          "अठार": {
+            "value": 18
+          },
+          "उन्नाइस": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "शुन्य",
+        "सुन्ना",
+        "एक",
+        "दुई",
+        "तीन"
+      ]
+    },
+    {
+      "name": "twentyoneToTwentynine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "एक्काइस": {
+            "value": 21
+          },
+          "बाइस": {
+            "value": 22
+          },
+          "तेइस": {
+            "value": 23
+          },
+          "चौबिस": {
+            "value": 24
+          },
+          "पच्चिस": {
+            "value": 25
+          },
+          "छब्बिस": {
+            "value": 26
+          },
+          "सत्ताइस": {
+            "value": 27
+          },
+          "अट्ठाइस": {
+            "value": 28
+          },
+          "उनन्तिस": {
+            "value": 29
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "एक्काइस",
+        "बाइस",
+        "तेइस",
+        "चौबिस",
+        "पच्चिस"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "बिस": {
+            "value": 20
+          },
+          "तिस": {
+            "value": 30
+          },
+          "चालिस": {
+            "value": 40
+          },
+          "पचास": {
+            "value": 50
+          },
+          "साठी": {
+            "value": 60
+          },
+          "सत्तरी": {
+            "value": 70
+          },
+          "असी": {
+            "value": 80
+          },
+          "नब्बे": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "बिस",
+        "तिस",
+        "चालिस",
+        "पचास",
+        "साठी"
+      ]
+    },
+    {
+      "name": "ToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(शुन्य|सुन्ना|एक|दुई|तीन|चार|पाँच|छ|सात|आठ|नौ|दश|एघार|बाह्र|तेह्र|चौध|पन्ध्र|सोह्र|सत्र|अठार|उन्नाइस)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "TwentyoneToTwentynine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(एक्काइस|बाइस|तेइस|चौबिस|पच्चिस|छब्बिस|सत्ताइस|अट्ठाइस|उनन्तिस)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyoneToTwentynineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (21..29)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(बिस|तिस|चालिस|पचास|साठी|सत्तरी|असी|नब्बे)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.157152",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

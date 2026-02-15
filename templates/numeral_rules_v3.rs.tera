@@ -1,0 +1,188 @@
+// Auto-generated from {{ source_file }}
+// DO NOT EDIT MANUALLY - Use tools/migration/codegen.rs
+//
+// Dimension: {{ dimension }}
+// Locale: {{ locale }}
+// Generator: codegen v3 (improved automation)
+
+use crate::values::Value;
+use rustling_core::{RuleSetBuilder, rustling_error};
+use std::collections::HashMap;
+use lazy_static::lazy_static;
+
+{% set dictionary_rules = [] %}
+{% set constant_regex_rules = [] %}
+{% set dict_ref_regex_rules = [] %}
+{% set complex_rules = [] %}
+
+{# Classify rules into categories #}
+{% for rule in rules %}
+  {% if rule.rule_type == "dictionary" %}
+    {% set_global dictionary_rules = dictionary_rules | concat(with=rule) %}
+  {% elif rule.rule_type == "regex" %}
+    {% if rule.production.constant_value %}
+      {# Constant value regex rule #}
+      {% set_global constant_regex_rules = constant_regex_rules | concat(with=rule) %}
+    {% elif rule.production.dictionary_ref and not rule.metadata._needs_manual_review %}
+      {# Dictionary reference regex rule #}
+      {% set_global dict_ref_regex_rules = dict_ref_regex_rules | concat(with=rule) %}
+    {% else %}
+      {# Complex rule needing manual review #}
+      {% set_global complex_rules = complex_rules | concat(with=rule) %}
+    {% endif %}
+  {% else %}
+    {% set_global complex_rules = complex_rules | concat(with=rule) %}
+  {% endif %}
+{% endfor %}
+
+{# Generate lazy_static dictionaries #}
+{% for rule in dictionary_rules %}
+// Dictionary: {{ rule.name }}
+lazy_static! {
+    static ref {{ rule.name | upper }}: HashMap<&'static str, {% if rule.metadata.value_type %}{{ rule.metadata.value_type }}{% else %}i64{% endif %}> = {
+        let mut map = HashMap::new();
+        {% for key, value in rule.pattern.entries %}
+        map.insert("{{ key }}", {{ value.value }});
+        {% endfor %}
+        map
+    };
+}
+{% endfor %}
+
+/// Build {{ dimension }} rules for {{ locale }} locale
+///
+/// Auto-generated rules:
+///   - {{ dictionary_rules | length }} dictionary rules
+///   - {{ constant_regex_rules | length }} constant regex rules
+///   - {{ dict_ref_regex_rules | length }} dictionary-reference regex rules
+///   - {{ complex_rules | length }} complex rules (manual implementation required)
+pub fn rules(b: &RuleSetBuilder<Value>) {
+    {% if dictionary_rules | length > 0 %}
+    // ========================================
+    // Dictionary Rules ({{ dictionary_rules | length }})
+    // ========================================
+    {% for rule in dictionary_rules %}
+
+    // Rule: {{ rule.name }}
+    // Examples: {% for ex in rule.examples %}{{ ex }}{% if not loop.last %}, {% endif %}{% endfor %}
+    {
+        let dict = &*{{ rule.name | upper }};
+        b.rule_1_terminal(
+            "{{ locale }}:{{ rule.name }}",
+            b.reg(r"(?i){% for key, value in rule.pattern.entries %}{{ key }}{% if not loop.last %}|{% endif %}{% endfor %}").unwrap(),
+            move |text_match| {
+                let text = text_match.group(0).to_lowercase();
+                dict.get(text.as_str())
+                    .map(|&value| {% if rule.metadata.value_type == "f64" %}Value::Float(value){% else %}Value::Integer(value){% endif %})
+                    .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
+            }
+        );
+    }
+    {% endfor %}
+    {% endif %}
+
+    {% if constant_regex_rules | length > 0 %}
+    // ========================================
+    // Constant Value Regex Rules ({{ constant_regex_rules | length }})
+    // ========================================
+    {% for rule in constant_regex_rules %}
+
+    // Rule: {{ rule.name }} → {{ rule.production.constant_value }}
+    b.rule_1_terminal(
+        "{{ locale }}:{{ rule.name }}",
+        b.reg(r"(?i){{ rule.pattern.value }}").unwrap(),
+        |_| {
+            Ok(Value::Integer({{ rule.production.constant_value }}))
+        }
+    );
+    {% endfor %}
+    {% endif %}
+
+    {% if dict_ref_regex_rules | length > 0 %}
+    // ========================================
+    // Dictionary-Reference Regex Rules ({{ dict_ref_regex_rules | length }})
+    // ========================================
+    {% for rule in dict_ref_regex_rules %}
+
+    // Rule: {{ rule.name }} (refs: {{ rule.production.dictionary_ref }})
+    {
+        {% set dict_ref = rule.production.dictionary_ref %}
+        {% set dict_base = dict_ref | replace(from="Map", to="") | upper %}
+        let dict = &*{{ dict_base }}_DICTIONARY;
+        b.rule_1_terminal(
+            "{{ locale }}:{{ rule.name }}",
+            b.reg(r"(?i){{ rule.pattern.value }}").unwrap(),
+            move |text_match| {
+                let text = text_match.group(0).to_lowercase();
+                dict.get(text.as_str())
+                    .map(|&value| {% if rule.metadata and rule.metadata.ref_value_type and rule.metadata.ref_value_type == "f64" %}Value::Float(value){% else %}Value::Integer(value){% endif %})
+                    .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
+            }
+        );
+    }
+    {% endfor %}
+    {% endif %}
+
+    {% if complex_rules | length > 0 %}
+    // ========================================
+    // Complex Rules - Manual Implementation Required ({{ complex_rules | length }})
+    // ========================================
+    {% for rule in complex_rules %}
+
+    // TODO: {{ rule.name }} ({{ rule.rule_type }})
+    {% if rule.metadata.original_name %}
+    //   Original: {{ rule.metadata.original_name }}
+    {% endif %}
+    // Manual implementation required
+    {% endfor %}
+
+    {% if complex_rules | length > 0 %}
+    eprintln!("⚠️  {{ locale }}/{{ dimension | lower }} has {{ complex_rules | length }} unimplemented complex rules");
+    {% endif %}
+    {% endif %}
+}
+
+// ========================================
+// Tests
+// ========================================
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rustling_core::{RuleSetBuilder, BoundariesChecker};
+
+    #[test]
+    fn test_{{ locale }}_{{ dimension | lower }}_rules_compile() {
+        let b = RuleSetBuilder::new(
+            BoundariesChecker::detailed(),
+            BoundariesChecker::separated_alphanumeric_word(),
+        );
+        rules(&b);
+        // Smoke test - rules should register without panic
+    }
+
+    {% if dictionary_rules | length > 0 %}
+    #[test]
+    fn test_{{ locale }}_{{ dimension | lower }}_dictionaries() {
+        {% for rule in dictionary_rules %}
+        assert!({{ rule.name | upper }}.len() > 0, "{{ rule.name }} should not be empty");
+        {% endfor %}
+    }
+    {% endif %}
+
+    #[test]
+    fn test_{{ locale }}_{{ dimension | lower }}_stats() {
+        // Generation statistics
+        let total_rules = {{ rules | length }};
+        let auto_generated = {{ dictionary_rules | length + constant_regex_rules | length + dict_ref_regex_rules | length }};
+        let manual_needed = {{ complex_rules | length }};
+
+        assert_eq!(total_rules, auto_generated + manual_needed);
+
+        // Log stats (visible with --nocapture)
+        eprintln!("{{ locale }}/{{ dimension | lower }} Stats:");
+        eprintln!("  Total rules: {}", total_rules);
+        eprintln!("  Auto-generated: {} ({:.1}%)", auto_generated, (auto_generated as f64 / total_rules as f64) * 100.0);
+        eprintln!("  Manual needed: {} ({:.1}%)", manual_needed, (manual_needed as f64 / total_rules as f64) * 100.0);
+    }
+}

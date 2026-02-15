@@ -1,0 +1,366 @@
+{
+  "dimension": "Numeral",
+  "locale": "fa",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/FA/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "صفر": {
+            "value": 0
+          },
+          "یک": {
+            "value": 1
+          },
+          "دو": {
+            "value": 2
+          },
+          "سه": {
+            "value": 3
+          },
+          "چهار": {
+            "value": 4
+          },
+          "پنج": {
+            "value": 5
+          },
+          "شش": {
+            "value": 6
+          },
+          "شیش": {
+            "value": 6
+          },
+          "هفت": {
+            "value": 7
+          },
+          "هشت": {
+            "value": 8
+          },
+          "نه": {
+            "value": 9
+          },
+          "ده": {
+            "value": 10
+          },
+          "یازده": {
+            "value": 11
+          },
+          "دوازده": {
+            "value": 12
+          },
+          "سیزده": {
+            "value": 13
+          },
+          "چهارده": {
+            "value": 14
+          },
+          "پانزده": {
+            "value": 15
+          },
+          "پونزده": {
+            "value": 15
+          },
+          "شانزده": {
+            "value": 16
+          },
+          "شونزده": {
+            "value": 16
+          },
+          "هفده": {
+            "value": 17
+          },
+          "هیفده": {
+            "value": 17
+          },
+          "هجده": {
+            "value": 18
+          },
+          "هیجده": {
+            "value": 18
+          },
+          "نوزده": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "صفر",
+        "یک",
+        "دو",
+        "سه",
+        "چهار"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "بیست": {
+            "value": 20
+          },
+          "سی": {
+            "value": 30
+          },
+          "چهل": {
+            "value": 40
+          },
+          "پنجاه": {
+            "value": 50
+          },
+          "شصت": {
+            "value": 60
+          },
+          "هفتاد": {
+            "value": 70
+          },
+          "هشتاد": {
+            "value": 80
+          },
+          "نود": {
+            "value": 90
+          },
+          "صد": {
+            "value": 100
+          },
+          "دویست": {
+            "value": 200
+          },
+          "سیصد": {
+            "value": 300
+          },
+          "سی صد": {
+            "value": 300
+          },
+          "چهارصد": {
+            "value": 400
+          },
+          "چهار صد": {
+            "value": 400
+          },
+          "پانصد": {
+            "value": 500
+          },
+          "پونصد": {
+            "value": 500
+          },
+          "شیشصد": {
+            "value": 600
+          },
+          "شیش صد": {
+            "value": 600
+          },
+          "ششصد": {
+            "value": 600
+          },
+          "شش صد": {
+            "value": 600
+          },
+          "هفتصد": {
+            "value": 700
+          },
+          "هفت صد": {
+            "value": 700
+          },
+          "هشتصد": {
+            "value": 800
+          },
+          "هشت صد": {
+            "value": 800
+          },
+          "نهصد": {
+            "value": 900
+          },
+          "نه صد": {
+            "value": 900
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "بیست",
+        "سی",
+        "چهل",
+        "پنجاه",
+        "شصت"
+      ]
+    },
+    {
+      "name": "ToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(صفر|یک|سه|چهارده|چهار|پنج|شی?ش|هفت|هشت|نه|یازده|دوازده|سیزده|پ(ا|و)نزده|ش(ا|و)نزده|هی?فده|هی?جده|نوزده|ده|دو)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(دویست|(سی|چهار|پان|پون|شی?ش|هفت|هشت|نه)? ?صد|بیست|سی|چهل|پنجاه|شصت|هفتاد|هشتاد|نود)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(هزار|میلیون|ملیون|میلیارد)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"هزار\"  -> double 1e3 >>= withGrain 2 >>= withMultipliable\n        \"میلیون\" -> ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20,30..90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeHundred",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [100,200..900",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [hasGrain, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "SumAnd",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [hasGrain, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers (with and)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.168491",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 6,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

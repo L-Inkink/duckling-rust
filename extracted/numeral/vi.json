@@ -1,0 +1,428 @@
+{
+  "dimension": "Numeral",
+  "locale": "vi",
+  "source_file": "Duckling/Numeral/VI/Rules.hs",
+  "rules": [
+    {
+      "name": "integer_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "không": {
+            "value": 0
+          },
+          "một": {
+            "value": 1
+          },
+          "linh một": {
+            "value": 1
+          },
+          "lẻ một": {
+            "value": 1
+          },
+          "hai": {
+            "value": 2
+          },
+          "lẻ hai": {
+            "value": 2
+          },
+          "linh hai": {
+            "value": 2
+          },
+          "ba": {
+            "value": 3
+          },
+          "lẻ": {
+            "value": 3
+          },
+          "linh ba": {
+            "value": 3
+          },
+          "lẻ bốn": {
+            "value": 4
+          },
+          "linh bốn": {
+            "value": 4
+          },
+          "bốn": {
+            "value": 4
+          },
+          "năm": {
+            "value": 5
+          },
+          "lẻ năm": {
+            "value": 5
+          },
+          "linh năm": {
+            "value": 5
+          },
+          "linh sáu": {
+            "value": 6
+          },
+          "sáu": {
+            "value": 6
+          },
+          "lẻ sáu": {
+            "value": 6
+          },
+          "linh bảy": {
+            "value": 7
+          },
+          "lẻ bảy": {
+            "value": 7
+          },
+          "bảy": {
+            "value": 7
+          },
+          "lẻ tám": {
+            "value": 8
+          },
+          "linh tám": {
+            "value": 8
+          },
+          "tám": {
+            "value": 8
+          },
+          "lẻ chín": {
+            "value": 9
+          },
+          "chín": {
+            "value": 9
+          },
+          "linh chín": {
+            "value": 9
+          },
+          "linh mười": {
+            "value": 10
+          },
+          "mười": {
+            "value": 10
+          },
+          "lẻ mười": {
+            "value": 10
+          },
+          "mười một": {
+            "value": 11
+          },
+          "mười hai": {
+            "value": 12
+          },
+          "mười ba": {
+            "value": 13
+          },
+          "mười bốn": {
+            "value": 14
+          },
+          "mười lăm": {
+            "value": 15
+          },
+          "mười sáu": {
+            "value": 16
+          },
+          "mười bảy": {
+            "value": 17
+          },
+          "mười tám": {
+            "value": 18
+          },
+          "mười chín": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "không",
+        "một",
+        "linh một",
+        "lẻ một",
+        "hai"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "hai mươi": {
+            "value": 20
+          },
+          "ba mươi": {
+            "value": 30
+          },
+          "bốn mươi": {
+            "value": 40
+          },
+          "năm mươi": {
+            "value": 50
+          },
+          "sáu mươi": {
+            "value": 60
+          },
+          "bảy mươi": {
+            "value": 70
+          },
+          "tám mươi": {
+            "value": 80
+          },
+          "chín mươi": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "hai mươi",
+        "ba mươi",
+        "bốn mươi",
+        "năm mươi",
+        "sáu mươi"
+      ]
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:chục|trăm|nghìn|ngàn|triệu|t(?:ỷ|ỉ))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true,
+        "note": "Tuple-type dictionary (Double, Int) - needs manual implementation"
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithM",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "\\\\-|âm",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, âm",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(?:\\\\d+(?:\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \".\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(không|một|linh một|lẻ một|hai|linh hai|lẻ hai|ba|linh ba|lẻ ba|bốn|linh bốn|lẻ bốn|năm|linh năm|lẻ năm|sáu|lẻ sáu|linh sáu|bảy|lẻ bảy|linh bảy|tám|linh tám|lẻ tám|chín|linh chín|lẻ chín|mười một|mười hai|mười ba|mười bốn|mười lăm|mười sáu|mười bảy|mười tám|mười chín|mười|linh mười)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(hai mươi|ba mươi|bốn mươi|năm mươi|sáu mươi|bảy mươi|tám mươi|chín mươi)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "T",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "tá",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "constant",
+        "constant_value": 12,
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "tá"
+      }
+    },
+    {
+      "name": "Numerals2",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "numbers 25 35 45 55 65 75 85 95",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numerals",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "numbers 21 31 41 51 61 71 81 91",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-15T21:03:05.327682",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 8,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

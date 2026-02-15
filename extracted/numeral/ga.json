@@ -1,0 +1,421 @@
+{
+  "dimension": "Numeral",
+  "locale": "ga",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/GA/Rules.hs",
+  "rules": [
+    {
+      "name": "oneToTen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "aon": {
+            "value": 1
+          },
+          "dha": {
+            "value": 2
+          },
+          "dhá": {
+            "value": 2
+          },
+          "trí": {
+            "value": 3
+          },
+          "tri": {
+            "value": 3
+          },
+          "ceithre": {
+            "value": 4
+          },
+          "cuig": {
+            "value": 5
+          },
+          "cúig": {
+            "value": 5
+          },
+          "sé": {
+            "value": 6
+          },
+          "se": {
+            "value": 6
+          },
+          "seacht": {
+            "value": 7
+          },
+          "ocht": {
+            "value": 8
+          },
+          "naoi": {
+            "value": 9
+          },
+          "deich": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "aon",
+        "dha",
+        "dhá",
+        "trí",
+        "tri"
+      ]
+    },
+    {
+      "name": "oldVigNumeralsS_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "dá fhichead": {
+            "value": 40
+          },
+          "da fhichead": {
+            "value": 40
+          },
+          "dhá fhichead": {
+            "value": 40
+          },
+          "dha fhichead": {
+            "value": 40
+          },
+          "trí fichid": {
+            "value": 60
+          },
+          "tri fichid": {
+            "value": 60
+          },
+          "ceithre fichid": {
+            "value": 80
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "dá fhichead",
+        "da fhichead",
+        "dhá fhichead",
+        "dha fhichead",
+        "trí fichid"
+      ]
+    },
+    {
+      "name": "twentyToNinety_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "fiche": {
+            "value": 20
+          },
+          "triocha": {
+            "value": 30
+          },
+          "tríocha": {
+            "value": 30
+          },
+          "daichead": {
+            "value": 40
+          },
+          "caoga": {
+            "value": 50
+          },
+          "seasca": {
+            "value": 60
+          },
+          "seachto": {
+            "value": 70
+          },
+          "seachtó": {
+            "value": 70
+          },
+          "ochto": {
+            "value": 80
+          },
+          "ochtó": {
+            "value": 80
+          },
+          "nócha": {
+            "value": 90
+          },
+          "nocha": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "fiche",
+        "triocha",
+        "tríocha",
+        "daichead",
+        "caoga"
+      ]
+    },
+    {
+      "name": "countNumerals_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "naid": {
+            "value": 0
+          },
+          "náid": {
+            "value": 0
+          },
+          "haon": {
+            "value": 1
+          },
+          "dó": {
+            "value": 2
+          },
+          "do": {
+            "value": 2
+          },
+          "trí": {
+            "value": 3
+          },
+          "tri": {
+            "value": 3
+          },
+          "ceathair": {
+            "value": 4
+          },
+          "cuig": {
+            "value": 5
+          },
+          "cúig": {
+            "value": 5
+          },
+          "sé": {
+            "value": 6
+          },
+          "se": {
+            "value": 6
+          },
+          "seacht": {
+            "value": 7
+          },
+          "hocht": {
+            "value": 8
+          },
+          "naoi": {
+            "value": 9
+          },
+          "deich": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "naid",
+        "náid",
+        "haon",
+        "dó",
+        "do"
+      ]
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|m(í|i)neas(\\\\sa)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:\n       Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numerals2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(aon|dh(á|a)|tr(í|i)|ceithre|c(ú|u)ig|seacht|s(é|e)|ocht|naoi|deich)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "oneToTenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers, 1-10"
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dag",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "d(é|e)ag",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "déag",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "OldVigesimalNumeralsS",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(d[ée]ag )?is (dh?(á|a) fhichead|tr(í|i) fichid|ceithre fichid)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "oldVigNumeralsSMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "old vigesimal numbers, 20s"
+      }
+    },
+    {
+      "name": "OldVigesimalFiche",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "d[ée]ag is fiche",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 30\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "old vigesimal 20 + 10",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Amhin",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "amh(á|a)in",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "amháin",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numerals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(fiche|tr(í|i)ocha|daichead|caoga|seasca|seacht(ó|o)|ocht(ó|o)|n(ó|o)cha)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyToNinetyMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers, 20-90"
+      }
+    },
+    {
+      "name": "CountNumerals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "a (n(á|a)id|haon|d(ó|o)|tr(í|i)|ceathair|c(ú|u)ig|s(é|e)|seacht|hocht|naoi|deich)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "countNumeralsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "count numbers"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.138629",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 6,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

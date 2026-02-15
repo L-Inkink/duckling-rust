@@ -1,0 +1,543 @@
+{
+  "dimension": "Numeral",
+  "locale": "es",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/ES/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroToFifteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "zero": {
+            "value": 0
+          },
+          "cero": {
+            "value": 0
+          },
+          "un": {
+            "value": 1
+          },
+          "una": {
+            "value": 1
+          },
+          "uno": {
+            "value": 1
+          },
+          "dos": {
+            "value": 2
+          },
+          "trés": {
+            "value": 3
+          },
+          "tres": {
+            "value": 3
+          },
+          "cuatro": {
+            "value": 4
+          },
+          "cinco": {
+            "value": 5
+          },
+          "seis": {
+            "value": 6
+          },
+          "séis": {
+            "value": 6
+          },
+          "siete": {
+            "value": 7
+          },
+          "ocho": {
+            "value": 8
+          },
+          "nueve": {
+            "value": 9
+          },
+          "diez": {
+            "value": 10
+          },
+          "dies": {
+            "value": 10
+          },
+          "once": {
+            "value": 11
+          },
+          "doce": {
+            "value": 12
+          },
+          "trece": {
+            "value": 13
+          },
+          "catorce": {
+            "value": 14
+          },
+          "quince": {
+            "value": 15
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "zero",
+        "cero",
+        "un",
+        "una",
+        "uno"
+      ]
+    },
+    {
+      "name": "sixteenToTwentyNine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "dieciseis": {
+            "value": 16
+          },
+          "diesiséis": {
+            "value": 16
+          },
+          "diesiseis": {
+            "value": 16
+          },
+          "dieciséis": {
+            "value": 16
+          },
+          "diecisiete": {
+            "value": 17
+          },
+          "dieciocho": {
+            "value": 18
+          },
+          "diecinueve": {
+            "value": 19
+          },
+          "veintiuno": {
+            "value": 21
+          },
+          "veintiuna": {
+            "value": 21
+          },
+          "veintidos": {
+            "value": 22
+          },
+          "veintidós": {
+            "value": 22
+          },
+          "veintitrés": {
+            "value": 23
+          },
+          "veintitres": {
+            "value": 23
+          },
+          "veinticuatro": {
+            "value": 24
+          },
+          "veinticinco": {
+            "value": 25
+          },
+          "veintiséis": {
+            "value": 26
+          },
+          "veintiseis": {
+            "value": 26
+          },
+          "veintisiete": {
+            "value": 27
+          },
+          "veintiocho": {
+            "value": 28
+          },
+          "veintinueve": {
+            "value": 29
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "dieciseis",
+        "diesiséis",
+        "diesiseis",
+        "dieciséis",
+        "diecisiete"
+      ]
+    },
+    {
+      "name": "byTens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "veinte": {
+            "value": 20
+          },
+          "treinta": {
+            "value": 30
+          },
+          "cuarenta": {
+            "value": 40
+          },
+          "cincuenta": {
+            "value": 50
+          },
+          "sesenta": {
+            "value": 60
+          },
+          "setenta": {
+            "value": 70
+          },
+          "ochenta": {
+            "value": 80
+          },
+          "noventa": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "veinte",
+        "treinta",
+        "cuarenta",
+        "cincuenta",
+        "sesenta"
+      ]
+    },
+    {
+      "name": "bigNumbers_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "cien": {
+            "value": 100
+          },
+          "cientos": {
+            "value": 100
+          },
+          "ciento": {
+            "value": 100
+          },
+          "doscientos": {
+            "value": 200
+          },
+          "trescientos": {
+            "value": 300
+          },
+          "cuatrocientos": {
+            "value": 400
+          },
+          "quinientos": {
+            "value": 500
+          },
+          "seiscientos": {
+            "value": 600
+          },
+          "setecientos": {
+            "value": 700
+          },
+          "ochocientos": {
+            "value": 800
+          },
+          "novecientos": {
+            "value": 900
+          },
+          "mil": {
+            "value": 1000
+          },
+          "millon": {
+            "value": 1000000
+          },
+          "millón": {
+            "value": 1000000
+          },
+          "un millon": {
+            "value": 1000000
+          },
+          "un millón": {
+            "value": 1000000
+          },
+          "millones": {
+            "value": 1000000
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "cien",
+        "cientos",
+        "ciento",
+        "doscientos",
+        "trescientos"
+      ]
+    },
+    {
+      "name": "NumeralZeroToFifteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((c|z)ero|un(o|a)?|dos|tr(é|e)s|cuatro|cinco|s(e|é)is|siete|ocho|nueve|die(z|s)|once|doce|trece|catorce|quince)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroToFifteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..15)"
+      }
+    },
+    {
+      "name": "BelowTenWithTwoDigits",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((c|z)ero)|0",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (\n        _:\n        Token Numeral NumeralData { TNumeral.value = v ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0-9) with two digits",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralSixteenToTwentyNine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(die(c|s)is(é|e)is|diecisiete|dieciocho|diecinueve|veintiun(o|a)|veintid(o|ó)s|veintitr(é|e)s|veinticuatro|veinticinco|veintis(é|e)is|veintisiete|veintiocho|veintinueve|treinta)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "sixteenToTwentyNineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (16..19 21..29)"
+      }
+    },
+    {
+      "name": "NumeralTwentyToNinetyTens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(veinte|treinta|cuarenta|cincuenta|sesenta|setenta|ochenta|noventa)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "byTensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (20..90)"
+      }
+    },
+    {
+      "name": "BigNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(cien(to|tos)?|doscientos|trescientos|cuatrocientos|quinientos|seiscientos|setecientos|ochocientos|novecientos|(un )?mill(o|ó)n)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "bigNumbersMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "big number 100 to 1K"
+      }
+    },
+    {
+      "name": "BigNumeralMultipliable",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(mil(lones)?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "bigNumbersMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "1K or 1M in multipliable form"
+      }
+    },
+    {
+      "name": "LeadingDotNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "coma|punto",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dot number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|menos|negativ(o|a)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_ : Token Numeral NumeralData { TNumeral.value = v ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralTwentyOneToNinetyNine",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "number (21..29 31..39 41..49 51..59 61..69 71..79 81..89 91..99)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralHundredsAndSmaller",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " numberWith TNumeral.value (TNumeral.isMultiple 100)\n      , Predicate $ numberBetween 0 100\n      ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<hundreds> 0..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralMultiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ numberBetween 2 1000\n      , Predicate isMultipliable\n      ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "2..999 <multipliable>",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralThousandsAnd",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " numberWith TNumeral.value (TNumeral.isMultiple 1000)\n      , Predicate $ numberBetween 0 999\n      ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<thousands> 0..999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralMillionsAnd",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " numberWith TNumeral.value (TNumeral.isMultiple 1000000)\n      , Predicate $ numberBetween 0 999999\n      ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "<millions> 0..999999",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-15T01:12:24.393616",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 8,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}
