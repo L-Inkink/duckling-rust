@@ -1,4 +1,4 @@
-// Auto-generated from /Users/link/Project/duckling/Duckling/Numeral/KO/Rules.hs
+// Auto-generated from Duckling/Numeral/KO/Rules.hs
 // DO NOT EDIT MANUALLY - Use tools/migration/codegen.rs
 //
 // Dimension: Numeral
@@ -232,8 +232,8 @@ lazy_static! {
 ///
 /// Auto-generated rules:
 ///   - 4 dictionary rules
-///   - 0 constant regex rules
-///   - 5 dictionary-reference regex rules
+///   - 1 constant regex rules
+///   - 4 dictionary-reference regex rules
 ///   - 9 complex rules (manual implementation required)
 pub fn rules(b: &RuleSetBuilder<Value>) {
     
@@ -312,10 +312,25 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     
 
     
+    // ========================================
+    // Constant Value Regex Rules (1)
+    // ========================================
+    
+
+    // Rule: Few → 3
+    b.rule_1_terminal(
+        "ko:Few",
+        b.reg(r"(?i)몇").unwrap(),
+        |_| {
+            Ok(Value::Integer(3))
+        }
+    );
+    
+    
 
     
     // ========================================
-    // Dictionary-Reference Regex Rules (5)
+    // Dictionary-Reference Regex Rules (4)
     // ========================================
     
 
@@ -373,24 +388,6 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     }
     
 
-    // Rule: IntegerType1PowersOfTen (refs: integerType1PowersOfTenMap)
-    {
-        
-        
-        let dict = &*INTEGERTYPE1POWERSOFTEN_DICTIONARY;
-        b.rule_1_terminal(
-            "ko:IntegerType1PowersOfTen",
-            b.reg(r"(?i)(십|백|천|만|억|조)").unwrap(),
-            move |text_match| {
-                let text = text_match.group(0).to_lowercase();
-                dict.get(text.as_str())
-                    .map(|&value| Value::Integer(value))
-                    .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
-            }
-        );
-    }
-    
-
     // Rule: IntegerType2 (refs: integerType2Map)
     {
         
@@ -414,13 +411,6 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     // ========================================
     // Complex Rules - Manual Implementation Required (9)
     // ========================================
-    
-
-    // TODO: Few (regex)
-    
-    //   Original: few 몇
-    
-    // Manual implementation required
     
 
     // TODO: DecimalWithThousandsSeparator (regex)
@@ -454,6 +444,13 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
     // TODO: Integer (regex)
     
     //   Original: integer 0
+    
+    // Manual implementation required
+    
+
+    // TODO: IntegerType1PowersOfTen (regex)
+    
+    //   Original: integer - TYPE 1: powers of ten
     
     // Manual implementation required
     

@@ -1,7 +1,7 @@
 {
   "dimension": "Numeral",
   "locale": "km",
-  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/KM/Rules.hs",
+  "source_file": "Duckling/Numeral/KM/Rules.hs",
   "rules": [
     {
       "name": "ruleNumeral_dictionary",
@@ -82,6 +82,54 @@
         "២",
         "៣",
         "៤"
+      ]
+    },
+    {
+      "name": "ruleTens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ដប់": {
+            "value": 10
+          },
+          "ម្ភៃ": {
+            "value": 20
+          },
+          "សាម": {
+            "value": 30
+          },
+          "សែ": {
+            "value": 40
+          },
+          "ហា": {
+            "value": 50
+          },
+          "ហុក": {
+            "value": 60
+          },
+          "ចិត": {
+            "value": 70
+          },
+          "ប៉ែត": {
+            "value": 80
+          },
+          "កៅ": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ដប់",
+        "ម្ភៃ",
+        "សាម",
+        "សែ",
+        "ហា"
       ]
     },
     {
@@ -201,7 +249,7 @@
     }
   ],
   "metadata": {
-    "extracted_at": "2026-02-14T23:27:26.140262",
+    "extracted_at": "2026-02-15T21:03:05.229511",
     "extractor_version": "1.0.0",
     "extraction_method": "python_regex",
     "rules_needing_review": 4,

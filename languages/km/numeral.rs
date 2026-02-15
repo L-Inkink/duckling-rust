@@ -1,4 +1,4 @@
-// Auto-generated from /Users/link/Project/duckling/Duckling/Numeral/KM/Rules.hs
+// Auto-generated from Duckling/Numeral/KM/Rules.hs
 // DO NOT EDIT MANUALLY - Use tools/migration/codegen.rs
 //
 // Dimension: Numeral
@@ -16,6 +16,10 @@ use lazy_static::lazy_static;
 
 
 
+
+  
+    
+  
 
   
     
@@ -106,18 +110,45 @@ lazy_static! {
     };
 }
 
+// Dictionary: ruleTens_dictionary
+lazy_static! {
+    static ref RULETENS_DICTIONARY: HashMap<&'static str, i64> = {
+        let mut map = HashMap::new();
+        
+        map.insert("កៅ", 90);
+        
+        map.insert("ចិត", 70);
+        
+        map.insert("ដប់", 10);
+        
+        map.insert("ប៉ែត", 80);
+        
+        map.insert("ម្ភៃ", 20);
+        
+        map.insert("សាម", 30);
+        
+        map.insert("សែ", 40);
+        
+        map.insert("ហា", 50);
+        
+        map.insert("ហុក", 60);
+        
+        map
+    };
+}
+
 
 /// Build Numeral rules for km locale
 ///
 /// Auto-generated rules:
-///   - 1 dictionary rules
+///   - 2 dictionary rules
 ///   - 0 constant regex rules
 ///   - 2 dictionary-reference regex rules
 ///   - 4 complex rules (manual implementation required)
 pub fn rules(b: &RuleSetBuilder<Value>) {
     
     // ========================================
-    // Dictionary Rules (1)
+    // Dictionary Rules (2)
     // ========================================
     
 
@@ -128,6 +159,23 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         b.rule_1_terminal(
             "km:ruleNumeral_dictionary",
             b.reg(r"(?i)បី|បួន|ប្រាំ|ប្រាំបី|ប្រាំបួន|ប្រាំពីរ|ប្រាំមួយ|ពីរ|មួយ|សូន្យ|០|១|២|៣|៤|៥|៦|៧|៨|៩").unwrap(),
+            move |text_match| {
+                let text = text_match.group(0).to_lowercase();
+                dict.get(text.as_str())
+                    .map(|&value| Value::Integer(value))
+                    .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
+            }
+        );
+    }
+    
+
+    // Rule: ruleTens_dictionary
+    // Examples: ដប់, ម្ភៃ, សាម, សែ, ហា
+    {
+        let dict = &*RULETENS_DICTIONARY;
+        b.rule_1_terminal(
+            "km:ruleTens_dictionary",
+            b.reg(r"(?i)កៅ|ចិត|ដប់|ប៉ែត|ម្ភៃ|សាម|សែ|ហា|ហុក").unwrap(),
             move |text_match| {
                 let text = text_match.group(0).to_lowercase();
                 dict.get(text.as_str())
@@ -249,14 +297,16 @@ mod tests {
         
         assert!(RULENUMERAL_DICTIONARY.len() > 0, "ruleNumeral_dictionary should not be empty");
         
+        assert!(RULETENS_DICTIONARY.len() > 0, "ruleTens_dictionary should not be empty");
+        
     }
     
 
     #[test]
     fn test_km_numeral_stats() {
         // Generation statistics
-        let total_rules = 7;
-        let auto_generated = 3;
+        let total_rules = 8;
+        let auto_generated = 4;
         let manual_needed = 4;
 
         assert_eq!(total_rules, auto_generated + manual_needed);

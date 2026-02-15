@@ -1,7 +1,7 @@
 {
   "dimension": "Numeral",
   "locale": "ko",
-  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/KO/Rules.hs",
+  "source_file": "Duckling/Numeral/KO/Rules.hs",
   "rules": [
     {
       "name": "integerForOrdinals_dictionary",
@@ -212,13 +212,12 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "custom",
-        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "value_extractor": "constant",
+        "constant_value": 3,
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "few 몇",
-        "_needs_manual_review": true
+        "original_name": "few 몇"
       }
     },
     {
@@ -226,7 +225,7 @@
       "rule_type": "regex",
       "pattern": {
         "type": "regex",
-        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
+        "value": "(?:\\\\d+(?:,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
         "flags": "i"
       },
       "production": {
@@ -302,13 +301,12 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "custom",
-        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 0\n  ",
+        "value_extractor": "constant",
+        "constant_value": 0,
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "integer 0",
-        "_needs_manual_review": true
+        "original_name": "integer 0"
       }
     },
     {
@@ -354,12 +352,13 @@
         "flags": "i"
       },
       "production": {
-        "value_extractor": "dictionary_lookup",
-        "dictionary_ref": "integerType1PowersOfTenMap",
+        "value_extractor": "custom",
         "confidence": 1.0
       },
       "metadata": {
-        "original_name": "integer - TYPE 1: powers of ten"
+        "original_name": "integer - TYPE 1: powers of ten",
+        "_needs_manual_review": true,
+        "note": "Tuple-type dictionary (Double, Int) - needs manual implementation"
       }
     },
     {
@@ -444,10 +443,10 @@
     }
   ],
   "metadata": {
-    "extracted_at": "2026-02-14T23:27:26.163063",
+    "extracted_at": "2026-02-15T21:03:05.279811",
     "extractor_version": "1.0.0",
     "extraction_method": "python_regex",
-    "rules_needing_review": 9,
+    "rules_needing_review": 7,
     "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
   }
 }

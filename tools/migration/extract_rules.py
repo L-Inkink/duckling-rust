@@ -89,7 +89,8 @@ class DucklingRuleExtractor:
 
         # Find all HashMap definitions
         # Support: "HashMap Text Integer", "HashMap.HashMap Text Integer", "HashMap.HashMap Text.Text Integer"
-        pattern = r'(\w+Map)\s*::\s*HashMap(?:\.HashMap)?\s+(?:Text\.)?Text\s+(\w+)\s*\n\s*\1\s*=\s*HashMap\.fromList\s*\[((?:[^]]*(?:\[[^\]]*\])?)*)\]'
+        # Allow multiple lines of comments and whitespace between HashMap.fromList and [
+        pattern = r'(\w+Map)\s*::\s*HashMap(?:\.HashMap)?\s+(?:Text\.)?Text\s+(\w+)\s*\n\s*\1\s*=\s*HashMap\.fromList\s*(?:(?:--[^\n]*\n\s*)*)\[((?:[^]]*(?:\[[^\]]*\])?)*)\]'
 
         for match in re.finditer(pattern, self.content, re.MULTILINE | re.DOTALL):
             map_name = match.group(1)
