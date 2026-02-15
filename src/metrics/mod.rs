@@ -98,7 +98,7 @@ impl Metrics {
             .iter()
             .map(|(k, (total, count))| {
                 let total_ns = total.load(Ordering::Relaxed);
-                let cnt = count.load(Ordering::Relaxed) as u64;
+                let cnt = count.load(Ordering::Relaxed);
                 (
                     k.clone(),
                     TimingData {
@@ -178,7 +178,7 @@ impl MetricsSnapshot {
 }
 
 /// Global metrics instance
-pub static METRICS: std::sync::LazyLock<Metrics> = std::sync::LazyLock::new(Metrics::new);
+pub static METRICS: once_cell::sync::Lazy<Metrics> = once_cell::sync::Lazy::new(Metrics::new);
 
 #[cfg(test)]
 mod tests {

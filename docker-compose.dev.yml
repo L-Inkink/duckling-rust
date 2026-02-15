@@ -1,0 +1,31 @@
+version: '3.8'
+
+# Development override for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  rustling:
+    # Build with cache for faster rebuilds
+    build:
+      context: .
+      dockerfile: Dockerfile
+      cache_from:
+        - rustling-server:latest
+
+    # Enable debug logging
+    environment:
+      - RUST_LOG=debug
+      - RUST_BACKTRACE=1
+      - RELOAD_API_KEY=dev-secret-key
+
+    # Mount source for hot-reload (requires rebuild)
+    volumes:
+      - ./rules:/app/rules:ro
+      - ./examples:/app/examples:ro
+
+    # Port mapping with different port to avoid conflicts
+    ports:
+      - "8080:8080"
+
+    # Development: don't restart on failure
+    restart: "no"
