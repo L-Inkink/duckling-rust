@@ -9,6 +9,7 @@ pub mod pattern;
 mod range;
 pub mod rule;
 mod stash;
+pub mod time;
 
 pub use builder::RuleSetBuilder;
 pub use error::{Result as CoreResult, RustlingError};

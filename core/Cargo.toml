@@ -11,3 +11,5 @@ smallvec = "1.13"
 thiserror = "1.0"
 string-interner = "0.17"
 serde = { version = "1.0", features = ["derive"] }
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.8"
