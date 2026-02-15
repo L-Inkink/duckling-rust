@@ -1,0 +1,284 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Duckling Rule Schema",
+  "description": "JSON Schema for representing Duckling rules in a language-agnostic format for migration to Rustling",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["dimension", "locale", "rules"],
+  "properties": {
+    "dimension": {
+      "type": "string",
+      "description": "The dimension type this rule file handles",
+      "enum": [
+        "Numeral",
+        "Ordinal",
+        "Time",
+        "Duration",
+        "TimeGrain",
+        "AmountOfMoney",
+        "Distance",
+        "Volume",
+        "Temperature",
+        "Quantity",
+        "Email",
+        "PhoneNumber",
+        "Url",
+        "CreditCardNumber"
+      ]
+    },
+    "locale": {
+      "type": "string",
+      "description": "Language/locale code (e.g., 'en', 'zh_CN', 'es_MX')",
+      "pattern": "^[a-z]{2}(_[A-Z]{2})?$"
+    },
+    "source_file": {
+      "type": "string",
+      "description": "Original Haskell source file path for reference"
+    },
+    "rules": {
+      "type": "array",
+      "description": "List of rules for this dimension and locale",
+      "items": {
+        "$ref": "#/definitions/Rule"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional metadata about this rule set",
+      "properties": {
+        "extracted_at": {"type": "string", "format": "date-time"},
+        "extractor_version": {"type": "string"},
+        "notes": {"type": "string"}
+      }
+    }
+  },
+  "definitions": {
+    "Rule": {
+      "type": "object",
+      "required": ["name", "rule_type", "pattern", "production"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique identifier for this rule"
+        },
+        "rule_type": {
+          "type": "string",
+          "description": "Category of rule",
+          "enum": ["dictionary", "regex", "composite", "production", "predicate"]
+        },
+        "pattern": {
+          "description": "Pattern matching definition",
+          "oneOf": [
+            {"$ref": "#/definitions/DictionaryPattern"},
+            {"$ref": "#/definitions/RegexPattern"},
+            {"$ref": "#/definitions/CompositePattern"},
+            {"$ref": "#/definitions/PredicatePattern"}
+          ]
+        },
+        "production": {
+          "$ref": "#/definitions/Production"
+        },
+        "examples": {
+          "type": "array",
+          "description": "Example inputs that should match this rule",
+          "items": {"type": "string"}
+        },
+        "priority": {
+          "type": "number",
+          "description": "Rule priority (higher = checked first)",
+          "default": 0
+        }
+      }
+    },
+    "DictionaryPattern": {
+      "type": "object",
+      "required": ["type", "entries"],
+      "properties": {
+        "type": {
+          "const": "dictionary"
+        },
+        "entries": {
+          "type": "object",
+          "description": "Map of text -> value",
+          "additionalProperties": {
+            "$ref": "#/definitions/DictionaryEntry"
+          }
+        },
+        "case_sensitive": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "DictionaryEntry": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "The semantic value (number, string, etc.)",
+          "oneOf": [
+            {"type": "number"},
+            {"type": "string"},
+            {"type": "boolean"},
+            {"type": "object"}
+          ]
+        },
+        "grain": {
+          "type": "string",
+          "description": "Time grain (for time-related values)",
+          "enum": ["second", "minute", "hour", "day", "week", "month", "quarter", "year"]
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional metadata for this entry"
+        }
+      }
+    },
+    "RegexPattern": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "const": "regex"
+        },
+        "value": {
+          "type": "string",
+          "description": "Regular expression pattern"
+        },
+        "flags": {
+          "type": "string",
+          "description": "Regex flags (i=case-insensitive, m=multiline, etc.)",
+          "default": "i"
+        },
+        "capture_groups": {
+          "type": "array",
+          "description": "Named capture groups and their meanings",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {"type": "string"},
+              "description": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "CompositePattern": {
+      "type": "object",
+      "required": ["type", "components"],
+      "properties": {
+        "type": {
+          "const": "composite"
+        },
+        "operator": {
+          "type": "string",
+          "description": "How to combine components",
+          "enum": ["sequence", "choice", "intersect", "not"],
+          "default": "sequence"
+        },
+        "components": {
+          "type": "array",
+          "description": "Sub-patterns to combine",
+          "items": {
+            "$ref": "#/definitions/PatternComponent"
+          }
+        }
+      }
+    },
+    "PatternComponent": {
+      "type": "object",
+      "properties": {
+        "dimension": {
+          "type": "string",
+          "description": "Dimension to match (for token references)"
+        },
+        "predicate": {
+          "type": "string",
+          "description": "Predicate function name (e.g., 'is_not_latent', 'is_integer')"
+        },
+        "value_constraint": {
+          "type": "object",
+          "description": "Constraints on the matched value",
+          "properties": {
+            "min": {"type": "number"},
+            "max": {"type": "number"},
+            "equals": {},
+            "grain": {"type": "string"}
+          }
+        },
+        "regex": {
+          "type": "string",
+          "description": "Inline regex pattern"
+        },
+        "rule_ref": {
+          "type": "string",
+          "description": "Reference to another rule by name"
+        }
+      }
+    },
+    "PredicatePattern": {
+      "type": "object",
+      "required": ["type", "predicate"],
+      "properties": {
+        "type": {
+          "const": "predicate"
+        },
+        "predicate": {
+          "type": "string",
+          "description": "Predicate function name"
+        },
+        "dimension": {
+          "type": "string",
+          "description": "Dimension to apply predicate to"
+        }
+      }
+    },
+    "Production": {
+      "type": "object",
+      "description": "How to produce output from matched input",
+      "properties": {
+        "value_extractor": {
+          "type": "string",
+          "description": "Function to extract value (e.g., 'integer_value', 'dictionary_lookup', 'custom')",
+          "enum": [
+            "integer_value",
+            "float_value",
+            "dictionary_lookup",
+            "regex_capture",
+            "composite_function",
+            "custom"
+          ]
+        },
+        "function": {
+          "type": "string",
+          "description": "Production function name (for composite rules)",
+          "examples": ["intersect", "shift_duration", "add_values", "multiply"]
+        },
+        "arguments": {
+          "type": "array",
+          "description": "Argument names from pattern components",
+          "items": {"type": "string"}
+        },
+        "custom_logic": {
+          "type": "string",
+          "description": "Haskell code snippet (to be manually translated)"
+        },
+        "confidence": {
+          "type": "number",
+          "description": "Confidence score for this production",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1.0
+        },
+        "latent": {
+          "type": "boolean",
+          "description": "Whether this produces a latent value",
+          "default": false
+        },
+        "grain": {
+          "type": "string",
+          "description": "Time grain for time-based values"
+        }
+      }
+    }
+  }
+}

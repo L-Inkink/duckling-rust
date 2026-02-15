@@ -1,0 +1,277 @@
+{
+  "dimension": "Numeral",
+  "locale": "bn",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/BN/Rules.hs",
+  "rules": [
+    {
+      "name": "ruleNumeral_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "শূন্য": {
+            "value": 0
+          },
+          "এক": {
+            "value": 1
+          },
+          "দুই": {
+            "value": 2
+          },
+          "তিন": {
+            "value": 3
+          },
+          "চার": {
+            "value": 4
+          },
+          "পাঁচ": {
+            "value": 5
+          },
+          "ছয়": {
+            "value": 6
+          },
+          "সাত": {
+            "value": 7
+          },
+          "আট": {
+            "value": 8
+          },
+          "নয়": {
+            "value": 9
+          },
+          "দশ": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "শূন্য",
+        "এক",
+        "দুই",
+        "তিন",
+        "চার"
+      ]
+    },
+    {
+      "name": "elevenToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "এগারো": {
+            "value": 11
+          },
+          "বারো": {
+            "value": 12
+          },
+          "তেরো": {
+            "value": 13
+          },
+          "চৌদ্দ": {
+            "value": 14
+          },
+          "পনেরো": {
+            "value": 15
+          },
+          "ষোল": {
+            "value": 16
+          },
+          "সতেরো": {
+            "value": 17
+          },
+          "আঠারো": {
+            "value": 18
+          },
+          "উনিশ": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "এগারো",
+        "বারো",
+        "তেরো",
+        "চৌদ্দ",
+        "পনেরো"
+      ]
+    },
+    {
+      "name": "twentyoneToTwentynine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "একুশ": {
+            "value": 21
+          },
+          "বাইশ": {
+            "value": 22
+          },
+          "তেইশ": {
+            "value": 23
+          },
+          "চব্বিশ": {
+            "value": 24
+          },
+          "পঁচিশ": {
+            "value": 25
+          },
+          "ছাব্বিশ": {
+            "value": 26
+          },
+          "সাতাশ": {
+            "value": 27
+          },
+          "আঠাশ": {
+            "value": 28
+          },
+          "ঊনত্রিশ": {
+            "value": 29
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "একুশ",
+        "বাইশ",
+        "তেইশ",
+        "চব্বিশ",
+        "পঁচিশ"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "কুড়ি": {
+            "value": 20
+          },
+          "তিরিশ": {
+            "value": 30
+          },
+          "চল্লিশ": {
+            "value": 40
+          },
+          "পঞ্চাশ": {
+            "value": 50
+          },
+          "ষাট": {
+            "value": 60
+          },
+          "সত্তর": {
+            "value": 70
+          },
+          "আশি": {
+            "value": 80
+          },
+          "নব্বই": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "কুড়ি",
+        "তিরিশ",
+        "চল্লিশ",
+        "পঞ্চাশ",
+        "ষাট"
+      ]
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(শূন্য|এক|দুই|তিন|চার|পাঁচ|ছয়|সাত|আট|নয়|দশ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "ruleNumeralMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..10)"
+      }
+    },
+    {
+      "name": "ElevenToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(এগারো|বারো|তেরো|চৌদ্দ|পনেরো|ষোল|সতেরো|আঠারো|উনিশ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "elevenToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (11..19)"
+      }
+    },
+    {
+      "name": "TwentyoneToTwentynine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(একুশ|বাইশ|তেইশ|চব্বিশ|পঁচিশ|ছাব্বিশ|সাতাশ|আঠাশ|ঊনত্রিশ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyoneToTwentynineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (21..29)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(কুড়ি|তিরিশ|চল্লিশ|পঞ্চাশ|ষাট|সত্তর|আশি|নব্বই)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.156483",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

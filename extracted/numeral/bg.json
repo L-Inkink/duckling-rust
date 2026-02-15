@@ -1,0 +1,297 @@
+{
+  "dimension": "Numeral",
+  "locale": "bg",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/BG/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "нула": {
+            "value": 0
+          },
+          "един": {
+            "value": 1
+          },
+          "една": {
+            "value": 1
+          },
+          "едно": {
+            "value": 1
+          },
+          "два": {
+            "value": 2
+          },
+          "две": {
+            "value": 2
+          },
+          "три": {
+            "value": 3
+          },
+          "четири": {
+            "value": 4
+          },
+          "пет": {
+            "value": 5
+          },
+          "шест": {
+            "value": 6
+          },
+          "седем": {
+            "value": 7
+          },
+          "осем": {
+            "value": 8
+          },
+          "девет": {
+            "value": 9
+          },
+          "десет": {
+            "value": 10
+          },
+          "единадесет": {
+            "value": 11
+          },
+          "единайсет": {
+            "value": 11
+          },
+          "дванадесет": {
+            "value": 12
+          },
+          "дванайсет": {
+            "value": 12
+          },
+          "тринадесет": {
+            "value": 13
+          },
+          "тринайсет": {
+            "value": 13
+          },
+          "четиринадесет": {
+            "value": 14
+          },
+          "четиринайсет": {
+            "value": 14
+          },
+          "петнадесет": {
+            "value": 15
+          },
+          "петнайсет": {
+            "value": 15
+          },
+          "шестнадесет": {
+            "value": 16
+          },
+          "шестнайсет": {
+            "value": 16
+          },
+          "седемнадесет": {
+            "value": 17
+          },
+          "седемнайсет": {
+            "value": 17
+          },
+          "осемнадесет": {
+            "value": 18
+          },
+          "осемнайсет": {
+            "value": 18
+          },
+          "деветнадесет": {
+            "value": 19
+          },
+          "деветнайсет": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "нула",
+        "един",
+        "една",
+        "едно",
+        "два"
+      ]
+    },
+    {
+      "name": "ToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(нула|едина(де|й)сет|двана(де|й)сет|трина(де|й)сет|четирина(де|й)сет|петна(де|й)сет|шестна(де|й)сет|седемна(де|й)сет|осемна(де|й)сет|деветна(де|й)сет|един|една|едно|два|две|три|четири|пет|шест|седем|осем|девет|десет)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((два|три|четири|пет|шест|седем|осем|девет)десет)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(хиляд(а|и)|милион(а|и)?|милиард(а|и)?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"хиляд\"   -> double 1e3 >>= withGrain 3 >>= withMultipliable\n        \"милион\"  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Hundreds",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(сто|двеста|триста|(четири|пет|шест|седем|осем|девет)стотин)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"сто\"          -> integer 100\n        \"двеста\"       -> integer 200\n        \"тр",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (100..900)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Decimals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Commas",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+(\\\\.\\\\d+)?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "comma-separated numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Negative",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|минус\\\\s?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "negative numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20, 30..90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeHundreds",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [200, 300..900",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 101..999",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.155928",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 7,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

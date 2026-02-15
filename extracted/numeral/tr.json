@@ -1,0 +1,1492 @@
+{
+  "dimension": "Numeral",
+  "locale": "tr",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/TR/Rules.hs",
+  "rules": [
+    {
+      "name": "hundreds_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "yüz": {
+            "value": 100
+          },
+          "ikiyüz": {
+            "value": 200
+          },
+          "üçyüz": {
+            "value": 300
+          },
+          "dörtyüz": {
+            "value": 400
+          },
+          "beşyüz": {
+            "value": 500
+          },
+          "altıyüz": {
+            "value": 600
+          },
+          "yediyüz": {
+            "value": 700
+          },
+          "sekizyüz": {
+            "value": 800
+          },
+          "dokuzyüz": {
+            "value": 900
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "yüz",
+        "ikiyüz",
+        "üçyüz",
+        "dörtyüz",
+        "beşyüz"
+      ]
+    },
+    {
+      "name": "numeralSuffixesHalfsuffixText_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "birbuçuk": {
+            "value": 1.5
+          },
+          "bibuçuk": {
+            "value": 1.5
+          },
+          "ikibuçuk": {
+            "value": 2.5
+          },
+          "ü\\231buçuk": {
+            "value": 3.5
+          },
+          "dörtbuçuk": {
+            "value": 4.5
+          },
+          "be\\351buçuk": {
+            "value": 5.5
+          },
+          "altıbuçuk": {
+            "value": 6.5
+          },
+          "yedibuçuk": {
+            "value": 7.5
+          },
+          "sekizbuçuk": {
+            "value": 8.5
+          },
+          "dokuzbuçuk": {
+            "value": 9.5
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "birbuçuk",
+        "bibuçuk",
+        "ikibuçuk",
+        "ü\\231buçuk",
+        "dörtbuçuk"
+      ]
+    },
+    {
+      "name": "tenToNintynine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "onbi": {
+            "value": 11
+          },
+          "onbir": {
+            "value": 11
+          },
+          "oniki": {
+            "value": 12
+          },
+          "onüç": {
+            "value": 13
+          },
+          "ondört": {
+            "value": 14
+          },
+          "onbeş": {
+            "value": 15
+          },
+          "onaltı": {
+            "value": 16
+          },
+          "onyedi": {
+            "value": 17
+          },
+          "onsekiz": {
+            "value": 18
+          },
+          "ondokuz": {
+            "value": 19
+          },
+          "yirmibi": {
+            "value": 21
+          },
+          "yirmibir": {
+            "value": 21
+          },
+          "yirmiiki": {
+            "value": 22
+          },
+          "yirmiüç": {
+            "value": 23
+          },
+          "yirmidört": {
+            "value": 24
+          },
+          "yirmibeş": {
+            "value": 25
+          },
+          "yirmialtı": {
+            "value": 26
+          },
+          "yirmiyedi": {
+            "value": 27
+          },
+          "yirmisekiz": {
+            "value": 28
+          },
+          "yirmidokuz": {
+            "value": 29
+          },
+          "otuzbi": {
+            "value": 31
+          },
+          "otuzbir": {
+            "value": 31
+          },
+          "otuziki": {
+            "value": 32
+          },
+          "otuzüç": {
+            "value": 33
+          },
+          "otuzdört": {
+            "value": 34
+          },
+          "otuzbeş": {
+            "value": 35
+          },
+          "otuzaltı": {
+            "value": 36
+          },
+          "otuzyedi": {
+            "value": 37
+          },
+          "otuzsekiz": {
+            "value": 38
+          },
+          "otuzdokuz": {
+            "value": 39
+          },
+          "kırkbir": {
+            "value": 41
+          },
+          "kırkbi": {
+            "value": 41
+          },
+          "kırkiki": {
+            "value": 42
+          },
+          "kırküç": {
+            "value": 43
+          },
+          "kırkdört": {
+            "value": 44
+          },
+          "kırkbeş": {
+            "value": 45
+          },
+          "kırkaltı": {
+            "value": 46
+          },
+          "kırkyedi": {
+            "value": 47
+          },
+          "kırksekiz": {
+            "value": 48
+          },
+          "kırkdokuz": {
+            "value": 49
+          },
+          "ellibi": {
+            "value": 51
+          },
+          "ellibir": {
+            "value": 51
+          },
+          "elliiki": {
+            "value": 52
+          },
+          "elliüç": {
+            "value": 53
+          },
+          "ellidört": {
+            "value": 54
+          },
+          "ellibeş": {
+            "value": 55
+          },
+          "ellialtı": {
+            "value": 56
+          },
+          "elliyedi": {
+            "value": 57
+          },
+          "ellisekiz": {
+            "value": 58
+          },
+          "ellidokuz": {
+            "value": 59
+          },
+          "altmışbir": {
+            "value": 61
+          },
+          "atmışbir": {
+            "value": 61
+          },
+          "atmışiki": {
+            "value": 62
+          },
+          "altmışiki": {
+            "value": 62
+          },
+          "atmışüç": {
+            "value": 63
+          },
+          "altmışüç": {
+            "value": 63
+          },
+          "atmışdört": {
+            "value": 64
+          },
+          "altmışdört": {
+            "value": 64
+          },
+          "atmışbeş": {
+            "value": 65
+          },
+          "altmışbeş": {
+            "value": 65
+          },
+          "atmışaltı": {
+            "value": 66
+          },
+          "altmışaltı": {
+            "value": 66
+          },
+          "altmışyedi": {
+            "value": 67
+          },
+          "atmışyedi": {
+            "value": 67
+          },
+          "altmışsekiz": {
+            "value": 68
+          },
+          "atmışsekiz": {
+            "value": 68
+          },
+          "atmışdokuz": {
+            "value": 69
+          },
+          "altmışdokuz": {
+            "value": 69
+          },
+          "yetmişbir": {
+            "value": 71
+          },
+          "yetmişbi": {
+            "value": 71
+          },
+          "yetmişiki": {
+            "value": 72
+          },
+          "yetmişüç": {
+            "value": 73
+          },
+          "yetmişdört": {
+            "value": 74
+          },
+          "yetmişbeş": {
+            "value": 75
+          },
+          "yetmişaltı": {
+            "value": 76
+          },
+          "yetmişyedi": {
+            "value": 77
+          },
+          "yetmişsekiz": {
+            "value": 78
+          },
+          "yetmişdokuz": {
+            "value": 79
+          },
+          "seksenbir": {
+            "value": 81
+          },
+          "seksenbi": {
+            "value": 81
+          },
+          "sekseniki": {
+            "value": 82
+          },
+          "seksenüç": {
+            "value": 83
+          },
+          "seksendört": {
+            "value": 84
+          },
+          "seksenbeş": {
+            "value": 85
+          },
+          "seksenaltı": {
+            "value": 86
+          },
+          "seksenyedi": {
+            "value": 87
+          },
+          "seksensekiz": {
+            "value": 88
+          },
+          "seksendokuz": {
+            "value": 89
+          },
+          "doksanbi": {
+            "value": 91
+          },
+          "doksanbir": {
+            "value": 91
+          },
+          "doksaniki": {
+            "value": 92
+          },
+          "doksanüç": {
+            "value": 93
+          },
+          "doksandört": {
+            "value": 94
+          },
+          "doksanbeş": {
+            "value": 95
+          },
+          "doksanaltı": {
+            "value": 96
+          },
+          "doksanyedi": {
+            "value": 97
+          },
+          "doksansekiz": {
+            "value": 98
+          },
+          "doksandokuz": {
+            "value": 99
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "onbi",
+        "onbir",
+        "oniki",
+        "onüç",
+        "ondört"
+      ]
+    },
+    {
+      "name": "thousands_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "bin": {
+            "value": 1000
+          },
+          "ikibin": {
+            "value": 2000
+          },
+          "üçbin": {
+            "value": 3000
+          },
+          "dörtbin": {
+            "value": 4000
+          },
+          "beşbin": {
+            "value": 5000
+          },
+          "altıbin": {
+            "value": 6000
+          },
+          "yedibin": {
+            "value": 7000
+          },
+          "sekizbin": {
+            "value": 8000
+          },
+          "dokuzbin": {
+            "value": 9000
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "bin",
+        "ikibin",
+        "üçbin",
+        "dörtbin",
+        "beşbin"
+      ]
+    },
+    {
+      "name": "tenThousands_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "onbin": {
+            "value": 10000
+          },
+          "yirmibin": {
+            "value": 20000
+          },
+          "otuzbin": {
+            "value": 30000
+          },
+          "kırkbin": {
+            "value": 40000
+          },
+          "ellibin": {
+            "value": 50000
+          },
+          "altmışbin": {
+            "value": 60000
+          },
+          "atmışbin": {
+            "value": 60000
+          },
+          "yetmişbin": {
+            "value": 70000
+          },
+          "seksenbin": {
+            "value": 80000
+          },
+          "doksanbin": {
+            "value": 90000
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "onbin",
+        "yirmibin",
+        "otuzbin",
+        "kırkbin",
+        "ellibin"
+      ]
+    },
+    {
+      "name": "hundredThousands_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "yüzbin": {
+            "value": 100000
+          },
+          "ikiyüzbin": {
+            "value": 200000
+          },
+          "üçyüzbin": {
+            "value": 300000
+          },
+          "dörtyüzbin": {
+            "value": 400000
+          },
+          "beşyüzbin": {
+            "value": 500000
+          },
+          "altıyüzbin": {
+            "value": 600000
+          },
+          "yediyüzbin": {
+            "value": 700000
+          },
+          "sekizyüzbin": {
+            "value": 800000
+          },
+          "dokuzyüzbin": {
+            "value": 900000
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "yüzbin",
+        "ikiyüzbin",
+        "üçyüzbin",
+        "dörtyüzbin",
+        "beşyüzbin"
+      ]
+    },
+    {
+      "name": "integer9_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "onbirbuçuk": {
+            "value": 11.5
+          },
+          "onbibuçuk": {
+            "value": 11.5
+          },
+          "onikibuçuk": {
+            "value": 12.5
+          },
+          "onüçbuçuk": {
+            "value": 13.5
+          },
+          "ondörtbuçuk": {
+            "value": 14.5
+          },
+          "onbeşbuçuk": {
+            "value": 15.5
+          },
+          "onaltıbuçuk": {
+            "value": 16.5
+          },
+          "onyedibuçuk": {
+            "value": 17.5
+          },
+          "onsekizbuçuk": {
+            "value": 18.5
+          },
+          "ondokuzbuçuk": {
+            "value": 19.5
+          },
+          "yirmibibuçuk": {
+            "value": 21.5
+          },
+          "yirmibirbuçuk": {
+            "value": 21.5
+          },
+          "yirmiikibuçuk": {
+            "value": 22.5
+          },
+          "yirmiüçbuçuk": {
+            "value": 23.5
+          },
+          "yirmidörtbuçuk": {
+            "value": 24.5
+          },
+          "yirmibeşbuçuk": {
+            "value": 25.5
+          },
+          "yirmialtıbuçuk": {
+            "value": 26.5
+          },
+          "yirmiyedibuçuk": {
+            "value": 27.5
+          },
+          "yirmisekizbuçuk": {
+            "value": 28.5
+          },
+          "yirmidokuzbuçuk": {
+            "value": 29.5
+          },
+          "otuzbibuçuk": {
+            "value": 31.5
+          },
+          "otuzbirbuçuk": {
+            "value": 31.5
+          },
+          "otuzikibuçuk": {
+            "value": 32.5
+          },
+          "otuzüçbuçuk": {
+            "value": 33.5
+          },
+          "otuzdörtbuçuk": {
+            "value": 34.5
+          },
+          "otuzbeşbuçuk": {
+            "value": 35.5
+          },
+          "otuzaltıbuçuk": {
+            "value": 36.5
+          },
+          "otuzyedibuçuk": {
+            "value": 37.5
+          },
+          "otuzsekizbuçuk": {
+            "value": 38.5
+          },
+          "otuzdokuzbuçuk": {
+            "value": 39.5
+          },
+          "kırkbirbuçuk": {
+            "value": 41.5
+          },
+          "kırkbibuçuk": {
+            "value": 41.5
+          },
+          "kırkikibuçuk": {
+            "value": 42.5
+          },
+          "kırküçbuçuk": {
+            "value": 43.5
+          },
+          "kırkdörtbuçuk": {
+            "value": 44.5
+          },
+          "kırkbeşbuçuk": {
+            "value": 45.5
+          },
+          "kırkaltıbuçuk": {
+            "value": 46.5
+          },
+          "kırkyedibuçuk": {
+            "value": 47.5
+          },
+          "kırksekizbuçuk": {
+            "value": 48.5
+          },
+          "kırkdokuzbuçuk": {
+            "value": 49.5
+          },
+          "ellibibuçuk": {
+            "value": 51.5
+          },
+          "ellibirbuçuk": {
+            "value": 51.5
+          },
+          "elliikibuçuk": {
+            "value": 52.5
+          },
+          "elliüçbuçuk": {
+            "value": 53.5
+          },
+          "ellidörtbuçuk": {
+            "value": 54.5
+          },
+          "ellibeşbuçuk": {
+            "value": 55.5
+          },
+          "ellialtıbuçuk": {
+            "value": 56.5
+          },
+          "elliyedibuçuk": {
+            "value": 57.5
+          },
+          "ellisekizbuçuk": {
+            "value": 58.5
+          },
+          "ellidokuzbuçuk": {
+            "value": 59.5
+          },
+          "altmışbirbuçuk": {
+            "value": 61.5
+          },
+          "atmışbirbuçuk": {
+            "value": 61.5
+          },
+          "altmışikibuçuk": {
+            "value": 62.5
+          },
+          "atmışikibuçuk": {
+            "value": 62.5
+          },
+          "atmışüçbuçuk": {
+            "value": 63.5
+          },
+          "altmışüçbuçuk": {
+            "value": 63.5
+          },
+          "altmışdörtbuçuk": {
+            "value": 64.5
+          },
+          "atmışdörtbuçuk": {
+            "value": 64.5
+          },
+          "altmışbeşbuçuk": {
+            "value": 65.5
+          },
+          "atmışbeşbuçuk": {
+            "value": 65.5
+          },
+          "altmışaltıbuçuk": {
+            "value": 66.5
+          },
+          "atmışaltıbuçuk": {
+            "value": 66.5
+          },
+          "atmışyedibuçuk": {
+            "value": 67.5
+          },
+          "altmışyedibuçuk": {
+            "value": 67.5
+          },
+          "altmışsekizbuçuk": {
+            "value": 68.5
+          },
+          "atmışsekizbuçuk": {
+            "value": 68.5
+          },
+          "altmışdokuzbuçuk": {
+            "value": 69.5
+          },
+          "atmışdokuzbuçuk": {
+            "value": 69.5
+          },
+          "yetmişbibuçuk": {
+            "value": 71.5
+          },
+          "yetmişbirbuçuk": {
+            "value": 71.5
+          },
+          "yetmişikibuçuk": {
+            "value": 72.5
+          },
+          "yetmişüçbuçuk": {
+            "value": 73.5
+          },
+          "yetmişdörtbuçuk": {
+            "value": 74.5
+          },
+          "yetmişbeşbuçuk": {
+            "value": 75.5
+          },
+          "yetmişaltıbuçuk": {
+            "value": 76.5
+          },
+          "yetmişyedibuçuk": {
+            "value": 77.5
+          },
+          "yetmişsekizbuçuk": {
+            "value": 78.5
+          },
+          "yetmişdokuzbuçuk": {
+            "value": 79.5
+          },
+          "seksenbibuçuk": {
+            "value": 81.5
+          },
+          "seksenbirbuçuk": {
+            "value": 81.5
+          },
+          "seksenikibuçuk": {
+            "value": 82.5
+          },
+          "seksenüçbuçuk": {
+            "value": 83.5
+          },
+          "seksendörtbuçuk": {
+            "value": 84.5
+          },
+          "seksenbeşbuçuk": {
+            "value": 85.5
+          },
+          "seksenaltıbuçuk": {
+            "value": 86.5
+          },
+          "seksenyedibuçuk": {
+            "value": 87.5
+          },
+          "seksensekizbuçuk": {
+            "value": 88.5
+          },
+          "seksendokuzbuçuk": {
+            "value": 89.5
+          },
+          "doksanbirbuçuk": {
+            "value": 91.5
+          },
+          "doksanbibuçuk": {
+            "value": 91.5
+          },
+          "doksanikibuçuk": {
+            "value": 92.5
+          },
+          "doksanüçbuçuk": {
+            "value": 93.5
+          },
+          "doksandörtbuçuk": {
+            "value": 94.5
+          },
+          "doksanbeşbuçuk": {
+            "value": 95.5
+          },
+          "doksanaltıbuçuk": {
+            "value": 96.5
+          },
+          "doksanyedibuçuk": {
+            "value": 97.5
+          },
+          "doksansekizbuçuk": {
+            "value": 98.5
+          },
+          "doksandokuzbuçuk": {
+            "value": 99.5
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "onbirbuçuk",
+        "onbibuçuk",
+        "onikibuçuk",
+        "onüçbuçuk",
+        "ondörtbuçuk"
+      ]
+    },
+    {
+      "name": "oneToNine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "s\\305f\\305r": {
+            "value": 0
+          },
+          "yok": {
+            "value": 0
+          },
+          "hiç": {
+            "value": 0
+          },
+          "bir": {
+            "value": 1
+          },
+          "bi": {
+            "value": 1
+          },
+          "yek": {
+            "value": 1
+          },
+          "tek": {
+            "value": 1
+          },
+          "iki": {
+            "value": 2
+          },
+          "üç": {
+            "value": 3
+          },
+          "üçü": {
+            "value": 3
+          },
+          "dört": {
+            "value": 4
+          },
+          "beş": {
+            "value": 5
+          },
+          "altı": {
+            "value": 6
+          },
+          "yedi": {
+            "value": 7
+          },
+          "sekiz": {
+            "value": 8
+          },
+          "dokuz": {
+            "value": 9
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "s\\305f\\305r",
+        "yok",
+        "hiç",
+        "bir",
+        "bi"
+      ]
+    },
+    {
+      "name": "numeralSuffixesHalfsuffixText2_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "onbuçuk": {
+            "value": 10.5
+          },
+          "yirmibuçuk": {
+            "value": 20.5
+          },
+          "otuzbuçuk": {
+            "value": 30.5
+          },
+          "kırkbuçuk": {
+            "value": 40.5
+          },
+          "ellibuçuk": {
+            "value": 50.5
+          },
+          "atmışbuçuk": {
+            "value": 60.5
+          },
+          "altmışbuçuk": {
+            "value": 60.5
+          },
+          "yetmişbuçuk": {
+            "value": 70.5
+          },
+          "seksenbuçuk": {
+            "value": 80.5
+          },
+          "doksanbuçuk": {
+            "value": 90.5
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "onbuçuk",
+        "yirmibuçuk",
+        "otuzbuçuk",
+        "kırkbuçuk",
+        "ellibuçuk"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "on": {
+            "value": 10
+          },
+          "yirmi": {
+            "value": 20
+          },
+          "otuz": {
+            "value": 30
+          },
+          "kırk": {
+            "value": 40
+          },
+          "elli": {
+            "value": 50
+          },
+          "altmış": {
+            "value": 60
+          },
+          "atmış": {
+            "value": 60
+          },
+          "yetmiş": {
+            "value": 70
+          },
+          "seksen": {
+            "value": 80
+          },
+          "doksan": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "on",
+        "yirmi",
+        "otuz",
+        "kırk",
+        "elli"
+      ]
+    },
+    {
+      "name": "Integer5",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(yüz|ikiyüz|üçyüz|dörtyüz|beşyüz|altıyüz|yediyüz|sekizyüz|dokuzyüz)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "hundredsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 100..900"
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|eksi|negatif",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "ACoupleOf",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(bir )?çift",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2 >>= withGrain 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a couple (of)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Few",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(bir)?az",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "few",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Ten",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "on",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10 >>= withGrain 1 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "ten",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(\\\\.\\\\d\\\\d\\\\d)+,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace \".\" Text.empty match\n        in parseDouble fmt >>= double\n ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralSuffixesHalfsuffixText",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((bir?|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(buçuk))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "numeralSuffixesHalfsuffixTextMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number suffixes (half-suffix text) (1..9)"
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(bir|bi|iki|üç|dört|beş|altı|yedi|sekiz|dokuz))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tenToNintynineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 11..19 21..29 31..39 41..49 51..59 61..69 71..79 81..89 91..99"
+      }
+    },
+    {
+      "name": "Integer6",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(bin|ikibin|üçbin|dörtbin|beşbin|altıbin|yedibin|sekizbin|dokuzbin)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "thousandsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 1000..9000"
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(y(ü)z|bin|milyon)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"yüz\" -> double 1e2 >>= withGrain 2 >>= withMultipliable\n        \"bin\"      -> ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer7",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(onbin|yirmibin|otuzbin|kırkbin|ellibin|atmışbin|altmışbin|yetmişbin|seksenbin|doksanbin)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tenThousandsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 10000..90000"
+      }
+    },
+    {
+      "name": "Integer8",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(yüzbin|ikiyüzbin|üçyüzbin|dörtyüzbin|beşyüzbin|altıyüzbin|yediyüzbin|sekizyüzbin|dokuzyüzbin)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "hundredThousandsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 100000..900000"
+      }
+    },
+    {
+      "name": "Half",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(yarım)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> double 0.5\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "half",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer9",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(bir|bi|iki|üçü?|dört|beş|altı|yedi|sekiz|dokuz)(buçuk))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integer9Map",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 11..19 21..29 31..39 41..49 51..59 61..69 71..79 81..89 91..99"
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "düzine",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12 >>= withGrain 1 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "dozen",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(yok|hi(ç)|s(ı)f(ı)r|bir?|[ty]ek|iki|(ü)(ç)(ü)?|d(ö)rt|be(ş)|alt(ı)|yedi|sekiz|dokuz)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "oneToNineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..9)"
+      }
+    },
+    {
+      "name": "NumeralSuffixesHalfsuffixText2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)(buçuk))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "numeralSuffixesHalfsuffixText2Map",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number suffixes (half-suffix text) (10..90)"
+      }
+    },
+    {
+      "name": "GroupOfTens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "deste",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 10 >>= withGrain 1 >>= withMultipliable\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "group of ten(s)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(on|yirmi|otuz|kırk|elli|atmış|altmış|yetmiş|seksen|doksan)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (10..90)"
+      }
+    },
+    {
+      "name": "Quarter",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(çeyrek)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> double 0.25\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "quarter",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Intersect",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer4",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 10, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 11..99",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.172333",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 14,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

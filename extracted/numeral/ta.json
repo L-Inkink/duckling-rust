@@ -1,0 +1,253 @@
+{
+  "dimension": "Numeral",
+  "locale": "ta",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/TA/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroToNine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "பூஜ்ஜியம்": {
+            "value": 0
+          },
+          "ஒன்று": {
+            "value": 1
+          },
+          "இரண்டு": {
+            "value": 2
+          },
+          "மூன்று": {
+            "value": 3
+          },
+          "நான்கு": {
+            "value": 4
+          },
+          "ஐந்து": {
+            "value": 5
+          },
+          "ஆறு": {
+            "value": 6
+          },
+          "ஏழு": {
+            "value": 7
+          },
+          "எட்டு": {
+            "value": 8
+          },
+          "ஒன்பது": {
+            "value": 9
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "பூஜ்ஜியம்",
+        "ஒன்று",
+        "இரண்டு",
+        "மூன்று",
+        "நான்கு"
+      ]
+    },
+    {
+      "name": "tenToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "பத்து": {
+            "value": 10
+          },
+          "பதினொன்று": {
+            "value": 11
+          },
+          "பன்னிரண்டு": {
+            "value": 12
+          },
+          "பதின்மூன்று": {
+            "value": 13
+          },
+          "பதினான்கு": {
+            "value": 14
+          },
+          "பதினைந்து": {
+            "value": 15
+          },
+          "பதினாறு": {
+            "value": 16
+          },
+          "பதினேழு": {
+            "value": 17
+          },
+          "பதினெட்டு": {
+            "value": 18
+          },
+          "பத்தொன்பது": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "பத்து",
+        "பதினொன்று",
+        "பன்னிரண்டு",
+        "பதின்மூன்று",
+        "பதினான்கு"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "இருபது": {
+            "value": 20
+          },
+          "இருபத்தி": {
+            "value": 20
+          },
+          "முப்பது": {
+            "value": 30
+          },
+          "முப்பத்து": {
+            "value": 30
+          },
+          "நாற்பது": {
+            "value": 40
+          },
+          "நாற்பத்து": {
+            "value": 40
+          },
+          "ஐம்பது": {
+            "value": 50
+          },
+          "ஐம்பத்தி": {
+            "value": 50
+          },
+          "அறுபது": {
+            "value": 60
+          },
+          "அறுபத்": {
+            "value": 60
+          },
+          "எழுபது": {
+            "value": 70
+          },
+          "எழுபத்தி": {
+            "value": 70
+          },
+          "எண்பது": {
+            "value": 80
+          },
+          "எண்பத்": {
+            "value": 80
+          },
+          "தொண்ணூறு": {
+            "value": 90
+          },
+          "தொண்ணுற்று": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "இருபது",
+        "இருபத்தி",
+        "முப்பது",
+        "முப்பத்து",
+        "நாற்பது"
+      ]
+    },
+    {
+      "name": "ZeroToNine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(பூஜ்ஜியம்|ஒன்று|இரண்டு|மூன்று|நான்கு|ஐந்து|ஆறு|ஏழு|எட்டு|ஒன்பது)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroToNineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..9)"
+      }
+    },
+    {
+      "name": "TenToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(பத்து|பதினொன்று|பன்னிரண்டு|பதின்மூன்று|பதினான்கு|பதினைந்து|பதினாறு|பதினேழு|பதினெட்டு|பத்தொன்பது)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tenToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (10..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(இருபது|முப்பது|நாற்பது|ஐம்பது|அறுபது|எழுபது|எண்பது|தொண்ணூறு)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(இருபத்தி|முப்பத்து|நாற்பத்து|ஐம்பத்தி|அறுபத்|எழுபத்தி|எண்பத்|தொண்ணுற்று)(ஒன்று|இரண்டு|மூன்று|நான்கு|ஐந்து|ஆறு|ஏழு|எட்டு|ஒன்பது)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer ([2-9][1-9])"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.169623",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

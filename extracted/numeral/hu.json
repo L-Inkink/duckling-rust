@@ -1,0 +1,297 @@
+{
+  "dimension": "Numeral",
+  "locale": "hu",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/HU/Rules.hs",
+  "rules": [
+    {
+      "name": "ruleNumeral_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "nulla": {
+            "value": 0
+          },
+          "z\\x00E9r\\x00F3": {
+            "value": 0
+          },
+          "egy": {
+            "value": 1
+          },
+          "kett\\x0151": {
+            "value": 2
+          },
+          "h\\x00E1rom": {
+            "value": 3
+          },
+          "n\\x00E9gy": {
+            "value": 4
+          },
+          "\\x00F6t": {
+            "value": 5
+          },
+          "hat": {
+            "value": 6
+          },
+          "h\\x00E9t": {
+            "value": 7
+          },
+          "nyolc": {
+            "value": 8
+          },
+          "kilenc": {
+            "value": 9
+          },
+          "t\\x00EDz": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "nulla",
+        "z\\x00E9r\\x00F3",
+        "egy",
+        "kett\\x0151",
+        "h\\x00E1rom"
+      ]
+    },
+    {
+      "name": "elevenToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "tizenegy": {
+            "value": 11
+          },
+          "tizenkett\\x0151": {
+            "value": 12
+          },
+          "tizenh\\x00E1rom": {
+            "value": 13
+          },
+          "tizenn\\x00E9gy": {
+            "value": 14
+          },
+          "tizen\\x00F6t": {
+            "value": 15
+          },
+          "tizenhat": {
+            "value": 16
+          },
+          "tizenh\\x00E9t": {
+            "value": 17
+          },
+          "tizennyolc": {
+            "value": 18
+          },
+          "tizenkilenc": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "tizenegy",
+        "tizenkett\\x0151",
+        "tizenh\\x00E1rom",
+        "tizenn\\x00E9gy",
+        "tizen\\x00F6t"
+      ]
+    },
+    {
+      "name": "twentyoneToTwentynine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "huszonegy": {
+            "value": 21
+          },
+          "huszonkett\\x0151": {
+            "value": 22
+          },
+          "huszonh\\x00E1rom": {
+            "value": 23
+          },
+          "huszonn\\x00E9gy": {
+            "value": 24
+          },
+          "huszon\\x00F6t": {
+            "value": 25
+          },
+          "huszonhat": {
+            "value": 26
+          },
+          "huszonh\\x00E9t": {
+            "value": 27
+          },
+          "huszonnyolc": {
+            "value": 28
+          },
+          "huszonkilenc": {
+            "value": 29
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "huszonegy",
+        "huszonkett\\x0151",
+        "huszonh\\x00E1rom",
+        "huszonn\\x00E9gy",
+        "huszon\\x00F6t"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "h\\x00FAsz": {
+            "value": 20
+          },
+          "harminc": {
+            "value": 30
+          },
+          "negyven": {
+            "value": 40
+          },
+          "\\x00F6tven": {
+            "value": 50
+          },
+          "hatvan": {
+            "value": 60
+          },
+          "hetven": {
+            "value": 70
+          },
+          "nyolcvan": {
+            "value": 80
+          },
+          "kilencven": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "h\\x00FAsz",
+        "harminc",
+        "negyven",
+        "\\x00F6tven",
+        "hatvan"
+      ]
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(nulla|z\\x00E9r\\x00F3|egy|kett\\x0151|h\\x00E1rom|n\\x00E9gy|\\x00F6t|hat|h\\x00E9t|nyolc|kilenc|t\\x00EDz)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "ruleNumeralMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..10)"
+      }
+    },
+    {
+      "name": "ElevenToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(tizenegy|tizenkett\\x0151|tizenh\\x00E1rom|tizenn\\x00E9gy|tizen\\x00F6t|tizenhat|tizenh\\x00E9t|tizennyolc|tizenkilenc)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "elevenToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (11..19)"
+      }
+    },
+    {
+      "name": "TwentyoneToTwentynine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(huszonegy|huszonkett\\x0151|huszonh\\x00E1rom|huszonn\\x00E9gy|huszon\\x00F6t|huszonhat|huszonh\\x00E9t|huszonnyolc|huszonkilenc)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyoneToTwentynineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (21..29)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(h\\x00FAsz|harminc|negyven|ötven|hatvan|hetven|nyolcvan|kilencven)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20,30..90)"
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(harminc|negyven|\\x00F6tven|hatvan|hetven|nyolcvan|kilencven)(egy|kett\\x0151|h\\x00E1rom|n\\x00E9gy|\\x00F6t|hat|h\\x00E9t|nyolc|kilenc)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer ([3-9][1-9])"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.154465",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

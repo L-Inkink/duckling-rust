@@ -1,0 +1,117 @@
+// Auto-generated from {{ source_file }}
+// DO NOT EDIT MANUALLY - Use tools/migration/codegen.rs
+//
+// Dimension: {{ dimension }}
+// Locale: {{ locale }}
+
+use crate::values::Value;
+use rustling_core::{RuleSetBuilder, rustling_error};
+use std::collections::HashMap;
+use lazy_static::lazy_static;
+
+{% set dictionary_rules = [] %}
+{% set regex_rules = [] %}
+{% set complex_rules = [] %}
+
+{% for rule in rules %}
+  {% if rule.rule_type == "dictionary" %}
+    {% set_global dictionary_rules = dictionary_rules | concat(with=rule) %}
+  {% elif rule.rule_type == "regex" and not rule.metadata._needs_manual_review %}
+    {% set_global regex_rules = regex_rules | concat(with=rule) %}
+  {% else %}
+    {% set_global complex_rules = complex_rules | concat(with=rule) %}
+  {% endif %}
+{% endfor %}
+
+{% for rule in dictionary_rules %}
+// Dictionary: {{ rule.name }}
+lazy_static! {
+    static ref {{ rule.name | upper }}: HashMap<&'static str, i64> = {
+        let mut map = HashMap::new();
+        {% for key, value in rule.pattern.entries %}
+        map.insert("{{ key }}", {{ value.value }});
+        {% endfor %}
+        map
+    };
+}
+{% endfor %}
+
+/// Build {{ dimension }} rules for {{ locale }} locale
+pub fn rules(b: &RuleSetBuilder<Value>) {
+    {% if dictionary_rules | length > 0 %}
+    // ========== Dictionary Rules ==========
+    {% for rule in dictionary_rules %}
+
+    // Rule: {{ rule.name }}
+    // Examples: {% for ex in rule.examples %}{{ ex }}{% if not loop.last %}, {% endif %}{% endfor %}
+    {
+        let dict = &*{{ rule.name | upper }};
+        b.rule_1_terminal(
+            "{{ locale }}:{{ rule.name }}",
+            b.reg(r"(?i){% for key, value in rule.pattern.entries %}{{ key }}{% if not loop.last %}|{% endif %}{% endfor %}").unwrap(),
+            move |text_match| {
+                let text = text_match.group(0).to_lowercase();
+                dict.get(text.as_str())
+                    .map(|&value| Value::Integer(value))
+                    .ok_or_else(|| rustling_error!("Dictionary lookup failed for: {}", text))
+            }
+        );
+    }
+    {% endfor %}
+    {% endif %}
+
+    {% if regex_rules | length > 0 %}
+    // ========== Simple Regex Rules ==========
+    {% for rule in regex_rules %}
+
+    // Rule: {{ rule.metadata.original_name | default(value=rule.name) }}
+    {% if rule.production.dictionary_ref %}
+    {
+        // References dictionary: {{ rule.production.dictionary_ref }}
+        let dict_name = "{{ rule.production.dictionary_ref }}";
+        let dict_upper = "{{ rule.production.dictionary_ref | upper | replace(from="MAP", to="_DICTIONARY") }}";
+
+        // TODO: Implement dictionary lookup for {{ rule.name }}
+        // Referenced dict: {{ rule.production.dictionary_ref }}
+        // Pattern: {{ rule.pattern.value }}
+    }
+    {% else %}
+    // TODO: Implement production logic for {{ rule.name }}
+    // Pattern: {{ rule.pattern.value }}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    {% if complex_rules | length > 0 %}
+    // ========== Complex Rules (Manual Implementation Required) ==========
+    {% for rule in complex_rules %}
+    // TODO: {{ rule.name }} - {{ rule.rule_type }}
+    //   {{ rule.metadata.original_name | default(value="") }}
+    {% endfor %}
+
+    eprintln!("Warning: {{ locale }}/{{ dimension | lower }} has {{ complex_rules | length }} unimplemented rules");
+    {% endif %}
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rustling_core::RuleSetBuilder;
+    use crate::values::Value;
+
+    #[test]
+    fn test_{{ locale }}_{{ dimension | lower }}_rules_compile() {
+        let b = RuleSetBuilder::new();
+        rules(&b);
+        // Basic smoke test - rules should register without panic
+    }
+
+    {% if dictionary_rules | length > 0 %}
+    #[test]
+    fn test_{{ locale }}_{{ dimension | lower }}_dictionaries() {
+        {% for rule in dictionary_rules %}
+        assert!({{ rule.name | upper }}.len() > 0, "{{ rule.name }} should not be empty");
+        {% endfor %}
+    }
+    {% endif %}
+}

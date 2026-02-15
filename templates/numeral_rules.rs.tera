@@ -1,0 +1,119 @@
+// Auto-generated from {{ source_file }}
+// DO NOT EDIT MANUALLY - Use tools/migration/codegen.rs
+//
+// Dimension: {{ dimension }}
+// Locale: {{ locale }}
+
+use rustling_core::*;
+use std::collections::HashMap;
+use lazy_static::lazy_static;
+
+{% for rule in rules %}
+{% if rule.rule_type == "dictionary" %}
+// Dictionary rule: {{ rule.name }}
+lazy_static! {
+    static ref {{ rule.name | upper }}: HashMap<&'static str, i64> = {
+        let mut map = HashMap::new();
+        {% for key, value in rule.pattern.entries %}
+        map.insert("{{ key }}", {{ value.value }});
+        {% endfor %}
+        map
+    };
+}
+
+{% endif %}
+{% endfor %}
+
+/// Build {{ dimension }} rules for {{ locale }}
+pub fn build_{{ locale }}_{{ dimension }}_rules(builder: &mut RuleSetBuilder) {
+    {% for rule in rules %}
+    {% if rule.rule_type == "dictionary" %}
+    // Dictionary rule: {{ rule.name }}
+    {
+        let dictionary = {{ rule.name | upper }}.clone();
+        builder.add_rule(
+            Rule::new("{{ locale }}:{{ rule.name }}")
+                .pattern(Pattern::Dictionary(dictionary.clone()))
+                .production(move |ctx| {
+                    let text = ctx.matched_text().to_lowercase();
+                    dictionary.get(text.as_str()).map(|&value| {
+                        Token::Integer(IntegerValue {
+                            value,
+                            grain: None,
+                            latent: false,
+                        })
+                    })
+                })
+                .confidence({{ rule.production.confidence | default(value=1.0) }})
+        );
+    }
+    {% endif %}
+
+    {% if rule.rule_type == "regex" %}
+    // Regex rule: {{ rule.metadata.original_name | default(value=rule.name) }}
+    {% if rule.metadata._needs_manual_review %}
+    // ⚠️  NEEDS MANUAL REVIEW: Complex production logic
+    // Original Haskell: {{ rule.production.custom_logic }}
+    {% endif %}
+    builder.add_rule(
+        Rule::new("{{ locale }}:{{ rule.name }}")
+            .pattern(Pattern::Regex(
+                regex::Regex::new(r"{{ rule.pattern.value }}").unwrap()
+            ))
+            .production(|ctx| {
+                {% if rule.production.dictionary_ref %}
+                // Dictionary lookup via regex match
+                let text = ctx.matched_text().to_lowercase();
+                {{ rule.production.dictionary_ref | upper }}.get(text.as_str()).map(|&value| {
+                    Token::Integer(IntegerValue {
+                        value,
+                        grain: None,
+                        latent: false,
+                    })
+                })
+                {% else %}
+                // TODO: Implement custom production logic
+                // {{ rule.production.custom_logic }}
+                None
+                {% endif %}
+            })
+            .confidence({{ rule.production.confidence | default(value=1.0) }})
+    );
+    {% endif %}
+
+    {% if rule.rule_type == "composite" %}
+    // ⚠️  COMPOSITE RULE - NEEDS MANUAL IMPLEMENTATION
+    // Rule: {{ rule.metadata.original_name | default(value=rule.name) }}
+    // Pattern: {{ rule.pattern._raw_haskell }}
+    // TODO: Implement composite rule logic
+    {% endif %}
+    {% endfor %}
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_{{ locale }}_{{ dimension }}_rules_compile() {
+        let mut builder = RuleSetBuilder::new();
+        build_{{ locale }}_{{ dimension }}_rules(&mut builder);
+        let ruleset = builder.build();
+        assert!(ruleset.rules.len() > 0);
+    }
+
+    {% if rules | length > 0 and rules[0].examples %}
+    #[test]
+    fn test_{{ locale }}_{{ dimension }}_examples() {
+        let mut builder = RuleSetBuilder::new();
+        build_{{ locale }}_{{ dimension }}_rules(&mut builder);
+        let ruleset = builder.build();
+
+        // Test some examples
+        {% for example in rules[0].examples %}
+        let result = ruleset.parse("{{ example }}");
+        // TODO: Add assertions based on expected values
+        {% endfor %}
+    }
+    {% endif %}
+}

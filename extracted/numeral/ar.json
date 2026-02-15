@@ -1,0 +1,556 @@
+{
+  "dimension": "Numeral",
+  "locale": "ar",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/AR/EG/Rules.hs",
+  "rules": [
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "[إأا]?تني[ي]?ن",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 2",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "تلات[هة]?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 3",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer8",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "تمان(ي[هة])?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 8\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 8",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer11",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(إأا)?حداشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 11\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 11",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer12",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "[إأا]?[تط]ناشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 12\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 12",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer13",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "[تط]ل(ا)?[تط]اشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 13\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 13",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer14",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "[إأا]ربع[تط]اشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 14\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 14",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer15",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "خمس[تط]اشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 15\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 15",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer16",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "س[تط]اشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 16\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 16",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer17",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "سبع[تط]اشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 17\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 17",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer18",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "[تط]من[تط]اشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 18\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 18",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer19",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "تسع[تط]اشر",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 19\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 19",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer30_80",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "([تط]لا[تط]|[تط]مان)(ين)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "digitsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (30, 80)"
+      }
+    },
+    {
+      "name": "Integer100",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 100\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (100)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer200",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "م(ي)?تين",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 200\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (200)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer300",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "([تط]و?لا?[تط]و?)مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 300\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (300)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer400",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(رو?بعو?)مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 400\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (400)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer500",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(خو?مسو?)مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 500\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (500)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer600",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(سو?تو?)مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 600\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (600)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer700",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(سو?بعو?)مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 700\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (700)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer800",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "([تط]و?منو?)مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 800\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (800)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer900",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "([تط]و?سعو?)مي[هةت]",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 900\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (900)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3000",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "([تط]لا?[تط])( ?[اآ])?لاف",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 3000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (3000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer4000",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "[أا]ربع(ت| ?[اآ])لاف",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 4000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (4000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer5000",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "خمس(ت| ?[اآ])لاف",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 5000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (5000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer6000",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "س(ت| ?[اآ])لاف",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 6000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (6000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer7000",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "سبع(ت| ?[اآ])لاف",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 7000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (7000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer8000",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "[تط]م[ا]?ن(ت| ?[اآ])لاف",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 8000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (8000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer9000",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "([تط]سع)(ت| ?[اآ])لاف",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = const $ integer 9000\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (9000)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer101_999",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [100, 200 .. 900",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 101..999",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.176414",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 29,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

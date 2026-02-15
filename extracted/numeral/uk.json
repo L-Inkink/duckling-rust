@@ -1,0 +1,380 @@
+{
+  "dimension": "Numeral",
+  "locale": "uk",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/UK/Rules.hs",
+  "rules": [
+    {
+      "name": "twentyNinety_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "двадцять": {
+            "value": 20
+          },
+          "тридцять": {
+            "value": 30
+          },
+          "сорок": {
+            "value": 40
+          },
+          "п‘ятдесят": {
+            "value": 50
+          },
+          "шістдесят": {
+            "value": 60
+          },
+          "сімдесят": {
+            "value": 70
+          },
+          "дев‘яносто": {
+            "value": 90
+          },
+          "вісімдесят": {
+            "value": 80
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "двадцять",
+        "тридцять",
+        "сорок",
+        "п‘ятдесят",
+        "шістдесят"
+      ]
+    },
+    {
+      "name": "hundreds_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "сто": {
+            "value": 100
+          },
+          "двісті": {
+            "value": 200
+          },
+          "триста": {
+            "value": 300
+          },
+          "чотириста": {
+            "value": 400
+          },
+          "п‘ятсот": {
+            "value": 500
+          },
+          "шістсот": {
+            "value": 600
+          },
+          "сімсот": {
+            "value": 700
+          },
+          "вісімсот": {
+            "value": 800
+          },
+          "дев‘ятсот": {
+            "value": 900
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "сто",
+        "двісті",
+        "триста",
+        "чотириста",
+        "п‘ятсот"
+      ]
+    },
+    {
+      "name": "threeNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "три": {
+            "value": 3
+          },
+          "чотири": {
+            "value": 4
+          },
+          "п‘ять": {
+            "value": 5
+          },
+          "шість": {
+            "value": 6
+          },
+          "сім": {
+            "value": 7
+          },
+          "вісім": {
+            "value": 8
+          },
+          "дев‘ять": {
+            "value": 9
+          },
+          "десять": {
+            "value": 10
+          },
+          "одинадцять": {
+            "value": 11
+          },
+          "дванадцять": {
+            "value": 12
+          },
+          "тринадцять": {
+            "value": 13
+          },
+          "чотирнадцять": {
+            "value": 14
+          },
+          "п‘ятнадцять": {
+            "value": 15
+          },
+          "шістнадцять": {
+            "value": 16
+          },
+          "сімнадцять": {
+            "value": 17
+          },
+          "вісімнадцять": {
+            "value": 18
+          },
+          "дев‘ятнадцять": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "три",
+        "чотири",
+        "п‘ять",
+        "шість",
+        "сім"
+      ]
+    },
+    {
+      "name": "Integer5",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(двадцять|тридцять|сорок|п‘ятдесят|шістдесят|сімдесят|вісімдесят|дев‘яносто)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyNinetyMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer3",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(два|дві|двоє|пара|пару|парочку|парочка)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 2\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 2",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer6",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(сто|двісті|триста|чотириста|п‘ятсот|шістсот|сімсот|вісімсот|дев‘ятсот)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "hundredsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (100..900)"
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|мінус\\\\s?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(нуль)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 0\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 0",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer4",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(три|чотирнадцять|чотири|п‘ятнадцять|п‘ять|шістнадцять|шість|сімнадцять|сім|вісімнадцять|вісім|дев‘ятнадцять|дев‘ять|десять|одинадцять|дванадцять|тринадцять)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "threeNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (3..19)"
+      }
+    },
+    {
+      "name": "Integer2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(один|одна|одну|одне|одного)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 1\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 1",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer7",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer8",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [300, 600, 500, 100, 800, 200, 900, 700, 400",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 101..999",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.150473",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 8,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

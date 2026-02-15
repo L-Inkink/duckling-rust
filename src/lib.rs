@@ -27,6 +27,11 @@ pub mod dynamic;
 // Phase 2: HTTP Server
 pub mod server;
 
+// Phase 1: Multi-language support (auto-generated)
+#[path = "../languages/mod.rs"]
+#[cfg(feature = "migration-tools")]
+pub mod languages;
+
 pub mod core {
     pub use rustling_core::pattern::{
         AnyNodePattern, FilterNodePattern, TextNegLHPattern, TextPattern,

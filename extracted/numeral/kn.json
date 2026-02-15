@@ -1,0 +1,13 @@
+{
+  "dimension": "Numeral",
+  "locale": "kn",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/KN/Rules.hs",
+  "rules": [],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.151557",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

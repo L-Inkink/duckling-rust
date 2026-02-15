@@ -1,0 +1,294 @@
+{
+  "dimension": "Numeral",
+  "locale": "lo",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/LO/Rules.hs",
+  "rules": [
+    {
+      "name": "ruleNumeral_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ສູນ": {
+            "value": 0
+          },
+          "ໜຶ່ງ": {
+            "value": 1
+          },
+          "ສອງ": {
+            "value": 2
+          },
+          "ສາມ": {
+            "value": 3
+          },
+          "ສີ່": {
+            "value": 4
+          },
+          "ຫ້າ": {
+            "value": 5
+          },
+          "ຫົກ": {
+            "value": 6
+          },
+          "ເຈັດ": {
+            "value": 7
+          },
+          "ແປດ": {
+            "value": 8
+          },
+          "ເກົ້າ": {
+            "value": 9
+          },
+          "ສິບ": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ສູນ",
+        "ໜຶ່ງ",
+        "ສອງ",
+        "ສາມ",
+        "ສີ່"
+      ]
+    },
+    {
+      "name": "elevenToNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ສິບເອັດ": {
+            "value": 11
+          },
+          "ສິບສອງ": {
+            "value": 12
+          },
+          "ສິບສາມ": {
+            "value": 13
+          },
+          "ສິບສີ່": {
+            "value": 14
+          },
+          "ສິບຫ້າ": {
+            "value": 15
+          },
+          "ສິບຫົກ": {
+            "value": 16
+          },
+          "ສິບເຈັດ": {
+            "value": 17
+          },
+          "ສິບແປດ": {
+            "value": 18
+          },
+          "ສິບເກົ້າ": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ສິບເອັດ",
+        "ສິບສອງ",
+        "ສິບສາມ",
+        "ສິບສີ່",
+        "ສິບຫ້າ"
+      ]
+    },
+    {
+      "name": "twentyoneToTwentynine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ຊາວເອັດ": {
+            "value": 21
+          },
+          "ຊາວສອງ": {
+            "value": 22
+          },
+          "ຊາວສາມ": {
+            "value": 23
+          },
+          "ຊາວສີ່": {
+            "value": 24
+          },
+          "ຊາວຫ້າ": {
+            "value": 25
+          },
+          "ຊາວຫົກ": {
+            "value": 26
+          },
+          "ຊາວເຈັດ": {
+            "value": 27
+          },
+          "ຊາວແປດ": {
+            "value": 28
+          },
+          "ຊາວເກົ້າ": {
+            "value": 29
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ຊາວເອັດ",
+        "ຊາວສອງ",
+        "ຊາວສາມ",
+        "ຊາວສີ່",
+        "ຊາວຫ້າ"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ຊາວ": {
+            "value": 20
+          },
+          "ສາມສິບ": {
+            "value": 30
+          },
+          "ສິບສີ່": {
+            "value": 40
+          },
+          "ຫ້າສິບ": {
+            "value": 50
+          },
+          "ຫົກສິບ": {
+            "value": 60
+          },
+          "ເຈັດສິບ": {
+            "value": 70
+          },
+          "ແປດສິບ": {
+            "value": 80
+          },
+          "ເກົ້າສິບ": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ຊາວ",
+        "ສາມສິບ",
+        "ສິບສີ່",
+        "ຫ້າສິບ",
+        "ຫົກສິບ"
+      ]
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ສູນ|ໜຶ່ງ|ສອງ|ສາມ|ສີ່|ຫ້າ|ຫົກ|ເຈັດ|ແປດ|ເກົ້າ|ສິບ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "ruleNumeralMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..10)"
+      }
+    },
+    {
+      "name": "ElevenToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ສິບເອັດ|ສິບສອງ|ສິບສາມ|ສິບສີ່|ສິບຫ້າ|ສິບຫົກ|ສິບເຈັດ|ສິບແປດ|ສິບເກົ້າ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "elevenToNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (11..19)"
+      }
+    },
+    {
+      "name": "TwentyoneToTwentynine",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ຊາວເອັດ|ຊາວສອງ|ຊາວສາມ|ຊາວສີ່|ຊາວຫ້າ|ຊາວຫົກ|ຊາວເຈັດ|ຊາວແປດ|ຊາວເກົ້າ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyoneToTwentynineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (21..29)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ຊາວ|ສາມສິບ|ສິບສີ່|ຫ້າສິບ|ຫົກສິບ|ເຈັດສິບ|ແປດສິບ|ເກົ້າສິບ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20,30..90)"
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ສາມສິບ|ສິບສີ່|ຫ້າສິບ|ຫົກສິບ|ເຈັດສິບ|ແປດສິບ|ເກົ້າສິບ)(ໜຶ່ງ|ສອງ|ສາມ|ສີ່|ຫ້າ|ຫົກ|ເຈັດ|ແປດ|ເກົ້າ)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer ([3-9][1-9])"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.169081",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

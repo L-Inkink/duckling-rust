@@ -1,0 +1,453 @@
+{
+  "dimension": "Numeral",
+  "locale": "ko",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/KO/Rules.hs",
+  "rules": [
+    {
+      "name": "integerForOrdinals_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "한": {
+            "value": 1
+          },
+          "첫": {
+            "value": 1
+          },
+          "두": {
+            "value": 2
+          },
+          "세": {
+            "value": 3
+          },
+          "네": {
+            "value": 4
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "한",
+        "첫",
+        "두",
+        "세",
+        "네"
+      ]
+    },
+    {
+      "name": "integerTypeAndOrdinals_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "열": {
+            "value": 10
+          },
+          "스물": {
+            "value": 20
+          },
+          "서른": {
+            "value": 30
+          },
+          "마흔": {
+            "value": 40
+          },
+          "쉰": {
+            "value": 50
+          },
+          "예순": {
+            "value": 60
+          },
+          "일흔": {
+            "value": 70
+          },
+          "여든": {
+            "value": 80
+          },
+          "아흔": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "열",
+        "스물",
+        "서른",
+        "마흔",
+        "쉰"
+      ]
+    },
+    {
+      "name": "integerType1_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "영": {
+            "value": 0
+          },
+          "일": {
+            "value": 1
+          },
+          "이": {
+            "value": 2
+          },
+          "삼": {
+            "value": 3
+          },
+          "사": {
+            "value": 4
+          },
+          "오": {
+            "value": 5
+          },
+          "육": {
+            "value": 6
+          },
+          "칠": {
+            "value": 7
+          },
+          "팔": {
+            "value": 8
+          },
+          "구": {
+            "value": 9
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "영",
+        "일",
+        "이",
+        "삼",
+        "사"
+      ]
+    },
+    {
+      "name": "integerType2_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "하나": {
+            "value": 1
+          },
+          "둘": {
+            "value": 2
+          },
+          "셋": {
+            "value": 3
+          },
+          "넷": {
+            "value": 4
+          },
+          "다섯": {
+            "value": 5
+          },
+          "여섯": {
+            "value": 6
+          },
+          "일곱": {
+            "value": 7
+          },
+          "여덟": {
+            "value": 8
+          },
+          "아홉": {
+            "value": 9
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "하나",
+        "둘",
+        "셋",
+        "넷",
+        "다섯"
+      ]
+    },
+    {
+      "name": "IntegerForOrdinals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(한|첫|두|세|네)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerForOrdinalsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (1..4) - for ordinals"
+      }
+    },
+    {
+      "name": "Few",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "몇",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 3\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "few 몇",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithOr",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|마이너스\\\\s?|마이나스\\\\s?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, 마이너스, or 마이나스",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Half",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "반",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> double 0.5\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "half - 반",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "영|공|빵",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\_ -> integer 0\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer 0",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntegerTypeAndOrdinals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(열|스물|서른|마흔|쉰|예순|일흔|여든|아흔)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerTypeAndOrdinalsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90) - TYPE 2 and ordinals"
+      }
+    },
+    {
+      "name": "IntegerType1",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(영|일|이|삼|사|오|육|칠|팔|구)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerType1Map",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer - TYPE 1"
+      }
+    },
+    {
+      "name": "IntegerType1PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(십|백|천|만|억|조)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerType1PowersOfTenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer - TYPE 1: powers of ten"
+      }
+    },
+    {
+      "name": "IntegerType2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(하나|둘|셋|넷|다섯|여섯|일곱|여덟|아홉)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerType2Map",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (1..10) - TYPE 2"
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate hasGrain\n    , Predicate $ and . sequence [not . isMultipliable, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "IntegerType3",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [10, 20 .. 90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer (21..99) - TYPE 2",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.163063",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 9,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

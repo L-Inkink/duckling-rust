@@ -1,0 +1,689 @@
+{
+  "dimension": "Numeral",
+  "locale": "ka",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/KA/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ნოლ": {
+            "value": 0
+          },
+          "ნულ": {
+            "value": 0
+          },
+          "ნული": {
+            "value": 0
+          },
+          "ნოლი": {
+            "value": 0
+          },
+          "ერთი": {
+            "value": 1
+          },
+          "ორი": {
+            "value": 2
+          },
+          "ორ": {
+            "value": 2
+          },
+          "სამი": {
+            "value": 3
+          },
+          "სამ": {
+            "value": 3
+          },
+          "ოთხი": {
+            "value": 4
+          },
+          "ოთხ": {
+            "value": 4
+          },
+          "ხუთი": {
+            "value": 5
+          },
+          "ხუთ": {
+            "value": 5
+          },
+          "ექვსი": {
+            "value": 6
+          },
+          "ექვს": {
+            "value": 6
+          },
+          "შვიდი": {
+            "value": 7
+          },
+          "შვიდ": {
+            "value": 7
+          },
+          "რვა": {
+            "value": 8
+          },
+          "რვ": {
+            "value": 8
+          },
+          "ცხრა": {
+            "value": 9
+          },
+          "ცხრ": {
+            "value": 9
+          },
+          "ათი": {
+            "value": 10
+          },
+          "აათი": {
+            "value": 10
+          },
+          "თერთმეტი": {
+            "value": 11
+          },
+          "თერთმეტ": {
+            "value": 11
+          },
+          "თორმეტი": {
+            "value": 12
+          },
+          "თორმეტ": {
+            "value": 12
+          },
+          "ცამეტი": {
+            "value": 13
+          },
+          "ცამეტ": {
+            "value": 13
+          },
+          "თოთხმეტი": {
+            "value": 14
+          },
+          "თოთხმეტ": {
+            "value": 14
+          },
+          "თხუთმეტი": {
+            "value": 15
+          },
+          "თხუთმეტ": {
+            "value": 15
+          },
+          "თექვსმეტი": {
+            "value": 16
+          },
+          "თექვსმეტ": {
+            "value": 16
+          },
+          "ჩვიდმეტი": {
+            "value": 17
+          },
+          "ჩვიდმეტ": {
+            "value": 17
+          },
+          "თვრამეტი": {
+            "value": 18
+          },
+          "თვრამეტ": {
+            "value": 18
+          },
+          "ცხრამეტი": {
+            "value": 19
+          },
+          "ცხრამეტ": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ნოლ",
+        "ნულ",
+        "ნული",
+        "ნოლი",
+        "ერთი"
+      ]
+    },
+    {
+      "name": "informal_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ერთი": {
+            "value": 1
+          },
+          "წყვილი": {
+            "value": 2
+          },
+          "წყვილები": {
+            "value": 2
+          },
+          "ცოტა": {
+            "value": 3
+          },
+          "რამდენიმე": {
+            "value": 3
+          },
+          "რამოდენიმე": {
+            "value": 3
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ერთი",
+        "წყვილი",
+        "წყვილები",
+        "ცოტა",
+        "რამდენიმე"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ოცი": {
+            "value": 20
+          },
+          "ოცდა": {
+            "value": 20
+          },
+          "ოც": {
+            "value": 20
+          },
+          "ოცდაათ": {
+            "value": 30
+          },
+          "ოცდაათი": {
+            "value": 30
+          },
+          "ორმოც": {
+            "value": 40
+          },
+          "ორმოცი": {
+            "value": 40
+          },
+          "ორმოცდა": {
+            "value": 40
+          },
+          "ორმოცდაათ": {
+            "value": 50
+          },
+          "ორმოცდაათი": {
+            "value": 50
+          },
+          "სამოც": {
+            "value": 60
+          },
+          "სამოცი": {
+            "value": 60
+          },
+          "სამოცდა": {
+            "value": 60
+          },
+          "სამოცდაათ": {
+            "value": 70
+          },
+          "სამოცდაათი": {
+            "value": 70
+          },
+          "ოთხმოც": {
+            "value": 80
+          },
+          "ოთხმოცი": {
+            "value": 80
+          },
+          "ოთხმოცდა": {
+            "value": 80
+          },
+          "ოთხმოცდაათ": {
+            "value": 90
+          },
+          "ოთხმოცდაათი": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ოცი",
+        "ოცდა",
+        "ოც",
+        "ოცდაათ",
+        "ოცდაათი"
+      ]
+    },
+    {
+      "name": "hundreds_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ასი": {
+            "value": 100
+          },
+          "ორასი": {
+            "value": 200
+          },
+          "სამასი": {
+            "value": 300
+          },
+          "ოთხასი": {
+            "value": 400
+          },
+          "ხუთასი": {
+            "value": 500
+          },
+          "ექვსასი": {
+            "value": 600
+          },
+          "შვიდასი": {
+            "value": 700
+          },
+          "რვაასი": {
+            "value": 800
+          },
+          "ცხრაასი": {
+            "value": 900
+          },
+          "ას": {
+            "value": 100
+          },
+          "ორას": {
+            "value": 200
+          },
+          "სამას": {
+            "value": 300
+          },
+          "ოთხას": {
+            "value": 400
+          },
+          "ხუთას": {
+            "value": 500
+          },
+          "ექვსას": {
+            "value": 600
+          },
+          "შვიდას": {
+            "value": 700
+          },
+          "რვაას": {
+            "value": 800
+          },
+          "ცხრაას": {
+            "value": 900
+          },
+          "ორ ას": {
+            "value": 200
+          },
+          "სამ ას": {
+            "value": 300
+          },
+          "ოთხ ას": {
+            "value": 400
+          },
+          "ხუთ ას": {
+            "value": 500
+          },
+          "ექვს ას": {
+            "value": 600
+          },
+          "შვიდ ას": {
+            "value": 700
+          },
+          "რვა ას": {
+            "value": 800
+          },
+          "ცხრა ას": {
+            "value": 900
+          },
+          "ორ ასი": {
+            "value": 200
+          },
+          "სამ ასი": {
+            "value": 300
+          },
+          "ოთხ ასი": {
+            "value": 400
+          },
+          "ხუთ ასი": {
+            "value": 500
+          },
+          "ექვს ასი": {
+            "value": 600
+          },
+          "შვიდ ასი": {
+            "value": 700
+          },
+          "რვა ასი": {
+            "value": 800
+          },
+          "ცხრა ასი": {
+            "value": 900
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ასი",
+        "ორასი",
+        "სამასი",
+        "ოთხასი",
+        "ხუთასი"
+      ]
+    },
+    {
+      "name": "ToNineteen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(წყვილ(ებ)?ი|ცოტა|რამდენიმე|რამოდენიმე|ნოლი?|ნული?|ერთი|ორი?|სამი?|ოთხი?|ხუთი?|ექვსი?|შვიდი?|რვა|თერთმეტი?|თორმეტი?|ცამეტი?|თოთხმეტი?|თხუთმეტი?|თექვსმეტი?|ჩვიდმეტი?|თვრამეტი?|ცხრამეტი?|ცხრა|ა?ათი)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..19)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ოცდაათი?|ორმოცდაათი?|სამოცდაათი?|ოთხმოცდაათი?|ოცდა|ორმოცდა|სამოცდა|ოთხმოცდა|ოცი?|ორმოცი?|სამოცი?|ოთხმოცი?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20..90)"
+      }
+    },
+    {
+      "name": "Hundreds",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ასი?|ორ ?ასი?|სამ ?ასი?|ოთხ ?ასი?|ხუთ ?ასი?|ექვს ?ასი?|შვიდ ?ასი?|რვა ?ასი?|ცხრა ?ასი?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "hundredsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (800..900)"
+      }
+    },
+    {
+      "name": "PowersOfTen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(ათასი?|მილიონი?|მილიარდი?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> case Text.toLower match of\n        \"ათასი\" -> double 1e3 >>= withGrain 3 >>= withMultipliable\n        \"ათას\" -> double 1e3 >>= withGra",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "powers of tens",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "LeadingDotSpelledOut",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "წერტილი|მთელი",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Numeral nd:_) -> double . decimalsToDouble $ TNumeral.value nd\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "point 77",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Decimals",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Commas",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+(\\\\.\\\\d+)?)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "comma-separated numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Negative",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(-|მინუს|მინ)(?!\\\\s*-)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "negative numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20,40..90",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..99",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeHundreds",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [100,200..900",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 100..999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeHundredsAndUnits",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [100,200..900",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 100..999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeHundredsAndTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [100,200..900",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 100..999",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Sum",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [hasGrain, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "SumAnd",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ and . sequence [hasGrain, isPositive",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "intersect 2 numbers (with and)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.160917",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 12,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

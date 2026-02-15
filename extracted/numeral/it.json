@@ -1,0 +1,628 @@
+{
+  "dimension": "Numeral",
+  "locale": "it",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/IT/Rules.hs",
+  "rules": [
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "venti": {
+            "value": 20
+          },
+          "trenta": {
+            "value": 30
+          },
+          "quaranta": {
+            "value": 40
+          },
+          "cinquanta": {
+            "value": 50
+          },
+          "sessanta": {
+            "value": 60
+          },
+          "settanta": {
+            "value": 70
+          },
+          "ottanta": {
+            "value": 80
+          },
+          "novanta": {
+            "value": 90
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "venti",
+        "trenta",
+        "quaranta",
+        "cinquanta",
+        "sessanta"
+      ]
+    },
+    {
+      "name": "zeroNineteen_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "zero": {
+            "value": 0
+          },
+          "niente": {
+            "value": 0
+          },
+          "nulla": {
+            "value": 0
+          },
+          "un": {
+            "value": 1
+          },
+          "uno": {
+            "value": 1
+          },
+          "due": {
+            "value": 2
+          },
+          "tre": {
+            "value": 3
+          },
+          "quattro": {
+            "value": 4
+          },
+          "cinque": {
+            "value": 5
+          },
+          "sei": {
+            "value": 6
+          },
+          "sette": {
+            "value": 7
+          },
+          "otto": {
+            "value": 8
+          },
+          "nove": {
+            "value": 9
+          },
+          "dieci": {
+            "value": 10
+          },
+          "undici": {
+            "value": 11
+          },
+          "dodici": {
+            "value": 12
+          },
+          "tredici": {
+            "value": 13
+          },
+          "quattordici": {
+            "value": 14
+          },
+          "quindici": {
+            "value": 15
+          },
+          "sedici": {
+            "value": 16
+          },
+          "diciassette": {
+            "value": 17
+          },
+          "diciotto": {
+            "value": 18
+          },
+          "diciannove": {
+            "value": 19
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "zero",
+        "niente",
+        "nulla",
+        "un",
+        "uno"
+      ]
+    },
+    {
+      "name": "hundreds_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "cento": {
+            "value": 100
+          },
+          "duecento": {
+            "value": 200
+          },
+          "trecento": {
+            "value": 300
+          },
+          "quattrocento": {
+            "value": 400
+          },
+          "cinquecento": {
+            "value": 500
+          },
+          "seicento": {
+            "value": 600
+          },
+          "settecento": {
+            "value": 700
+          },
+          "ottocento": {
+            "value": 800
+          },
+          "novecento": {
+            "value": 900
+          },
+          "mila": {
+            "value": 1000
+          },
+          "mille": {
+            "value": 1000
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "cento",
+        "duecento",
+        "trecento",
+        "quattrocento",
+        "cinquecento"
+      ]
+    },
+    {
+      "name": "twentyoneNinetynine_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "ventuno": {
+            "value": 21
+          },
+          "ventidue": {
+            "value": 22
+          },
+          "ventitre": {
+            "value": 23
+          },
+          "ventitré": {
+            "value": 23
+          },
+          "ventiquattro": {
+            "value": 24
+          },
+          "venticinque": {
+            "value": 25
+          },
+          "ventisei": {
+            "value": 26
+          },
+          "ventisette": {
+            "value": 27
+          },
+          "ventotto": {
+            "value": 28
+          },
+          "ventinove": {
+            "value": 29
+          },
+          "trentuno": {
+            "value": 31
+          },
+          "trentadue": {
+            "value": 32
+          },
+          "trentatre": {
+            "value": 33
+          },
+          "trentatré": {
+            "value": 33
+          },
+          "trentaquattro": {
+            "value": 34
+          },
+          "trentacinque": {
+            "value": 35
+          },
+          "trentasei": {
+            "value": 36
+          },
+          "trentasette": {
+            "value": 37
+          },
+          "trentotto": {
+            "value": 38
+          },
+          "trentanove": {
+            "value": 39
+          },
+          "quarantuno": {
+            "value": 41
+          },
+          "quarantadue": {
+            "value": 42
+          },
+          "quarantatre": {
+            "value": 43
+          },
+          "quarantatré": {
+            "value": 43
+          },
+          "quarantaquattro": {
+            "value": 44
+          },
+          "quarantacinque": {
+            "value": 45
+          },
+          "quarantasei": {
+            "value": 46
+          },
+          "quarantasette": {
+            "value": 47
+          },
+          "quarantotto": {
+            "value": 48
+          },
+          "quarantanove": {
+            "value": 49
+          },
+          "cinquantuno": {
+            "value": 51
+          },
+          "cinquantadue": {
+            "value": 52
+          },
+          "cinquantatre": {
+            "value": 53
+          },
+          "cinquantatré": {
+            "value": 53
+          },
+          "cinquantaquattro": {
+            "value": 54
+          },
+          "cinquantacinque": {
+            "value": 55
+          },
+          "cinquantasei": {
+            "value": 56
+          },
+          "cinquantasette": {
+            "value": 57
+          },
+          "cinquantotto": {
+            "value": 58
+          },
+          "cinquantanove": {
+            "value": 59
+          },
+          "sessantuno": {
+            "value": 61
+          },
+          "sessantadue": {
+            "value": 62
+          },
+          "sessantatré": {
+            "value": 63
+          },
+          "sessantatre": {
+            "value": 63
+          },
+          "sessantaquattro": {
+            "value": 64
+          },
+          "sessantacinque": {
+            "value": 65
+          },
+          "sessantasei": {
+            "value": 66
+          },
+          "sessantasette": {
+            "value": 67
+          },
+          "sessantotto": {
+            "value": 68
+          },
+          "sessantanove": {
+            "value": 69
+          },
+          "settantuno": {
+            "value": 71
+          },
+          "settantadue": {
+            "value": 72
+          },
+          "settantatré": {
+            "value": 73
+          },
+          "settantatre": {
+            "value": 73
+          },
+          "settantaquattro": {
+            "value": 74
+          },
+          "settantacinque": {
+            "value": 75
+          },
+          "settantasei": {
+            "value": 76
+          },
+          "settantasette": {
+            "value": 77
+          },
+          "settantotto": {
+            "value": 78
+          },
+          "settantanove": {
+            "value": 79
+          },
+          "ottantuno": {
+            "value": 81
+          },
+          "ottantadue": {
+            "value": 82
+          },
+          "ottantatré": {
+            "value": 83
+          },
+          "ottantatre": {
+            "value": 83
+          },
+          "ottantaquattro": {
+            "value": 84
+          },
+          "ottantacinque": {
+            "value": 85
+          },
+          "ottantasei": {
+            "value": 86
+          },
+          "ottantasette": {
+            "value": 87
+          },
+          "ottantotto": {
+            "value": 88
+          },
+          "ottantanove": {
+            "value": 89
+          },
+          "novantuno": {
+            "value": 91
+          },
+          "novantadue": {
+            "value": 92
+          },
+          "novantatre": {
+            "value": 93
+          },
+          "novantatré": {
+            "value": 93
+          },
+          "novantaquattro": {
+            "value": 94
+          },
+          "novantacinque": {
+            "value": 95
+          },
+          "novantasei": {
+            "value": 96
+          },
+          "novantasette": {
+            "value": 97
+          },
+          "novantotto": {
+            "value": 98
+          },
+          "novantanove": {
+            "value": 99
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "ventuno",
+        "ventidue",
+        "ventitre",
+        "ventitré",
+        "ventiquattro"
+      ]
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|meno|negativo",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(([\\\\. ])\\\\d\\\\d\\\\d)+,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_:sep:_)):\n       _) -> let fmt = Text.replace \",\" \".\" $ Text.replace sep Text.empty match\n        in parseDouble fmt >>= do",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*,\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\tokens -> case tokens of\n      (Token RegexMatch (GroupMatch (match:_)):\n       _) -> parseDecimal False match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numeral2",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(venti|trenta|quaranta|cinquanta|sessanta|settanta|ottanta|novanta)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (20..90)"
+      }
+    },
+    {
+      "name": "Numeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(zero|nulla|niente|uno|due|tredici|tre|quattro|cinque|sei|sette|otto|nove|dieci|undici|dodici|quattordici|quindici|sedici|diciassette|diciotto|diciannove|un)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroNineteenMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..19)"
+      }
+    },
+    {
+      "name": "Numeral5",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(due|tre|quattro|cinque|sei|sette|otto|nove)?cento|mil(a|le)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "hundredsMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number 100..1000 "
+      }
+    },
+    {
+      "name": "Numeral4",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "((venti|trenta|quaranta|cinquanta|sessanta|settanta|ottanta|novanta)(due|tre|tré|quattro|cinque|sei|sette|nove))|((vent|trent|quarant|cinquant|sessant|settant|ottant|novant)(uno|otto))",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "twentyoneNinetynineMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (21..29 31..39 41..49 51..59 61..69 71..79 81..89 91..99)"
+      }
+    },
+    {
+      "name": "Numeral3",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [70, 20, 60, 50, 40, 90, 30, 80",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "number (21..29 31..39 41..49 51..59 61..69 71..79 81..89 91..99)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Numerals",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate $ numberBetween 2 10\n    , numberWith TNumeral.value (== 100)\n    , Predicate $ numberBetween 0 100\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "numbers 200..999",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.144020",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 5,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

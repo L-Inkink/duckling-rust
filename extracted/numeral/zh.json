@@ -1,0 +1,392 @@
+{
+  "dimension": "Numeral",
+  "locale": "zh",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/ZH/Rules.hs",
+  "rules": [
+    {
+      "name": "integer_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "〇": {
+            "value": 0
+          },
+          "零": {
+            "value": 0
+          },
+          "一": {
+            "value": 1
+          },
+          "壹": {
+            "value": 1
+          },
+          "兩": {
+            "value": 2
+          },
+          "两": {
+            "value": 2
+          },
+          "二": {
+            "value": 2
+          },
+          "貳": {
+            "value": 2
+          },
+          "三": {
+            "value": 3
+          },
+          "參": {
+            "value": 3
+          },
+          "四": {
+            "value": 4
+          },
+          "肆": {
+            "value": 4
+          },
+          "五": {
+            "value": 5
+          },
+          "伍": {
+            "value": 5
+          },
+          "六": {
+            "value": 6
+          },
+          "陸": {
+            "value": 6
+          },
+          "七": {
+            "value": 7
+          },
+          "柒": {
+            "value": 7
+          },
+          "八": {
+            "value": 8
+          },
+          "捌": {
+            "value": 8
+          },
+          "九": {
+            "value": 9
+          },
+          "玖": {
+            "value": 9
+          },
+          "十": {
+            "value": 10
+          },
+          "拾": {
+            "value": 10
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "〇",
+        "零",
+        "一",
+        "壹",
+        "兩"
+      ]
+    },
+    {
+      "name": "tens_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "廿": {
+            "value": 20
+          },
+          "卅": {
+            "value": 30
+          },
+          "卌": {
+            "value": 40
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "廿",
+        "卅",
+        "卌"
+      ]
+    },
+    {
+      "name": "Integer",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(〇|零|一|二|两|兩|三|四|五|六|七|八|九|十|壹|貳|參|肆|伍|陸|柒|捌|玖|拾)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "integerMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (0..10)"
+      }
+    },
+    {
+      "name": "Tens",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(廿|卅|卌)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "tensMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "integer (20,30,40)"
+      }
+    },
+    {
+      "name": "NumeralsPrefixWithNegativeOrMinus",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "-|负|負",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "numbers prefix with -, negative or minus",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalWithThousandsSeparator",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d+(,\\\\d\\\\d\\\\d)+\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) ->\n        parseDouble (Text.replace \",\" Text.empty match) >>= double\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal with thousands separator",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "DecimalNumeral",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(\\\\d*\\\\.\\\\d+)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (Token RegexMatch (GroupMatch (match:_)):_) -> parseDecimal True match\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "decimal number",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Half",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(1|一)?半(半|个|個)?",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n      (_:_) -> double 0.5 >>= withMultipliable\n      _ -> Nothing\n  ",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "half",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Dozen",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "打",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "constant",
+        "constant_value": 12,
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a dozen of"
+      }
+    },
+    {
+      "name": "Pair",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "雙|對",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "constant",
+        "constant_value": 2,
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "a pair"
+      }
+    },
+    {
+      "name": "HundredPrefix",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "百|佰",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n    (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "one hundred and <integer> (short form)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "ThousandPrefix",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "千|仟",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n    (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "one thousand and <integer> (short form)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "TenThousandPrefix",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "万|萬",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "custom",
+        "custom_logic": "NEEDS_MANUAL_REVIEW: prod = \\case\n    (_:Token Numeral NumeralData{TNumeral.value = v",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "ten thousand and <integer> (short form)",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "CompositeTens",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " oneOf [20,30,40",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer 21..49",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "Multiply",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " dimension Numeral\n    , Predicate isMultipliable\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "compose by multiplication",
+        "_needs_manual_review": true
+      }
+    },
+    {
+      "name": "NumeralsIntersectConsecutiveUnit",
+      "rule_type": "composite",
+      "pattern": {
+        "type": "composite",
+        "operator": "sequence",
+        "components": [],
+        "_raw_haskell": " Predicate isPositive\n    , Predicate isPositive\n    ",
+        "_needs_manual_review": true
+      },
+      "production": {
+        "value_extractor": "composite_function",
+        "function": "UNKNOWN",
+        "confidence": 1.0,
+        "_needs_manual_review": true
+      },
+      "metadata": {
+        "original_name": "integer with consecutive unit modifiers",
+        "_needs_manual_review": true
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-15T01:09:45.883944",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 10,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

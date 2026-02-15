@@ -1,0 +1,118 @@
+{
+  "dimension": "Numeral",
+  "locale": "is",
+  "source_file": "/Users/link/Project/duckling/Duckling/Numeral/IS/Rules.hs",
+  "rules": [
+    {
+      "name": "zeroToTwenty_dictionary",
+      "rule_type": "dictionary",
+      "pattern": {
+        "type": "dictionary",
+        "entries": {
+          "núll": {
+            "value": 0
+          },
+          "null": {
+            "value": 0
+          },
+          "einn": {
+            "value": 1
+          },
+          "tveir": {
+            "value": 2
+          },
+          "þrír": {
+            "value": 3
+          },
+          "fjórir": {
+            "value": 4
+          },
+          "fimm": {
+            "value": 5
+          },
+          "sex": {
+            "value": 6
+          },
+          "sjö": {
+            "value": 7
+          },
+          "átta": {
+            "value": 8
+          },
+          "níu": {
+            "value": 9
+          },
+          "tíu": {
+            "value": 10
+          },
+          "ellefu": {
+            "value": 11
+          },
+          "tólf": {
+            "value": 12
+          },
+          "þrettán": {
+            "value": 13
+          },
+          "fjórtán": {
+            "value": 14
+          },
+          "fimmtán": {
+            "value": 15
+          },
+          "sextán": {
+            "value": 16
+          },
+          "sautján": {
+            "value": 17
+          },
+          "átján": {
+            "value": 18
+          },
+          "nítján": {
+            "value": 19
+          },
+          "tuttugu": {
+            "value": 20
+          }
+        },
+        "case_sensitive": false
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "confidence": 1.0
+      },
+      "examples": [
+        "núll",
+        "null",
+        "einn",
+        "tveir",
+        "þrír"
+      ]
+    },
+    {
+      "name": "ZeroToTwenty",
+      "rule_type": "regex",
+      "pattern": {
+        "type": "regex",
+        "value": "(n[úu]ll|einn|tveir|þrír|fjórir|fimm(tán)?|sex(tán)?|sjö|átta|níu|tíu|ellefu|tólf|þrettán|fjórtán|sautján|átján|nítján|tuttugu)",
+        "flags": "i"
+      },
+      "production": {
+        "value_extractor": "dictionary_lookup",
+        "dictionary_ref": "zeroToTwentyMap",
+        "confidence": 1.0
+      },
+      "metadata": {
+        "original_name": "number (0..20)"
+      }
+    }
+  ],
+  "metadata": {
+    "extracted_at": "2026-02-14T23:27:26.145643",
+    "extractor_version": "1.0.0",
+    "extraction_method": "python_regex",
+    "rules_needing_review": 0,
+    "notes": "Auto-extracted by extract_rules.py. Rules marked with _needs_manual_review require human verification."
+  }
+}

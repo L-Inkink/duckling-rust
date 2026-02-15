@@ -1,0 +1,32 @@
+// Auto-generated from {{ source_file }}
+// DO NOT EDIT MANUALLY - Use tools/migration/codegen.rs
+//
+// Dimension: {{ dimension }}
+// Locale: {{ locale }}
+
+use rustling_core::*;
+
+/// Build {{ dimension }} rules for {{ locale }}
+pub fn build_{{ locale }}_{{ dimension }}_rules(builder: &mut RuleSetBuilder) {
+    {% for rule in rules %}
+    // Rule: {{ rule.name }}
+    // Type: {{ rule.rule_type }}
+    // ⚠️  TODO: Implement this rule
+    // Original pattern: {{ rule.pattern }}
+    {% endfor %}
+
+    // TODO: Implement rules for {{ dimension }} / {{ locale }}
+    eprintln!("Warning: {{ dimension }} rules for {{ locale }} not yet implemented");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_{{ locale }}_{{ dimension }}_placeholder() {
+        let mut builder = RuleSetBuilder::new();
+        build_{{ locale }}_{{ dimension }}_rules(&mut builder);
+        // Placeholder test
+    }
+}
