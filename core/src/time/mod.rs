@@ -5,7 +5,9 @@
 pub mod grain;
 pub mod types;
 pub mod helpers;
+pub mod context;
 
 pub use grain::Grain;
 pub use types::{Direction, Form, TimeData, TimeValue};
 pub use helpers::{intersect, shift, sequence};
+pub use context::TimeContext;
