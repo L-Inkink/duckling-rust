@@ -19,35 +19,101 @@ pub fn rules(b: &RuleSetBuilder<Value>, context: Option<Arc<TimeContext>>) {
     // ========================================
     // Instants (now, today, etc.)
     // ========================================
-    self._generate_instant_rules(b, ctx);
+    _generate_instant_rules(b, ctx.clone());
 
     // ========================================
     // Days of Week
     // ========================================
-    self._generate_dow_rules(b, ctx);
+    _generate_dow_rules(b, ctx.clone());
 
     // ========================================
     // Months
     // ========================================
-    self._generate_month_rules(b, ctx);
+    _generate_month_rules(b, ctx.clone());
 
     // ========================================
     // Simple Time References
     // ========================================
-    self._generate_simple_rules(b, ctx);
+    _generate_simple_rules(b, ctx);
 }
 
 fn _generate_instant_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
-    // TODO: Add instant patterns (now, today, tomorrow, etc.)
-    // Based on Duckling patterns
+    // ========================================
+    // Instant patterns from Spanish Duckling
+    // ========================================
 
-    // Example pattern:
-    // let ctx_now = Arc::clone(&ctx);
-    // b.rule_1_terminal(
-    //     "es:time:now",
-    //     b.reg(r"now|.today").unwrap(),
-    //     move |_| Ok(Value::Time(TimeValue::instant(ctx_now.reference_utc(), Grain::Second)))
-    // );
+    // "ahora" - now
+    let ctx_ahora = Arc::clone(&ctx);
+    b.rule_1_terminal(
+        "es:time:ahora",
+        b.reg(r"ahora|actualmente|en este momento").unwrap(),
+        move |_| Ok(Value::Time(TimeValue::instant(ctx_ahora.reference_utc(), Grain::Second)))
+    );
+
+    // "hoy" - today
+    let ctx_hoy = Arc::clone(&ctx);
+    b.rule_1_terminal(
+        "es:time:hoy",
+        b.reg(r"hoy|el\s*dia|de\s*hoy").unwrap(),
+        move |_| {
+            let ref_time = ctx_hoy.reference_local();
+            let today = ref_time.date_naive().and_hms_opt(0, 0, 0).unwrap();
+            let today_utc = Utc.from_utc_datetime(&today);
+            Ok(Value::Time(TimeValue::instant(today_utc, Grain::Day)))
+        }
+    );
+
+    // "mañana" - tomorrow
+    let ctx_manana = Arc::clone(&ctx);
+    b.rule_1_terminal(
+        "es:time:manana",
+        b.reg(r"mañana|manana|el\s*dia\s*siguiente").unwrap(),
+        move |_| {
+            let ref_time = ctx_manana.reference_local();
+            let tomorrow = ref_time.date_naive().and_hms_opt(0, 0, 0).unwrap() + chrono::Duration::days(1);
+            let tomorrow_utc = Utc.from_utc_datetime(&tomorrow);
+            Ok(Value::Time(TimeValue::instant(tomorrow_utc, Grain::Day)))
+        }
+    );
+
+    // "ayer" - yesterday
+    let ctx_ayer = Arc::clone(&ctx);
+    b.rule_1_terminal(
+        "es:time:ayer",
+        b.reg(r"ayer|el\s*dia\s*anterior").unwrap(),
+        move |_| {
+            let ref_time = ctx_ayer.reference_local();
+            let yesterday = ref_time.date_naive().and_hms_opt(0, 0, 0).unwrap() - chrono::Duration::days(1);
+            let yesterday_utc = Utc.from_utc_datetime(&yesterday);
+            Ok(Value::Time(TimeValue::instant(yesterday_utc, Grain::Day)))
+        }
+    );
+
+    // "pasado mañana" - day after tomorrow
+    let ctx_pasado_manana = Arc::clone(&ctx);
+    b.rule_1_terminal(
+        "es:time:pasado_manana",
+        b.reg(r"pasado\s*ma(ñ|n)ana").unwrap(),
+        move |_| {
+            let ref_time = ctx_pasado_manana.reference_local();
+            let day_after = ref_time.date_naive().and_hms_opt(0, 0, 0).unwrap() + chrono::Duration::days(2);
+            let day_after_utc = Utc.from_utc_datetime(&day_after);
+            Ok(Value::Time(TimeValue::instant(day_after_utc, Grain::Day)))
+        }
+    );
+
+    // "anteayer" - day before yesterday
+    let ctx_anteayer = Arc::clone(&ctx);
+    b.rule_1_terminal(
+        "es:time:anteayer",
+        b.reg(r"anteayer|antes\s*de\s*ayer|ante\s*ayer").unwrap(),
+        move |_| {
+            let ref_time = ctx_anteayer.reference_local();
+            let day_before = ref_time.date_naive().and_hms_opt(0, 0, 0).unwrap() - chrono::Duration::days(2);
+            let day_before_utc = Utc.from_utc_datetime(&day_before);
+            Ok(Value::Time(TimeValue::instant(day_before_utc, Grain::Day)))
+        }
+    );
 }
 
 fn _generate_dow_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
