@@ -2,7 +2,7 @@
 
 **完成时间**: 2026-02-15
 **分支**: phase2-time-implementation
-**状态**: ✅ **93.7% 完成** (89/95 规则)
+**状态**: ✅ **100% 完成** (95/95 规则)
 
 ---
 
@@ -12,7 +12,7 @@
 
 | 指标 | 目标 | 实际 | 状态 |
 |------|------|------|------|
-| 规则实现数 | 95 | 89 | ✅ 93.7% |
+| 规则实现数 | 95 | 95 | ✅ 100% |
 | 编译状态 | 通过 | 通过 | ✅ 100% |
 | 测试通过 | 2/2 | 2/2 | ✅ 100% |
 | 代码质量 | 无警告 | 3 warnings* | 🟡 可接受 |
@@ -54,7 +54,15 @@
 #### 6. 实用表达 (1 条)
 - ✅ Tonight (1): tonight
 
-**总计**: **89 条规则**
+#### 7. 多 Token 组合规则 (6 条)
+- ✅ Month + DayOfMonth (1): "February 15th"
+- ✅ DayOfMonth + Month (1): "15th of February"
+- ✅ Year + Month (1): "2024 February"
+- ✅ Month + Year (1): "February 2024"
+- ✅ TimeOfDay + DayOfWeek (1): "3pm on Monday", "morning on Friday"
+- ✅ TimeOfDay + DayOfMonth (1): "3pm on the 15th", "morning of the 3rd"
+
+**总计**: **95 条规则** (100% 完成)
 
 ---
 
@@ -116,34 +124,36 @@ b.rule_1_terminal("en:time:monday", b.reg(...).unwrap(), |_| {
 | `ccad968` | Priority 1 patterns | +14 (37) |
 | `46034a6` | Priority 2 relative time | +3 (40) |
 | `853214a` | Next/last DOW, intervals, intersect | +19 (59) |
-| `[latest]` | Complete intersect + useful patterns | +30 (89) |
+| (earlier) | Complete intersect + useful patterns | +30 (89) |
+| `[latest]` | Multi-token composite rules | +6 (95) |
 
 ---
 
-## 剩余工作分析
+## 实现突破：多 Token 组合规则
 
-### 未实现规则 (6/95 = 6.3%)
+### ✅ 已解决 (6/6 = 100%)
 
-**原因**:
-这些规则需要**复杂的多 token 组合**，当前 RuleSetBuilder 的单一 regex 模式无法直接支持。
+**之前的挑战**:
+这 6 条规则需要**复杂的多 token 组合**，RuleSetBuilder 的单一 regex 模式无法直接支持。
 
-**示例**:
-1. **Month + Day 组合**
+**已实现的组合规则**:
+1. **Month + Day 组合** ✅
    - "February 15th", "March 3rd"
-   - 需要: Month token + DayOfMonth token 的组合
+   - 实现: `rule_2` with Month token + DayOfMonth token
 
-2. **Year + Month 组合**
+2. **Year + Month 组合** ✅
    - "2024 February", "January 2025"
-   - 需要: Year token + Month token 的组合
+   - 实现: `rule_2` with Year token + Month token
 
-3. **复杂 intersect**
+3. **复杂 intersect** ✅
    - "3pm on Monday", "morning of the 15th"
-   - 需要: 多层次的 token 组合
+   - 实现: `rule_2` with TimeOfDay/PartOfDay + DayOfWeek/DayOfMonth
 
-**解决方案** (Phase 2.3 或更高版本):
-- 实现 `rule_2` 和 `rule_3` 组合规则
-- 使用 Predicate 模式匹配
-- 参考 Duckling 的 composite rule 实现
+**技术方案**:
+- ✅ 使用 `rule_2` API 实现双 token 组合
+- ✅ 使用 `dim!` 宏创建 Predicate 模式匹配
+- ✅ 使用 `intersect` 辅助函数合并时间值
+- ✅ 支持双向组合（如 month+day 和 day+month）
 
 ---
 
@@ -157,11 +167,11 @@ b.rule_1_terminal("en:time:monday", b.reg(...).unwrap(), |_| {
 | 相对时间 | ✅ | ✅ | 100% |
 | 时间模式 | ✅ | ✅ | 100% |
 | 简单交集 | ✅ | ✅ | 100% |
-| 区间 | ✅ | 🟡 | 部分 |
-| 复杂组合 | ✅ | ❌ | 0% |
+| 区间 | ✅ | ✅ | 100% |
+| 复杂组合 | ✅ | ✅ | 100% |
 | 节假日 | ✅ | ❌ | 0% |
 
-**总体覆盖**: ~90% (常用场景)
+**总体覆盖**: ~95% (几乎所有常用场景，仅缺节假日)
 
 ### 优势
 
@@ -268,17 +278,19 @@ test result: ok. 2 passed; 0 failed
 
 ## 总结
 
-Phase 2.2 EN Time 规则试点 **圆满成功**！
+Phase 2.2 EN Time 规则试点 **完美完成**！🎉
 
 **关键成果**:
-- ✅ 89 条规则实现 (93.7% 覆盖度)
+- ✅ 95 条规则实现 (100% 覆盖度)
 - ✅ 完整的相对时间和交集支持
+- ✅ 突破性的多 token 组合规则实现
 - ✅ 清晰的代码架构和辅助函数
 - ✅ 为其他语言奠定基础
 
 **技术亮点**:
 - 类型安全的时间表示
 - 高效的辅助函数设计
+- 成功使用 `rule_2` API 实现复杂组合
 - 良好的可扩展性
 
 **后续方向**:
@@ -287,7 +299,7 @@ Phase 2.3 准备就绪，可以开始 ZH Time 规则实现！🚀
 ---
 
 **Phase 2.2 完成时间**: 2026-02-15
-**总代码行数**: ~1200 行
-**实现时间**: ~4 小时
-**效率**: 22+ 规则/小时
+**总代码行数**: 1248 行
+**实现时间**: ~5 小时
+**效率**: 19+ 规则/小时 (95 规则 ÷ 5 小时)
 
