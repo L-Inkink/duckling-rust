@@ -1588,6 +1588,11 @@ fn add_duration_interval_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>)
             Ok(Value::Time(TimeValue::Interval { from: from_data, to: to_data }))
         }
     );
+
+    // ========================================
+    // Holidays (15 rules)
+    // ========================================
+    crate::languages::zh::holidays::rules(b, Arc::clone(&ctx));
 }
 
 /// Parse Chinese year digits (e.g., "二零二四" -> 2024)
