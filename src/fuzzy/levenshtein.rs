@@ -87,3 +87,92 @@ impl Default for LevenshteinMatcher {
         Self::new(0.85)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_distance_identical() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.distance("hello", "hello"), 0);
+    }
+
+    #[test]
+    fn test_distance_one_insertion() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.distance("hello", "helo"), 1);
+    }
+
+    #[test]
+    fn test_distance_one_deletion() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.distance("hello", "helo"), 1);
+    }
+
+    #[test]
+    fn test_distance_one_replacement() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.distance("hello", "hallo"), 1);
+    }
+
+    #[test]
+    fn test_similarity_identical() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.similarity("hello", "hello"), 1.0);
+    }
+
+    #[test]
+    fn test_similarity_high() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        let sim = matcher.similarity("tomorow", "tomorrow");
+        assert!(sim >= 0.85, "Similarity should be >= 0.85, got {}", sim);
+    }
+
+    #[test]
+    fn test_similarity_low() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        let sim = matcher.similarity("abc", "xyz");
+        assert!(sim < 0.5, "Similarity should be low for different words");
+    }
+
+    #[test]
+    fn test_correct_with_candidates() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        let candidates = &["today", "tomorrow", "yesterday"];
+
+        // High similarity should match
+        assert_eq!(matcher.correct("tomorow", candidates), Some("tomorrow".to_string()));
+
+        // Low similarity should not match
+        assert_eq!(matcher.correct("xyz", candidates), None);
+    }
+
+    #[test]
+    fn test_correct_empty_input() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        let candidates = &["hello", "world"];
+
+        assert_eq!(matcher.correct("", candidates), None);
+    }
+
+    #[test]
+    fn test_correct_empty_candidates() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.correct("hello", &[]), None);
+    }
+
+    #[test]
+    fn test_distance_empty_strings() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.distance("", ""), 0);
+        assert_eq!(matcher.distance("hello", ""), 5);
+        assert_eq!(matcher.distance("", "hello"), 5);
+    }
+
+    #[test]
+    fn test_similarity_empty_strings() {
+        let matcher = LevenshteinMatcher::new(0.85);
+        assert_eq!(matcher.similarity("", ""), 1.0);
+    }
+}
