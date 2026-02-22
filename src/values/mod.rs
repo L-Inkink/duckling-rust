@@ -6,7 +6,7 @@ pub use time::TimeValue;
 use serde::{Deserialize, Serialize};
 use rustling_core::{NodePayload, StashIndexable};
 use std::fmt::Debug;
-use std::hash::{Hash, Hasher};
+use std::hash::Hash;
 
 // ValueKind: A lightweight enum for indexing
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

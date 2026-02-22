@@ -3,9 +3,9 @@
 // Generated: 2026-02-21
 
 use crate::values::Value;
-use rustling_core::time::{Form, Grain, TimeContext, TimeData, TimeValue};
-use rustling_core::{RuleSetBuilder, rustling_error};
-use chrono::{Datelike, Duration, TimeZone, Timelike, Utc, Weekday};
+use rustling_core::time::{Grain, TimeContext, TimeData, TimeValue};
+use rustling_core::RuleSetBuilder;
+use chrono::{Datelike, Duration, TimeZone, Utc, Weekday};
 use std::sync::Arc;
 
 /// Build Korean Time rules
@@ -425,7 +425,7 @@ fn _generate_month_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
     );
 }
 
-fn _generate_simple_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
+fn _generate_simple_rules(_b: &RuleSetBuilder<Value>, _ctx: Arc<TimeContext>) {
     // TODO: Add simple time reference patterns
     // Examples: "아침" (morning), "낮" (afternoon), "저녁" (evening), etc.
 }
@@ -434,12 +434,14 @@ fn _generate_simple_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
 // Helper Functions
 // ========================================
 
+#[allow(dead_code)]
 /// Helper: intersect two time values
-fn intersect(time1: TimeData, time2: TimeData) -> Value {
+fn intersect(time1: TimeData, _time2: TimeData) -> Value {
     // TODO: Implement intersection logic
     Value::Time(TimeValue::instant(time1.datetime, time1.grain))
 }
 
+#[allow(dead_code)]
 /// Helper: shift time by duration
 fn shift(time: TimeData, grain: Grain, offset: i64) -> Value {
     // TODO: Implement shift logic
@@ -448,7 +450,7 @@ fn shift(time: TimeData, grain: Grain, offset: i64) -> Value {
 }
 
 /// Parse day of week from Korean name
-fn parse_dow(name: &str) -> Option<Weekday> {
+#[allow(dead_code)]fn parse_dow(name: &str) -> Option<Weekday> {
     match name {
         "월요일" | "월" => Some(Weekday::Mon),
         "화요일" | "화" => Some(Weekday::Tue),
@@ -462,7 +464,7 @@ fn parse_dow(name: &str) -> Option<Weekday> {
 }
 
 /// Parse month from Korean name
-fn parse_month(name: &str) -> Option<u32> {
+#[allow(dead_code)]fn parse_month(name: &str) -> Option<u32> {
     match name {
         "1월" | "일월" => Some(1),
         "2월" | "이월" => Some(2),

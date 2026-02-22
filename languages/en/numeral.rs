@@ -7,7 +7,6 @@
 
 use crate::values::Value;
 use rustling_core::{RuleSetBuilder, rustling_error};
-use crate::dim;
 use std::collections::HashMap;
 use lazy_static::lazy_static;
 
@@ -525,7 +524,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         |text_match| {
             let text = text_match.group(1);
             text.parse::<f64>()
-                .map(|f| Value::Float(f))
+                .map(Value::Float)
                 .map_err(|_| rustling_error!("Failed to parse decimal: {}", text))
         }
     );
@@ -580,7 +579,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
         |text_match| {
             let text = text_match.group(1);
             text.parse::<i64>()
-                .map(|i| Value::Integer(i))
+                .map(Value::Integer)
                 .map_err(|_| rustling_error!("Failed to parse integer: {}", text))
         }
     );

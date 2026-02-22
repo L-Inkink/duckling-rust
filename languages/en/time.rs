@@ -174,16 +174,14 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
                 .map_err(|e| rustling_error!("Failed to parse minute: {}", e))?;
             let am_pm = text_match.group(3).to_lowercase();
 
-            if hour < 1 || hour > 12 || minute >= 60 {
+            if !(1..=12).contains(&hour) || minute >= 60 {
                 return Err(rustling_error!("Invalid time: {}:{} {}", hour, minute, am_pm));
             }
 
             // Convert to 24-hour format
             let hour_24 = if am_pm == "am" {
                 if hour == 12 { 0 } else { hour }
-            } else {
-                if hour == 12 { 12 } else { hour + 12 }
-            };
+            } else if hour == 12 { 12 } else { hour + 12 };
 
             let now = Utc::now();
             let dt = now.date_naive().and_hms_opt(hour_24, minute, 0)
@@ -206,7 +204,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
                 .map_err(|e| rustling_error!("Failed to parse hour: {}", e))?;
 
             // Validate hour is in valid range for 12-hour format
-            if hour < 1 || hour > 12 {
+            if !(1..=12).contains(&hour) {
                 return Err(rustling_error!("Invalid hour for AM/PM: {}", hour));
             }
 
@@ -215,9 +213,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             // Convert to 24-hour format
             let hour_24 = if am_pm == "am" {
                 if hour == 12 { 0 } else { hour }
-            } else {
-                if hour == 12 { 12 } else { hour + 12 }
-            };
+            } else if hour == 12 { 12 } else { hour + 12 };
 
             let now = Utc::now();
             let dt = now.date_naive().and_hms_opt(hour_24, 0, 0)
@@ -240,7 +236,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
                 .map_err(|e| rustling_error!("Failed to parse hour: {}", e))?;
 
             // Validate hour is in valid range for 12-hour format
-            if hour < 1 || hour > 12 {
+            if !(1..=12).contains(&hour) {
                 return Err(rustling_error!("Invalid hour for AM/PM: {}", hour));
             }
 
@@ -249,9 +245,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             // Convert to 24-hour format
             let hour_24 = if am_pm_letter == "a" {
                 if hour == 12 { 0 } else { hour }
-            } else {
-                if hour == 12 { 12 } else { hour + 12 }
-            };
+            } else if hour == 12 { 12 } else { hour + 12 };
 
             let now = Utc::now();
             let dt = now.date_naive().and_hms_opt(hour_24, 0, 0)
@@ -399,7 +393,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             let day: u32 = text_match.group(1).parse()
                 .map_err(|e| rustling_error!("Failed to parse day: {}", e))?;
 
-            if day < 1 || day > 31 {
+            if !(1..=31).contains(&day) {
                 return Err(rustling_error!("Invalid day of month: {}", day));
             }
 
@@ -434,7 +428,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             let day: u32 = text_match.group(1).parse()
                 .map_err(|e| rustling_error!("Failed to parse day: {}", e))?;
 
-            if day < 1 || day > 31 {
+            if !(1..=31).contains(&day) {
                 return Err(rustling_error!("Invalid day of month: {}", day));
             }
 
@@ -483,7 +477,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             let day: u32 = text_match.group(2).parse()
                 .map_err(|e| rustling_error!("Failed to parse day: {}", e))?;
 
-            if month < 1 || month > 12 || day < 1 || day > 31 {
+            if !(1..=12).contains(&month) || !(1..=31).contains(&day) {
                 return Err(rustling_error!("Invalid date: {}/{}", month, day));
             }
 
@@ -522,7 +516,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
                     .map_err(|e| rustling_error!("Failed to parse year: {}", e))?
             };
 
-            if month < 1 || month > 12 || day < 1 || day > 31 {
+            if !(1..=12).contains(&month) || !(1..=31).contains(&day) {
                 return Err(rustling_error!("Invalid date: {}/{}/{}", month, day, year));
             }
 
@@ -548,7 +542,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             let day: u32 = text_match.group(3).parse()
                 .map_err(|e| rustling_error!("Failed to parse day: {}", e))?;
 
-            if month < 1 || month > 12 || day < 1 || day > 31 {
+            if !(1..=12).contains(&month) || !(1..=31).contains(&day) {
                 return Err(rustling_error!("Invalid date: {}-{}-{}", year, month, day));
             }
 
@@ -875,9 +869,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             let start_hour_24 = if !start_am_pm.is_empty() {
                 if start_am_pm == "am" {
                     if start_hour == 12 { 0 } else { start_hour }
-                } else {
-                    if start_hour == 12 { 12 } else { start_hour + 12 }
-                }
+                } else if start_hour == 12 { 12 } else { start_hour + 12 }
             } else {
                 start_hour
             };
@@ -885,9 +877,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
             let end_hour_24 = if !end_am_pm.is_empty() {
                 if end_am_pm == "am" {
                     if end_hour == 12 { 0 } else { end_hour }
-                } else {
-                    if end_hour == 12 { 12 } else { end_hour + 12 }
-                }
+                } else if end_hour == 12 { 12 } else { end_hour + 12 }
             } else {
                 end_hour
             };

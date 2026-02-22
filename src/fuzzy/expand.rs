@@ -10,7 +10,6 @@ use finalfusion::io::ReadEmbeddings;
 use std::collections::HashMap;
 use std::path::Path;
 use std::io::BufReader;
-use std::sync::RwLock;
 
 /// Error type for FastText operations
 #[derive(Debug)]
@@ -33,6 +32,7 @@ impl std::fmt::Display for FastTextError {
 impl std::error::Error for FastTextError {}
 
 /// Cached embeddings index for fast lookup
+#[allow(dead_code)]
 struct EmbeddingsIndex {
     /// Word to embedding index mapping
     word_indices: HashMap<String, usize>,
@@ -67,6 +67,7 @@ impl EmbeddingsIndex {
         }
     }
 
+    #[allow(dead_code)]
     fn get_index(&self, word: &str) -> Option<usize> {
         self.word_indices.get(word).copied()
     }
@@ -79,6 +80,7 @@ impl EmbeddingsIndex {
 pub struct FastTextExpander {
     embeddings: Option<Embeddings<SimpleVocab, NdArray>>,
     /// Cached index for fast lookup
+    #[allow(dead_code)]
     index: Option<EmbeddingsIndex>,
     similarity_threshold: f32,
     max_candidates: usize,

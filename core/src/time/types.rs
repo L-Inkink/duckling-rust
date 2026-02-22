@@ -13,9 +13,10 @@ pub enum Direction {
 }
 
 /// Form of time expression
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 pub enum Form {
     /// Unspecified form
+    #[default]
     Unspecified,
     /// Day of week (Monday, Tuesday, etc.)
     DayOfWeek,
@@ -150,11 +151,6 @@ impl TimeValue {
     }
 }
 
-impl Default for Form {
-    fn default() -> Self {
-        Form::Unspecified
-    }
-}
 
 // Eq and Hash implementations for TimeData and TimeValue
 // These are needed for using Time values in HashMaps and as part of Value enum

@@ -3,18 +3,6 @@
  //! Tests loading rules from JSON and parsing with hybrid parser
 
 use rustling::dynamic::{DynamicRuleEngine, InlineLoader, ConfigManager, ConfigLoader};
-use rustling::dynamic::rules::{DynamicRuleSet, RuleSetMetadata, DynamicRule, TerminalRuleDefinition, RuleValue};
-use rustling::{RuleSet, RuleSetBuilder, BoundariesChecker, rules::*, values::Value};
-
-fn setup_ruleset() -> RuleSet<Value> {
-    let mut b = RuleSetBuilder::<Value>::new(
-        BoundariesChecker::detailed(),
-        BoundariesChecker::separated_alphanumeric_word(),
-    );
-    integer::rules(&mut b);
-    duration::rules(&mut b);
-    b.build()
-}
 
 #[test]
 fn test_dynamic_rules_from_json() {

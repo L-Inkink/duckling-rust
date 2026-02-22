@@ -38,7 +38,7 @@ pub fn rules(b: &RuleSetBuilder<Value>, context: Option<Arc<TimeContext>>) {
 
     // "现在/現在/此时/此刻/当前/當前/宜家/而家/依家" - local_ref
     let ctx_now: Arc<TimeContext> = Arc::clone(&ctx);
-    let ctx_local_ref = Arc::clone(&ctx);
+    let _ctx_local_ref = Arc::clone(&ctx);
     b.rule_1_terminal(
         "zh:time:local_ref",
         b.reg(r"现在|現在|此时|此時|此刻|当前|當前|宜家|而家|依家").unwrap(),
@@ -647,7 +647,7 @@ fn add_hour_minute_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
             // e.g., "3点差5分" = 2:55
             let actual_hour = if minus >= hour as u32 * 60 {
                 (hour + 23) % 24
-            } else if minus > (hour % 1) * 60 {
+            } else if minus > 0 {
                 hour - 1
             } else {
                 hour
@@ -906,7 +906,7 @@ fn add_month_day_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
 /// Add Year rules (5 rules)
 fn add_year_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
     // "YYYY年" - numeric year
-    let ctx_year_numeric = Arc::clone(&ctx);
+    let _ctx_year_numeric = Arc::clone(&ctx);
     b.rule_1_terminal(
         "zh:time:year_numeric",
         b.reg(r"(1\d{3}|20\d{2}|2100)年").unwrap(),

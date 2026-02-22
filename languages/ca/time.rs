@@ -2,9 +2,9 @@
 // Auto-generated from Duckling
 
 use crate::values::Value;
-use rustling_core::time::{Form, Grain, TimeContext, TimeData, TimeValue};
-use rustling_core::{RuleSetBuilder, rustling_error};
-use chrono::{Datelike, Duration, TimeZone, Timelike, Utc, Weekday};
+use rustling_core::time::{Grain, TimeContext, TimeData, TimeValue};
+use rustling_core::RuleSetBuilder;
+use chrono::{Datelike, Duration, TimeZone, Utc, Weekday};
 use std::sync::Arc;
 
 /// Build Catalan Time rules
@@ -417,7 +417,7 @@ fn _generate_month_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
     );
 }
 
-fn _generate_simple_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
+fn _generate_simple_rules(_b: &RuleSetBuilder<Value>, _ctx: Arc<TimeContext>) {
     // TODO: Add simple time reference patterns
     // Examples: "morning", "afternoon", "evening", etc.
 }
@@ -426,12 +426,14 @@ fn _generate_simple_rules(b: &RuleSetBuilder<Value>, ctx: Arc<TimeContext>) {
 // Helper Functions
 // ========================================
 
+#[allow(dead_code)]
 /// Helper: intersect two time values
-fn intersect(time1: TimeData, time2: TimeData) -> Value {
+fn intersect(time1: TimeData, _time2: TimeData) -> Value {
     // TODO: Implement intersection logic
     Value::Time(TimeValue::instant(time1.datetime, time1.grain))
 }
 
+#[allow(dead_code)]
 /// Helper: shift time by duration
 fn shift(time: TimeData, grain: Grain, offset: i64) -> Value {
     // TODO: Implement shift logic
@@ -439,6 +441,7 @@ fn shift(time: TimeData, grain: Grain, offset: i64) -> Value {
     Value::Time(TimeValue::instant(new_time, grain))
 }
 
+#[allow(dead_code)]
 /// Parse day of week from English name
 fn parse_dow(name: &str) -> Option<Weekday> {
     match name {
@@ -453,6 +456,7 @@ fn parse_dow(name: &str) -> Option<Weekday> {
     }
 }
 
+#[allow(dead_code)]
 /// Parse month from English name
 fn parse_month(name: &str) -> Option<u32> {
     match name {

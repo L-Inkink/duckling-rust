@@ -6,9 +6,7 @@
 // Generator: codegen v3 (improved automation)
 
 use crate::values::Value;
-use rustling_core::{RuleSetBuilder, rustling_error};
-use std::collections::HashMap;
-use lazy_static::lazy_static;
+use rustling_core::RuleSetBuilder;
 
 
 
@@ -132,7 +130,7 @@ use lazy_static::lazy_static;
 ///   - 0 constant regex rules
 ///   - 0 dictionary-reference regex rules
 ///   - 17 complex rules (manual implementation required)
-pub fn rules(b: &RuleSetBuilder<Value>) {
+pub fn rules(_b: &RuleSetBuilder<Value>) {
     
 
     

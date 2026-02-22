@@ -37,12 +37,12 @@ pub fn qingming(year: i32) -> Option<DateTime<Utc>> {
 /// - 每4年闰年修正
 #[allow(dead_code)]
 pub fn qingming_formula(year: i32) -> Option<DateTime<Utc>> {
-    let day = if year >= 1900 && year < 2000 {
+    let day = if (1900..2000).contains(&year) {
         // 1900-1999年公式
         let d = (year - 1900) as f64 * 0.2422 + 5.59
             - ((year - 1900) / 4) as f64;
         d.floor() as u32
-    } else if year >= 2000 && year < 2100 {
+    } else if (2000..2100).contains(&year) {
         // 2000-2099年公式
         let d = (year - 2000) as f64 * 0.2422 + 4.81
             - ((year - 2000) / 4) as f64;

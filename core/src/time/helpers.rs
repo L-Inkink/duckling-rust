@@ -84,7 +84,7 @@ pub fn shift(td: &TimeData, direction: Direction, grain: Grain, n: i32) -> TimeD
         Grain::Week => Duration::weeks(n as i64),
         Grain::Month => {
             // Month arithmetic is tricky - use chrono's built-in support
-            let months = n as i32;
+            let months = n;
             let new_date = if months >= 0 {
                 td.datetime.checked_add_months(chrono::Months::new(months as u32))
             } else {
@@ -127,12 +127,8 @@ pub fn shift(td: &TimeData, direction: Direction, grain: Grain, n: i32) -> TimeD
             };
         }
         Grain::Year => {
-            let years = n as i32;
-            let new_date = if years >= 0 {
-                td.datetime.with_year(td.datetime.year() + years)
-            } else {
-                td.datetime.with_year(td.datetime.year() + years)
-            };
+            let years = n;
+            let new_date = td.datetime.with_year(td.datetime.year() + years);
 
             let datetime = new_date.unwrap_or(td.datetime);
 

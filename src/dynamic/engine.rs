@@ -86,6 +86,47 @@ impl From<DynamicRuleError> for RustlingError {
 pub struct DynamicRuleEngine;
 
 impl DynamicRuleEngine {
+    /// List all rules in a rule set (enabled and disabled)
+    pub fn list_rules(rules: &DynamicRuleSet) -> Vec<&str> {
+        rules.rules.iter().map(|r| match r {
+            DynamicRule::Terminal(t) => t.name.as_str(),
+        }).collect()
+    }
+
+    /// List only enabled rules in a rule set
+    pub fn list_enabled_rules(rules: &DynamicRuleSet) -> Vec<&str> {
+        rules.rules.iter().filter_map(|r| match r {
+            DynamicRule::Terminal(t) if t.enabled => Some(t.name.as_str()),
+            _ => None,
+        }).collect()
+    }
+
+    /// Validate a DynamicRuleSet, returning a list of errors
+    pub fn validate_ruleset(rules: &DynamicRuleSet) -> Vec<String> {
+        let mut errors = Vec::new();
+
+        for rule in &rules.rules {
+            match rule {
+                DynamicRule::Terminal(t) => {
+                    // Validate regex pattern
+                    if let Err(e) = regex::Regex::new(&t.pattern) {
+                        errors.push(format!("Rule '{}': invalid regex '{}': {}", t.name, t.pattern, e));
+                    }
+                    // Validate priority range
+                    if t.priority < -1000 || t.priority > 1000 {
+                        errors.push(format!("Rule '{}': priority {} out of range [-1000, 1000]", t.name, t.priority));
+                    }
+                    // Validate name not empty
+                    if t.name.is_empty() {
+                        errors.push("Rule has empty name".to_string());
+                    }
+                }
+            }
+        }
+
+        errors
+    }
+
     /// Build a RuleSet from dynamic rule definitions
     /// Currently only supports Value type
     pub fn build_ruleset(rules: &DynamicRuleSet) -> Result<RuleSet<Value>, DynamicRuleError> {
@@ -294,5 +335,57 @@ mod tests {
             Ok(TimeUnit::Minute)
         ));
         assert!(DynamicRuleEngine::parse_time_unit("invalid").is_err());
+    }
+
+    #[test]
+    fn test_list_rules() {
+        let rules = create_test_rules();
+        let names = DynamicRuleEngine::list_rules(&rules);
+        assert_eq!(names, vec!["integer (test)"]);
+    }
+
+    #[test]
+    fn test_list_enabled_rules() {
+        let mut rules = create_test_rules();
+        // Add a disabled rule
+        rules.rules.push(DynamicRule::Terminal(crate::dynamic::rules::TerminalRuleDefinition {
+            name: "disabled rule".to_string(),
+            pattern: r"\d+".to_string(),
+            capture_group: 0,
+            value: RuleValue::Integer { value: serde_json::json!(0) },
+            enabled: false,
+            priority: 0,
+        }));
+
+        let all = DynamicRuleEngine::list_rules(&rules);
+        assert_eq!(all.len(), 2);
+
+        let enabled = DynamicRuleEngine::list_enabled_rules(&rules);
+        assert_eq!(enabled.len(), 1);
+        assert_eq!(enabled[0], "integer (test)");
+    }
+
+    #[test]
+    fn test_validate_ruleset_valid() {
+        let rules = create_test_rules();
+        let errors = DynamicRuleEngine::validate_ruleset(&rules);
+        assert!(errors.is_empty(), "Expected no errors, got: {:?}", errors);
+    }
+
+    #[test]
+    fn test_validate_ruleset_invalid_regex() {
+        let mut rules = create_test_rules();
+        rules.rules.push(DynamicRule::Terminal(crate::dynamic::rules::TerminalRuleDefinition {
+            name: "bad regex".to_string(),
+            pattern: "[invalid".to_string(),
+            capture_group: 0,
+            value: RuleValue::Integer { value: serde_json::json!(0) },
+            enabled: true,
+            priority: 0,
+        }));
+
+        let errors = DynamicRuleEngine::validate_ruleset(&rules);
+        assert!(!errors.is_empty());
+        assert!(errors[0].contains("invalid regex"));
     }
 }
