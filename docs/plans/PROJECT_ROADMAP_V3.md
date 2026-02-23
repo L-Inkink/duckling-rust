@@ -897,6 +897,53 @@ curl -X POST http://localhost:8080/parse \
 - [Phase 2 计划](./2026-02-13-phase2-http-apollo.md) - HTTP 服务器
 - [FUTURE_IMPROVEMENTS.md](./FUTURE_IMPROVEMENTS.md) - 32 个优化任务
 
+---
+
+## 📋 Phase 状态追踪
+
+### Phase 1: 核心功能完善（已完成 ✅）
+
+**已完成任务**
+- Task 1: 技术债务清理（Clippy 0 警告）
+- Task 2: 动态规则引擎完善
+- Task 3: SmartMatcher 三层流水线
+- Task 4: fastText 集成验证
+
+**遇到的问题**
+- ~~en/time.rs 签名不一致~~ → 添加 `_context` 参数统一
+- ~~26 个语言文件未使用导入~~ → 批量修复
+- ~~zh/time.rs hour % 1 逻辑 bug~~ → 修复为 `> 0`
+
+---
+
+### Phase 2: 多语种路由（已完成 ✅）
+
+**已完成任务**
+- Task 1: 统一 en/time.rs 签名
+- Task 2: 创建 LocaleRegistry（28 语言）
+- Task 3: AppState 新增 locales 字段
+- Task 4: parse handler locale 路由 + X-Request-ID
+- Task 5: batch parse handler locale 路由
+- Task 6: 全量测试验证
+
+**遇到的问题**
+- ~~sig_test 模块冗余 import~~ → 移除
+- ~~LocaleRegistry 类型复杂度警告~~ → 添加类型别名
+
+---
+
+### Phase 3: Android JNI 集成（进行中 🚧）
+
+**待完成任务**
+- [ ] 创建 android/ 子项目（Kotlin + JNI）
+- [ ] 实现 RustlingJNI.kt 绑定
+- [ ] cargo-ndk 交叉编译
+- [ ] 发布 rustling-android AAR 包
+- [ ] 基础示例 App
+
+**遇到的问题**
+（暂无）
+
 ### 状态报告
 - [PHASE2_STATUS.md](./PHASE2_STATUS.md) - Phase 2 完成报告
 - [CODE_REVIEW_2026-02-14.md](./CODE_REVIEW_2026-02-14.md) - 代码质量修复
