@@ -23,6 +23,7 @@ pub mod rules;
 pub mod fuzzy;
 pub mod metrics;
 pub mod dynamic;
+pub mod locale;
 
 // Phase 2: HTTP Server
 pub mod server;
