@@ -11,7 +11,7 @@ fn debug_31st_of_december() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let results = ruleset.apply_all("31st of December");
@@ -46,7 +46,7 @@ fn debug_morning_on_friday() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let results = ruleset.apply_all("morning on Friday").unwrap();
@@ -74,7 +74,7 @@ fn debug_friday_at_noon() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let results = ruleset.apply_all("Friday at noon").unwrap();
@@ -102,7 +102,7 @@ fn debug_3_p_m() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let results = ruleset.apply_all("3 p m").unwrap();
@@ -128,7 +128,7 @@ fn debug_3_30_pm() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let results = ruleset.apply_all("3:30pm");

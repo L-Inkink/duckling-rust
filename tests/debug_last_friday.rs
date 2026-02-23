@@ -11,7 +11,7 @@ fn debug_last_friday() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let now = Utc::now();

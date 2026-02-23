@@ -5,7 +5,8 @@
 // Coverage: All core patterns + multi-token composite rules
 
 use crate::values::Value;
-use rustling_core::time::{Form, Grain, TimeData, TimeValue, helpers::intersect};
+use rustling_core::time::{Form, Grain, TimeContext, TimeData, TimeValue, helpers::intersect};
+use std::sync::Arc;
 use rustling_core::{RuleSetBuilder, rustling_error};
 use chrono::{Datelike, Duration, TimeZone, Timelike, Utc, Weekday};
 
@@ -20,7 +21,7 @@ use chrono::{Datelike, Duration, TimeZone, Timelike, Utc, Weekday};
 /// - Interval (1 rule): from X to Y
 /// - DOW × PartOfDay intersect (28 rules): Monday morning - Sunday night
 /// - Multi-token composite (6 rules): month+day, day+month, year+month, month+year, time+dow, time+dom
-pub fn rules(b: &RuleSetBuilder<Value>) {
+pub fn rules(b: &RuleSetBuilder<Value>, _context: Option<Arc<TimeContext>>) {
     // ========================================
     // Named Days of Week (7 rules)
     // ========================================
@@ -1626,7 +1627,7 @@ mod tests {
             BoundariesChecker::detailed(),
             BoundariesChecker::separated_alphanumeric_word(),
         );
-        rules(&b);
+        rules(&b, None);
         // Smoke test - rules should register without panic
     }
 
@@ -1645,8 +1646,26 @@ mod tests {
             BoundariesChecker::detailed(),
             BoundariesChecker::separated_alphanumeric_word(),
         );
-        rules(&b);
+        rules(&b, None);
 
         // TODO: Add actual rule counting when RuleSetBuilder exposes this
+    }
+}
+
+#[cfg(test)]
+mod sig_test {
+    use super::*;
+    use std::sync::Arc;
+    use rustling_core::time::TimeContext;
+    use rustling_core::{BoundariesChecker, RuleSetBuilder};
+    use crate::values::Value;
+
+    #[test]
+    fn test_rules_accepts_context() {
+        let b = RuleSetBuilder::new(
+            BoundariesChecker::detailed(),
+            BoundariesChecker::separated_alphanumeric_word(),
+        );
+        rules(&b, Some(Arc::new(TimeContext::default())));
     }
 }

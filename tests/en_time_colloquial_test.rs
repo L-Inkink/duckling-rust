@@ -12,7 +12,7 @@ fn setup_ruleset() -> rustling_core::RuleSet<Value> {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     b.build()
 }
 

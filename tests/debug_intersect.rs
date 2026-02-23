@@ -11,7 +11,7 @@ fn debug_monday_morning() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let results = ruleset.apply_all("Monday morning").unwrap();
@@ -41,7 +41,7 @@ fn debug_february_15th() {
         BoundariesChecker::detailed(),
         BoundariesChecker::separated_alphanumeric_word(),
     );
-    en_time::rules(&b);
+    en_time::rules(&b, None);
     let ruleset = b.build();
 
     let results = ruleset.apply_all("February 15th").unwrap();
