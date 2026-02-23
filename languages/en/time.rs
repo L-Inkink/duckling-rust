@@ -1655,10 +1655,7 @@ mod tests {
 #[cfg(test)]
 mod sig_test {
     use super::*;
-    use std::sync::Arc;
-    use rustling_core::time::TimeContext;
-    use rustling_core::{BoundariesChecker, RuleSetBuilder};
-    use crate::values::Value;
+    use rustling_core::BoundariesChecker;
 
     #[test]
     fn test_rules_accepts_context() {
