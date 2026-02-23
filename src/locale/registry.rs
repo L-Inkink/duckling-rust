@@ -12,13 +12,15 @@ pub struct LocaleRegistry {
     rule_sets: HashMap<String, Arc<RuleSet<Value>>>,
 }
 
+type LangRuleFn = fn(&RuleSetBuilder<Value>, Option<Arc<TimeContext>>);
+
 impl LocaleRegistry {
     /// Build rule sets for all 28 supported locales.
     /// Called once at server startup.
     pub fn build_all() -> Self {
         let mut map = HashMap::new();
 
-        let language_rules: &[(&str, fn(&RuleSetBuilder<Value>, Option<Arc<TimeContext>>))] = &[
+        let language_rules: &[(&str, LangRuleFn)] = &[
             ("ar", languages::ar::time::rules),
             ("bg", languages::bg::time::rules),
             ("ca", languages::ca::time::rules),
