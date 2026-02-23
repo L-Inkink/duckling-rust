@@ -8,6 +8,7 @@ use rustling::server::{handlers, ServerBuilder};
 use rustling::dynamic::loader::InlineLoader;
 use rustling::dynamic::ConfigManager;
 use rustling::server::AppState;
+use rustling::locale::LocaleRegistry;
 use rustling::fuzzy::PatternNormalizer;
 use rustling::{RuleSetBuilder, BoundariesChecker};
 use rustling::rules;
@@ -210,6 +211,7 @@ async fn test_hot_reload_functionality() {
         config_manager: Arc::new(Mutex::new(config_manager)),
         pattern_normalizer: Arc::new(PatternNormalizer::new()),
         dynamic_enabled: true,
+        locales: Arc::new(LocaleRegistry::build_all()),
     };
 
     // Test reload
