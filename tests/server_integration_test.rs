@@ -39,7 +39,7 @@ async fn test_parse_endpoint_integration() {
     // Test parsing a number
     let req = test::TestRequest::post()
         .uri("/parse")
-        .set_json(json!({"text": "42"}))
+        .set_json(json!({"text": "42", "locale": "en"}))
         .to_request();
 
     let resp = test::call_service(&app, req).await;
@@ -132,7 +132,7 @@ async fn test_input_validation_text_length() {
     let long_text = "a".repeat(10_001); // Exceeds 10KB limit
     let req = test::TestRequest::post()
         .uri("/parse")
-        .set_json(json!({"text": long_text}))
+        .set_json(json!({"text": long_text, "locale": "en"}))
         .to_request();
 
     let resp = test::call_service(&app, req).await;
@@ -241,7 +241,7 @@ async fn test_parse_various_inputs() {
     for (text, _should_have_results) in test_cases {
         let req = test::TestRequest::post()
             .uri("/parse")
-            .set_json(json!({"text": text}))
+            .set_json(json!({"text": text, "locale": "en"}))
             .to_request();
 
         let resp = test::call_service(&app, req).await;
@@ -264,7 +264,7 @@ async fn test_concurrent_requests() {
     for i in 0..10 {
         let req = test::TestRequest::post()
             .uri("/parse")
-            .set_json(json!({"text": format!("{} minutes", i)}))
+            .set_json(json!({"text": format!("{} minutes", i), "locale": "en"}))
             .to_request();
 
         let resp = test::call_service(&app, req).await;

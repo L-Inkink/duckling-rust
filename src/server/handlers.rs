@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use actix_web::{web, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -6,9 +8,12 @@ use crate::server::AppState;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct ParseRequest {
-    /// Text to parse (max 10,000 bytes)
     #[schema(example = "I need 5 minutes")]
     pub text: String,
+    /// BCP-47 locale code, e.g. "en", "fr", "zh".
+    /// Missing or unsupported locale returns empty results.
+    #[schema(example = "en")]
+    pub locale: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -84,8 +89,8 @@ pub struct ParseResult {
 pub async fn parse(
     state: web::Data<AppState>,
     req: web::Json<ParseRequest>,
+    http_req: actix_web::HttpRequest,
 ) -> Result<impl Responder, actix_web::Error> {
-    // Validate input length to prevent memory exhaustion attacks
     const MAX_TEXT_LEN: usize = 10_000;
     if req.text.len() > MAX_TEXT_LEN {
         return Err(actix_web::error::ErrorBadRequest(
@@ -93,25 +98,37 @@ pub async fn parse(
         ));
     }
 
+    let request_id = http_req
+        .headers()
+        .get("X-Request-ID")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("unknown")
+        .to_string();
+
+    let rule_set = match &req.locale {
+        None => {
+            log::warn!("[req={}] locale missing in request, returning empty results", request_id);
+            return Ok(empty_response(&request_id));
+        }
+        Some(locale) => match state.locales.get(locale) {
+            None => {
+                log::warn!("[req={}] unsupported locale {:?}, returning empty results", request_id, locale);
+                return Ok(empty_response(&request_id));
+            }
+            Some(rs) => Arc::clone(rs),
+        }
+    };
+
     let text = req.text.clone();
     let state_clone = state.clone();
+    let request_id_clone = request_id.clone();
 
-    // Move both normalization and parsing to blocking thread pool
-    // (both are CPU-bound operations)
     let results = web::block(move || {
-        // Normalize text for fuzzy matching
         let normalized = state_clone.pattern_normalizer.normalize(&text);
 
-        // Apply rules (requires read lock on rule_set)
-        // Note: rule_set.apply_all returns Rc<Node> which is not Send,
-        // so we must complete parsing and extract results within this block
-        let rule_set_guard = state_clone.rule_set.read()
-            .map_err(|_| "Failed to acquire read lock on rule_set")?;
-
-        let nodes = rule_set_guard.apply_all(&normalized)
+        let nodes = rule_set.apply_all(&normalized)
             .map_err(|_| "Failed to parse input text")?;
 
-        // Extract results while still in the blocking thread
         let results: Vec<ParseResult> = nodes
             .iter()
             .map(|n| {
@@ -127,6 +144,7 @@ pub async fn parse(
             })
             .collect();
 
+        log::info!("[req={}] matched={} results", request_id_clone, results.len());
         Ok::<_, String>(results)
     })
     .await
@@ -134,7 +152,16 @@ pub async fn parse(
     .map_err(actix_web::error::ErrorBadRequest)?;
 
     let count = results.len();
-    Ok(HttpResponse::Ok().json(ParseResponse { results, count }))
+    Ok(HttpResponse::Ok()
+        .insert_header(("X-Request-ID", request_id.as_str()))
+        .json(ParseResponse { results, count }))
+}
+
+/// Build an empty 200 response with X-Request-ID header.
+fn empty_response(request_id: &str) -> HttpResponse {
+    HttpResponse::Ok()
+        .insert_header(("X-Request-ID", request_id))
+        .json(ParseResponse { results: vec![], count: 0 })
 }
 
 /// Parse multiple texts in batch
@@ -404,6 +431,7 @@ mod tests {
             .uri("/parse")
             .set_json(ParseRequest {
                 text: "42".to_string(),
+                locale: Some("en".to_string()),
             })
             .to_request();
 
@@ -427,7 +455,7 @@ mod tests {
         let long_text = "a".repeat(10_001); // Exceeds MAX_TEXT_LEN
         let req = test::TestRequest::post()
             .uri("/parse")
-            .set_json(ParseRequest { text: long_text })
+            .set_json(ParseRequest { text: long_text, locale: Some("en".to_string()) })
             .to_request();
 
         let resp = test::call_service(&app, req).await;
@@ -562,5 +590,74 @@ mod tests {
 
         let resp = test::call_service(&app, req).await;
         assert_eq!(resp.status(), 400); // Bad Request
+    }
+
+    #[actix_web::test]
+    async fn test_parse_with_locale_fr() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse", web::post().to(parse))
+        ).await;
+
+        let req = test::TestRequest::post()
+            .uri("/parse")
+            .insert_header(("X-Request-ID", "test-123"))
+            .set_json(ParseRequest {
+                text: "42".to_string(),
+                locale: Some("fr".to_string()),
+            })
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+        assert_eq!(
+            resp.headers().get("X-Request-ID").unwrap(),
+            "test-123"
+        );
+    }
+
+    #[actix_web::test]
+    async fn test_parse_missing_locale_returns_empty() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse", web::post().to(parse))
+        ).await;
+
+        let req = test::TestRequest::post()
+            .uri("/parse")
+            .set_json(serde_json::json!({"text": "tomorrow"}))
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+        let body: ParseResponse = test::read_body_json(resp).await;
+        assert_eq!(body.count, 0);
+    }
+
+    #[actix_web::test]
+    async fn test_parse_unsupported_locale_returns_empty() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse", web::post().to(parse))
+        ).await;
+
+        let req = test::TestRequest::post()
+            .uri("/parse")
+            .set_json(ParseRequest {
+                text: "tomorrow".to_string(),
+                locale: Some("xx".to_string()),
+            })
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+        let body: ParseResponse = test::read_body_json(resp).await;
+        assert_eq!(body.count, 0);
     }
 }
