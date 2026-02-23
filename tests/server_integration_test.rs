@@ -59,7 +59,8 @@ async fn test_batch_parse_integration() {
     let req = test::TestRequest::post()
         .uri("/parse/batch")
         .set_json(json!({
-            "texts": ["5 minutes", "3 hours", "tomorrow at 3pm"]
+            "texts": ["5 minutes", "3 hours", "tomorrow at 3pm"],
+            "locale": "en"
         }))
         .to_request();
 

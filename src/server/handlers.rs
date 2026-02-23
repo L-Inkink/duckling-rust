@@ -30,6 +30,9 @@ pub struct BatchParseRequest {
     /// List of texts to parse (max 100 items, 10KB each)
     #[schema(example = json!(["5 minutes", "3 hours", "tomorrow"]))]
     pub texts: Vec<String>,
+    /// BCP-47 locale code. Missing or unsupported returns empty results for all items.
+    #[schema(example = "fr")]
+    pub locale: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -178,8 +181,8 @@ fn empty_response(request_id: &str) -> HttpResponse {
 pub async fn parse_batch(
     state: web::Data<AppState>,
     req: web::Json<BatchParseRequest>,
+    http_req: actix_web::HttpRequest,
 ) -> Result<impl Responder, actix_web::Error> {
-    // Validate batch size
     const MAX_BATCH_SIZE: usize = 100;
     if req.texts.len() > MAX_BATCH_SIZE {
         return Err(actix_web::error::ErrorBadRequest(
@@ -187,7 +190,6 @@ pub async fn parse_batch(
         ));
     }
 
-    // Validate individual text lengths
     const MAX_TEXT_LEN: usize = 10_000;
     for (idx, text) in req.texts.iter().enumerate() {
         if text.len() > MAX_TEXT_LEN {
@@ -197,25 +199,51 @@ pub async fn parse_batch(
         }
     }
 
+    let request_id = http_req
+        .headers()
+        .get("X-Request-ID")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("unknown")
+        .to_string();
+
+    // Resolve locale → rule set (same logic as single parse)
+    let rule_set = match &req.locale {
+        None => {
+            log::warn!("[req={}] locale missing in batch request, returning empty results", request_id);
+            let empty: Vec<BatchParseResult> = req.texts.iter().enumerate()
+                .map(|(i, t)| BatchParseResult { index: i, text: t.clone(), results: vec![], count: 0 })
+                .collect();
+            return Ok(HttpResponse::Ok()
+                .insert_header(("X-Request-ID", request_id.as_str()))
+                .json(BatchParseResponse { results: empty, total_count: 0 }));
+        }
+        Some(locale) => match state.locales.get(locale) {
+            None => {
+                log::warn!("[req={}] unsupported locale {:?} in batch request", request_id, locale);
+                let empty: Vec<BatchParseResult> = req.texts.iter().enumerate()
+                    .map(|(i, t)| BatchParseResult { index: i, text: t.clone(), results: vec![], count: 0 })
+                    .collect();
+                return Ok(HttpResponse::Ok()
+                    .insert_header(("X-Request-ID", request_id.as_str()))
+                    .json(BatchParseResponse { results: empty, total_count: 0 }));
+            }
+            Some(rs) => Arc::clone(rs),
+        }
+    };
+
     let texts = req.texts.clone();
     let state_clone = state.clone();
+    let request_id_clone = request_id.clone();
 
-    // Process all texts in blocking thread pool
     let batch_results = web::block(move || {
         let mut results = Vec::with_capacity(texts.len());
 
         for (index, text) in texts.iter().enumerate() {
-            // Normalize text
             let normalized = state_clone.pattern_normalizer.normalize(text);
 
-            // Apply rules
-            let rule_set_guard = state_clone.rule_set.read()
-                .map_err(|_| "Failed to acquire read lock on rule_set")?;
-
-            let nodes = rule_set_guard.apply_all(&normalized)
+            let nodes = rule_set.apply_all(&normalized)
                 .map_err(|_| format!("Failed to parse text at index {}", index))?;
 
-            // Extract results
             let parse_results: Vec<ParseResult> = nodes
                 .iter()
                 .map(|n| {
@@ -232,7 +260,6 @@ pub async fn parse_batch(
                 .collect();
 
             let count = parse_results.len();
-
             results.push(BatchParseResult {
                 index,
                 text: text.clone(),
@@ -241,6 +268,10 @@ pub async fn parse_batch(
             });
         }
 
+        log::info!("[req={}] batch matched {} total results across {} texts",
+            request_id_clone,
+            results.iter().map(|r| r.count).sum::<usize>(),
+            results.len());
         Ok::<_, String>(results)
     })
     .await
@@ -249,10 +280,12 @@ pub async fn parse_batch(
 
     let total_count = batch_results.iter().map(|r| r.count).sum();
 
-    Ok(HttpResponse::Ok().json(BatchParseResponse {
-        results: batch_results,
-        total_count,
-    }))
+    Ok(HttpResponse::Ok()
+        .insert_header(("X-Request-ID", request_id.as_str()))
+        .json(BatchParseResponse {
+            results: batch_results,
+            total_count,
+        }))
 }
 
 /// Health check response
@@ -539,6 +572,7 @@ mod tests {
             .uri("/parse/batch")
             .set_json(BatchParseRequest {
                 texts: vec!["42".to_string(), "5 minutes".to_string()],
+                locale: Some("en".to_string()),
             })
             .to_request();
 
@@ -563,7 +597,7 @@ mod tests {
         let large_batch: Vec<String> = (0..101).map(|i| i.to_string()).collect();
         let req = test::TestRequest::post()
             .uri("/parse/batch")
-            .set_json(BatchParseRequest { texts: large_batch })
+            .set_json(BatchParseRequest { texts: large_batch, locale: Some("en".to_string()) })
             .to_request();
 
         let resp = test::call_service(&app, req).await;
@@ -585,6 +619,7 @@ mod tests {
             .uri("/parse/batch")
             .set_json(BatchParseRequest {
                 texts: vec!["valid".to_string(), long_text],
+                locale: Some("en".to_string()),
             })
             .to_request();
 
@@ -659,5 +694,48 @@ mod tests {
         assert!(resp.status().is_success());
         let body: ParseResponse = test::read_body_json(resp).await;
         assert_eq!(body.count, 0);
+    }
+
+    #[actix_web::test]
+    async fn test_parse_batch_with_locale() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse/batch", web::post().to(parse_batch))
+        ).await;
+
+        let req = test::TestRequest::post()
+            .uri("/parse/batch")
+            .insert_header(("X-Request-ID", "batch-001"))
+            .set_json(BatchParseRequest {
+                texts: vec!["42".to_string(), "5 minutes".to_string()],
+                locale: Some("fr".to_string()),
+            })
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+        assert_eq!(resp.headers().get("X-Request-ID").unwrap(), "batch-001");
+    }
+
+    #[actix_web::test]
+    async fn test_parse_batch_missing_locale_returns_empty() {
+        let state = AppState::static_only();
+        let app = test::init_service(
+            App::new()
+                .app_data(web::Data::new(state.clone()))
+                .route("/parse/batch", web::post().to(parse_batch))
+        ).await;
+
+        let req = test::TestRequest::post()
+            .uri("/parse/batch")
+            .set_json(serde_json::json!({"texts": ["tomorrow"]}))
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(resp.status().is_success());
+        let body: BatchParseResponse = test::read_body_json(resp).await;
+        assert_eq!(body.total_count, 0);
     }
 }
