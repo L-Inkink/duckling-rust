@@ -1,30 +1,20 @@
 version: '3.8'
 
 services:
-  # Rustling HTTP Server
+  # Rustling HTTP Server (duckling-rust)
   rustling:
     build:
       context: .
       dockerfile: Dockerfile
     image: rustling-server:latest
     container_name: rustling-server
-
-    # Port mapping
     ports:
       - "8080:8080"
-
-    # Environment variables
     environment:
       - RUST_LOG=${RUST_LOG:-info}
       - BIND_ADDRESS=0.0.0.0:8080
       - RELOAD_API_KEY=${RELOAD_API_KEY:-}
       - RUST_BACKTRACE=${RUST_BACKTRACE:-1}
-
-    # Optional: Mount rules directory for development
-    # volumes:
-    #   - ./rules:/app/rules:ro
-
-    # Resource limits
     deploy:
       resources:
         limits:
@@ -33,26 +23,34 @@ services:
         reservations:
           cpus: '0.5'
           memory: 128M
-
-    # Restart policy
     restart: unless-stopped
-
-    # Health check (also defined in Dockerfile)
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 5s
-
-    # Logging configuration
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - rustling-network
 
-    # Networks
+  # Haskell Duckling (for comparison)
+  haskell-duckling:
+    image: ghcr.io/facebookincubator/duckling:latest
+    container_name: haskell-duckling
+    ports:
+      - "8081:8080"
+    command: ["duckling"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
     networks:
       - rustling-network
 

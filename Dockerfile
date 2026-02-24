@@ -25,13 +25,13 @@ COPY ml ./ml
 COPY src ./src
 COPY examples ./examples
 
-# Build release binary
+# Build release binary with server feature
 # Use --release for optimized build
 # Link statically to reduce runtime dependencies
-RUN cargo build --release --example http_server
+RUN cargo build --release --features server --bin http_server
 
 # Strip debug symbols to reduce binary size
-RUN strip /app/target/release/examples/http_server
+RUN strip /app/target/release/http_server
 
 # ============================================================================
 # Stage 2: Runtime - Minimal image with only the binary
@@ -78,4 +78,4 @@ HEALTHCHECK --interval=30s \
     CMD curl -f http://localhost:8080/health || exit 1
 
 # Run the HTTP server
-CMD ["rustling-server"]
+CMD ["http_server"]

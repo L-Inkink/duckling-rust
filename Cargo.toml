@@ -50,3 +50,8 @@ harness = false
 name = "codegen"
 path = "tools/migration/codegen.rs"
 required-features = ["migration-tools"]
+
+[[bin]]
+name = "http_server"
+path = "examples/http_server.rs"
+required-features = ["server"]
