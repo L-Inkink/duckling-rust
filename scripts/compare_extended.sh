@@ -1,7 +1,7 @@
 #!/bin/bash
-# Performance comparison: Haskell Duckling vs Rustling
+# Extended performance comparison: Haskell Duckling vs Rustling
 
-echo "=== Duckling Performance Comparison ==="
+echo "=== Extended Duckling Performance Comparison ==="
 echo ""
 
 # Colors
@@ -32,28 +32,63 @@ else
 fi
 
 echo ""
-echo "Running 10 iterations per query..."
+echo "Running 20 iterations per query..."
 echo ""
 
-# Test queries - time related
+# Extended test queries - more comprehensive
 QUERIES=(
-    "tomorrow at 3pm"
+    # Simple time
+    "tomorrow"
+    "today"
+    "yesterday"
+    "now"
+    "midnight"
+    "noon"
+
+    # Time with hour
+    "3pm"
+    "5am"
+    "10 o'clock"
+    "2:30"
+
+    # Relative time
     "in 5 minutes"
-    "next monday at 9am"
+    "in 2 hours"
+    "in 3 days"
+    "in 2 weeks"
+
+    # Past time
     "3 days ago"
-    "every monday at 6pm"
+    "2 hours ago"
+    "1 week ago"
+
+    # Specific time
+    "tomorrow at 3pm"
+    "next monday at 9am"
+    "next friday at 6pm"
+
+    # Complex patterns
+    "every monday"
+    "every day at 5pm"
     "the third friday of next month"
-    "tomorrow morning at 10"
-    "two weeks from now"
+
+    # Multi-language (should use default)
+    "morning"
+    "evening"
+    "afternoon"
 )
+
+total_rust=0
+total_hs=0
+count=0
 
 for query in "${QUERIES[@]}"; do
     echo "Query: \"$query\""
     echo "---"
 
-    # Rustling - 10 iterations
+    # Rustling - 20 iterations
     rust_total=0
-    for i in {1..10}; do
+    for i in {1..20}; do
         start=$(get_time)
         rust_result=$(curl -s -X POST http://localhost:8080/parse \
             -H "Content-Type: application/json" \
@@ -61,18 +96,18 @@ for query in "${QUERIES[@]}"; do
         end=$(get_time)
         rust_total=$((rust_total + (end - start)))
     done
-    rust_avg=$((rust_total / 10 / 1000000))  # Convert ns to ms
+    rust_avg=$((rust_total / 20 / 1000000))  # Convert ns to ms
 
-    # Haskell Duckling - 10 iterations
+    # Haskell Duckling - 20 iterations
     hs_total=0
-    for i in {1..10}; do
+    for i in {1..20}; do
         start=$(get_time)
         hs_result=$(curl -s -X POST http://localhost:8081/parse \
             -d "text=$query&locale=en_GB" 2>/dev/null)
         end=$(get_time)
         hs_total=$((hs_total + (end - start)))
     done
-    hs_avg=$((hs_total / 10 / 1000000))  # Convert ns to ms
+    hs_avg=$((hs_total / 20 / 1000000))  # Convert ns to ms
 
     # Calculate ratio
     if [ "$hs_avg" -gt 0 ]; then
@@ -81,10 +116,22 @@ for query in "${QUERIES[@]}"; do
         ratio="N/A"
     fi
 
-    printf "Rustling:    %4dms (avg of 10)\n" "$rust_avg"
-    printf "Haskell:     %4dms (avg of 10)\n" "$hs_avg"
+    # Track totals
+    total_rust=$((total_rust + rust_avg))
+    total_hs=$((total_hs + hs_avg))
+    count=$((count + 1))
+
+    printf "Rustling:    %4dms (avg of 20)\n" "$rust_avg"
+    printf "Haskell:     %4dms (avg of 20)\n" "$hs_avg"
     echo "Ratio:        ${ratio}x"
     echo ""
 done
 
+# Summary
+echo "=== Summary ==="
+echo "Total queries: $count"
+echo "Average Rustling: $((total_rust / count))ms"
+echo "Average Haskell:  $((total_hs / count))ms"
+echo "Overall Ratio:    $(echo "scale=2; $total_rust / $total_hs" | bc 2>/dev/null || echo "N/A")x"
+echo ""
 echo "=== Done ==="

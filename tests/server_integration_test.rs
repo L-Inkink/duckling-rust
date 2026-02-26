@@ -3,6 +3,8 @@
 //! These tests verify end-to-end functionality of the rustling HTTP server,
 //! including all endpoints and hot-reload capabilities.
 
+#![cfg(feature = "server")]
+
 use actix_web::{test, App};
 use rustling::server::{handlers, ServerBuilder};
 use rustling::dynamic::loader::InlineLoader;

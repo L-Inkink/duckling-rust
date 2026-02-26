@@ -38,19 +38,16 @@ services:
     networks:
       - rustling-network
 
-  # Haskell Duckling (for comparison)
+  # Haskell Duckling (built from local source)
   haskell-duckling:
-    image: ghcr.io/facebookincubator/duckling:latest
+    build:
+      context: ../duckling/
+      dockerfile: Dockerfile.fixed2
+    image: haskell-duckling:latest
     container_name: haskell-duckling
     ports:
-      - "8081:8080"
-    command: ["duckling"]
+      - "8081:8000"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
     networks:
       - rustling-network
 

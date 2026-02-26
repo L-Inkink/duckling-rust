@@ -36,16 +36,13 @@ RUN strip /app/target/release/http_server
 # ============================================================================
 # Stage 2: Runtime - Minimal image with only the binary
 # ============================================================================
-FROM debian:bookworm-slim
+FROM alpine:3.19
 
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Install runtime dependencies (alpine uses apk)
+RUN apk add --no-cache ca-certificates curl
 
 # Create non-root user for security
-RUN useradd -m -u 1000 rustling && \
+RUN adduser -D -u 1000 rustling && \
     mkdir -p /app /app/rules && \
     chown -R rustling:rustling /app
 
@@ -54,7 +51,7 @@ WORKDIR /app
 
 # Copy binary from builder
 COPY --from=builder --chown=rustling:rustling \
-    /app/target/release/examples/http_server /usr/local/bin/rustling-server
+    /app/target/release/http_server /usr/local/bin/rustling-server
 
 # Copy rules directory (if exists)
 COPY --chown=rustling:rustling rules ./rules
