@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package duckling;
+
+service Parser {
+    // Parse a single text and return all matches
+    rpc Parse(ParseRequest) returns (ParseResponse);
+
+    // Parse multiple texts in a single request
+    rpc ParseBatch(BatchParseRequest) returns (BatchParseResponse);
+
+    // Check server health
+    rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+message ParseRequest {
+    // Text to parse
+    string text = 1;
+    // BCP-47 locale code, e.g. "en", "fr", "zh"
+    string locale = 2;
+}
+
+message ParseResponse {
+    repeated ParseResult results = 1;
+    // Number of results
+    uint32 count = 2;
+}
+
+message BatchParseRequest {
+    // List of texts to parse (max 100 items)
+    repeated string texts = 1;
+    // BCP-47 locale code
+    string locale = 2;
+}
+
+message BatchParseResponse {
+    repeated BatchParseResult results = 1;
+    // Total number of results across all texts
+    uint32 total_count = 2;
+}
+
+message BatchParseResult {
+    // Index of the text in the request
+    uint32 index = 1;
+    // Original input text
+    string text = 2;
+    // Parse results for this text
+    repeated ParseResult results = 3;
+    // Number of results for this text
+    uint32 count = 4;
+}
+
+message ParseResult {
+    // Parsed value representation
+    string value = 1;
+    // Byte start position
+    uint32 byte_start = 2;
+    // Byte end position
+    uint32 byte_end = 3;
+    // Character start position
+    uint32 char_start = 4;
+    // Character end position
+    uint32 char_end = 5;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+    // Server version
+    string version = 1;
+    // Whether server is healthy
+    bool healthy = 2;
+}
