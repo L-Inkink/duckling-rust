@@ -26,7 +26,18 @@ pub mod dynamic;
 pub mod locale;
 
 // Phase 2: HTTP Server
+#[cfg(feature = "server")]
 pub mod server;
+
+// gRPC support
+#[cfg(feature = "grpc")]
+pub mod grpc_proto;
+
+// FFI support (always available)
+pub mod ffi;
+
+// Unified parse API
+pub mod parse;
 
 // Multi-language support
 // Phase 1: Numeral (48 languages)
