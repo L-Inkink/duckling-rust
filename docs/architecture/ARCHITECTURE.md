@@ -1,48 +1,100 @@
 # Rustling 架构设计文档
 
-**版本**: 1.0
-**日期**: 2026-02-12
-**阶段**: Phase 0 Week 2
+**版本**: 2.0
+**创建日期**: 2026-02-12
+**最后更新**: 2026-02-27
 **作者**: Claude Code
+
+> v1.0 记录 Phase 0 初始架构（三层）；v2.0 反映当前完整实现（双模式五层架构）。
 
 ---
 
 ## 目录
 
 1. [概述](#概述)
-2. [架构原则](#架构原则)
-3. [模块结构](#模块结构)
-4. [核心组件](#核心组件)
-5. [数据流](#数据流)
-6. [类型系统](#类型系统)
-7. [扩展机制](#扩展机制)
-8. [性能考虑](#性能考虑)
+2. [当前架构总览](#当前架构总览)
+3. [架构原则](#架构原则)
+4. [模块结构](#模块结构)
+5. [核心组件](#核心组件)
+6. [新增组件（Phase 1–6B）](#新增组件)
+7. [数据流](#数据流)
+8. [类型系统](#类型系统)
+9. [扩展机制](#扩展机制)
+10. [性能参考](#性能参考)
 
 ---
 
 ## 概述
 
-Rustling 是 Duckling（Haskell 自然语言解析库）的 Rust 移植版本。它采用**三层架构**设计，提供灵活且高性能的文本解析能力。
+Rustling 是 Duckling（Haskell 自然语言解析库）的 Rust 移植版本，在原始三层架构之上扩展为**双模式五层架构**，同时支持在线（HTTP/gRPC）和离线（FFI/Android）两种部署场景。
 
 ### 设计目标
 
 - **类型安全**: 利用 Rust 的强类型系统防止运行时错误
-- **高性能**: 零成本抽象和内存高效的数据结构
-- **可扩展**: 易于添加新规则和模式
-- **可测试**: 清晰的模块边界和依赖注入
+- **高性能**: 零成本抽象，FFI 层延迟 <10µs
+- **跨平台**: 同一 codebase 编译为服务端二进制 + Android .so 库
+- **可扩展**: 动态规则 JSON 配置 + Apollo 热重载，无需重新编译
+- **多语种**: 28 种语言统一 LocaleRegistry，启动时全量加载
 
 ### 核心能力
 
 - 模式匹配（正则表达式、过滤器）
 - 规则组合（最多 6 个输入）
 - 饱和解析（exhaustive parsing）
-- ML 排序（可选）
+- ML 排序（可选朴素贝叶斯）
+- SmartMatcher 三层模糊匹配（规范化 → Levenshtein → fastText）
+- 动态规则引擎（exact/regex Terminal + template 基础）
+- 多语种路由（LocaleRegistry，28 语言）
+- 双模式服务：HTTP REST + gRPC（在线）/ C FFI（离线/Android）
+
+---
+
+## 当前架构总览
+
+```
+输入文本
+    │
+    ▼
+┌────────────────────────────────────────────┐
+│  Layer 1: SmartMatcher（模糊预处理）        │
+│  PatternNormalizer → LevenshteinMatcher     │
+│  → FastTextExpander（可选 feature）         │
+└────────────────────────────────────────────┘
+    │ 规范化文本
+    ▼
+┌────────────────────────────────────────────┐
+│  Layer 2: LocaleRegistry（多语种路由）      │
+│  28 语言规则集，启动时全量构建              │
+│  locale → RuleSet 查找                     │
+└────────────────────────────────────────────┘
+    │ 对应语言 RuleSet
+    ▼
+┌────────────────────────────────────────────┐
+│  Layer 3: 解析引擎（rustling-core）         │
+│  终结规则 → Stash → 组合规则 → 饱和        │
+│  + 动态规则引擎（JSON/Apollo 热重载）       │
+└────────────────────────────────────────────┘
+    │ ParsedNode[]
+    ▼
+┌────────────────────────────────────────────┐
+│  Layer 4: ML 排序（rustling-ml，可选）      │
+│  朴素贝叶斯 → ParserMatch 排序             │
+└────────────────────────────────────────────┘
+    │ 结构化结果
+    ▼
+┌──────────────┬──────────────┬──────────────┐
+│ Layer 5a     │ Layer 5b     │ Layer 5c     │
+│ HTTP Server  │ gRPC Server  │ C FFI 库     │
+│ (Actix-web)  │ (tonic)      │ (Android JNI)│
+│ REST API     │ Protobuf RPC │ .so 离线解析 │
+└──────────────┴──────────────┴──────────────┘
+```
 
 ---
 
 ## 架构原则
 
-### 1. 分层架构
+### 1. 分层架构（初始三层，现已扩展为五层）
 
 ```
 ┌─────────────────────────────────┐
@@ -496,7 +548,22 @@ impl<S> Pattern<S> for CustomPattern {
 
 ---
 
-## 性能考虑
+## 性能参考
+
+### 实测基准（Phase 6-B，2026-02-25）
+
+| 层级 | 操作 | 延迟 |
+|------|------|------|
+| 核心层 | parse integer | 0.4µs |
+| 核心层 | levenshtein distance | 0.4µs |
+| 核心层 | pattern normalize | 0.09µs |
+| API 层 | parse integer（含 locale 查找） | 6.6µs |
+| API 层 | parse duration | 9.6µs |
+| API 层 | batch(4 items) | 37.7µs（9.4µs/item） |
+| HTTP | 单次解析 | ~25ms |
+| Docker | 镜像大小 | **34.3MB** |
+
+完整报告见 [BENCHMARKS.md](../reports/BENCHMARKS.md)。
 
 ### 优化策略
 
@@ -518,9 +585,7 @@ impl<S> Pattern<S> for CustomPattern {
 - **索引查找**: O(1) 类型索引
 - **正则缓存**: 编译一次，重复使用
 
-### 性能基准
-
-参见 `BENCHMARKS.md`:
+### 核心引擎基准（rustling-core，初始测试）
 
 | 操作 | 时间 |
 |------|------|
@@ -536,28 +601,59 @@ impl<S> Pattern<S> for CustomPattern {
 
 ---
 
-## 未来扩展
+## 新增组件
 
-### Phase 1 计划
+> 以下组件为 Phase 1/2/5-A/6-B 中实现，是初始三层架构的扩展。
 
-1. **JSON 规则加载器**
-   - 从 JSON 反序列化规则
-   - 支持动态规则更新
+### 4. SmartMatcher（模糊匹配，Phase 1）
 
-2. **模糊匹配**
-   - Levenshtein 距离
-   - 音似匹配（Soundex）
+三层流水线，处理输入拼写/缩写容错：
 
-3. **规则热重载**
-   - 无需重启更新规则
-   - 版本管理
+```
+输入 → PatternNormalizer → LevenshteinMatcher → FastTextExpander(可选)
+       "明早" → "明天早上"   "tomorow" → "tomorrow"  词向量近义扩展
+```
 
-### Phase 2+ 愿景
+- `src/fuzzy/pattern_normalizer.rs` — 15+ 模板，中英文缩写规范化
+- `src/fuzzy/levenshtein.rs` — Unicode 编辑距离，阈值 0.85
+- `src/fuzzy/smart_matcher.rs` — 三层集成 + Mutex<HashMap> 缓存
+- `src/fuzzy/expand.rs` — finalfusion fastText（`--features fasttext`）
 
-- **并行解析**: Rayon 并行化
-- **增量解析**: 只重新解析变更部分
-- **WASM 支持**: 编译到 WebAssembly
-- **规则可视化**: 调试工具
+### 5. 动态规则引擎（Phase 1）
+
+运行时从 JSON/Apollo 加载规则，无需重新编译：
+
+- `src/dynamic/rules.rs` — DynamicRule 结构体（exact/regex Terminal + template）
+- `src/dynamic/engine.rs` — build_ruleset / validate_ruleset / list_rules
+- `src/dynamic/loader.rs` — FileLoader / InlineLoader / ApolloLoader（feature-gated）
+
+### 6. LocaleRegistry（多语种路由，2026-02-23）
+
+28 种语言规则集，启动时全量构建，O(1) 查找：
+
+- `src/locale/registry.rs` — `HashMap<&str, RuleSet>` + LangRuleFn 类型别名
+- HTTP handler 读取 `locale` 字段，查询 registry，缺失则 warn + 返回空
+
+### 7. HTTP 服务器（Phase 2）
+
+- `src/server/` — Actix-web，6 个 REST 端点 + OpenAPI/Swagger UI
+- Apollo 热重载：AtomicU64 版本检测 + Arc<RwLock<>> 原子交换
+- X-Request-ID 全链路透传
+
+### 8. gRPC 服务端（Phase 6-B，在线模式）
+
+- `proto/duckling.proto` — Parse / ParseBatch / Health 服务定义
+- `src/server/grpc.rs` — tonic 集成，`--features grpc`
+
+### 9. C FFI 库（Phase 6-B，离线模式）
+
+- `src/ffi.rs` — C ABI 接口：rustling_parse / rustling_free_string / rustling_version / rustling_supported_locales / rustling_init
+- `crate-type = ["lib", "staticlib", "cdylib"]`
+- 生成：librustling.a（静态，37MB）/ librustling.so（动态，2.7MB）
+
+### 10. 统一解析 API
+
+- `src/parse.rs` — Parser::parse() / parse_batch()，供 HTTP/gRPC/FFI 共用
 
 ---
 
@@ -597,10 +693,12 @@ impl<S> Pattern<S> for CustomPattern {
 
 ### 内部文档
 
-- `PHASE0_评估报告.md` - 技术决策
-- `UNSAFE_CODE_AUDIT.md` - 安全审计
-- `BENCHMARKS.md` - 性能基准
-- `MIGRATION_GUIDE.md` - Haskell → Rust 迁移
+- [UNSAFE_CODE_AUDIT.md](../reports/UNSAFE_CODE_AUDIT.md) - unsafe 代码安全审计
+- [BENCHMARKS.md](../reports/BENCHMARKS.md) - 性能基准报告
+- [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) - Haskell → Rust 规则迁移指南
+- [TIMEZONE_ANALYSIS.md](./TIMEZONE_ANALYSIS.md) - 时区处理机制对比
+- [TIMECONTEXT_MIGRATION.md](./TIMECONTEXT_MIGRATION.md) - TimeContext 重构记录
+- [PROJECT_ROADMAP_V3.md](../plans/PROJECT_ROADMAP_V3.md) - 项目路线图
 
 ---
 
@@ -626,7 +724,4 @@ impl<S> Pattern<S> for CustomPattern {
 
 ---
 
-**文档版本**: 1.0
-**创建日期**: 2026-02-12
-**最后更新**: 2026-02-12
-**状态**: ✅ 完成
+**文档版本**: 2.0 | **创建日期**: 2026-02-12 | **最后更新**: 2026-02-27 | **维护者**: Claude Code
