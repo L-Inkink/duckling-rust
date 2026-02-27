@@ -35,6 +35,7 @@ glob = { version = "0.3", optional = true }
 # gRPC dependencies
 tonic = { version = "0.12", optional = true }
 prost = { version = "0.13", optional = true }
+tokio-stream = { version = "0.1", optional = true }
 
 # FFI dependencies
 libc = "0.2"
@@ -46,14 +47,18 @@ crate-type = ["lib", "staticlib", "cdylib"]
 [features]
 default = []
 server = ["actix-web", "actix-rt", "tokio", "utoipa", "utoipa-swagger-ui"]
-grpc = ["tokio", "tonic", "prost"]
+grpc = ["tokio", "tonic", "prost", "tokio-stream"]
 apollo = ["reqwest"]
 fasttext = ["finalfusion", "dirs", "reqwest"]
 migration-tools = ["tera", "glob"]
 
+[build-dependencies]
+tonic-build = "0.12"
+
 [dev-dependencies]
 criterion = "0.5"
 futures = "0.3"
+tokio-stream = "0.1"
 
 [[bench]]
 name = "parser_bench"
@@ -68,3 +73,13 @@ required-features = ["migration-tools"]
 name = "http_server"
 path = "examples/http_server.rs"
 required-features = ["server"]
+
+[[bin]]
+name = "grpc_server"
+path = "examples/grpc_server.rs"
+required-features = ["grpc"]
+
+[[bin]]
+name = "grpc_bench"
+path = "tools/grpc_bench.rs"
+required-features = ["grpc"]

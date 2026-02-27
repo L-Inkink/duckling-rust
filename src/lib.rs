@@ -33,6 +33,9 @@ pub mod server;
 #[cfg(feature = "grpc")]
 pub mod grpc_proto;
 
+#[cfg(feature = "grpc")]
+pub mod grpc;
+
 // FFI support (always available)
 pub mod ffi;
 
