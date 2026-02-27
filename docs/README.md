@@ -39,4 +39,5 @@
 | 版本 | 日期 | 说明 |
 |------|------|------|
 | [v0.30.0](./releases/RELEASE_v0.30.0.md) | 2026-02-27 | 双模式部署（gRPC + FFI）、28 语言支持、生产级性能 |
+| [v0.30.0 (English)](./releases/RELEASE_v0.30.0_ENGLISH.md) | 2026-02-27 | Dual-mode deployment, 28-language support |
 | v0.20.0 | 2026-02-14 | Phase 1 核心功能增强、SmartMatcher、动态规则 |
