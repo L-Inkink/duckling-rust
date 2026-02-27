@@ -11,3 +11,4 @@ Cargo.lock
 
 # Temporary scripts
 benchmark_comparison.sh
+.cargo_docker
