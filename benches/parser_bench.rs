@@ -202,6 +202,51 @@ fn benchmark_pattern_normalizer(c: &mut Criterion) {
     });
 }
 
+// Benchmark: Unified Parse API
+fn benchmark_parse_api(c: &mut Criterion) {
+    use rustling::parse::Parser;
+
+    let parser = Parser::new();
+
+    c.bench_function("parse api integer", |b| {
+        b.iter(|| {
+            parser.parse(black_box("42"), black_box(Some("en")))
+        })
+    });
+}
+
+// Benchmark: Unified Parse API with duration
+fn benchmark_parse_api_duration(c: &mut Criterion) {
+    use rustling::parse::Parser;
+
+    let parser = Parser::new();
+
+    c.bench_function("parse api duration", |b| {
+        b.iter(|| {
+            parser.parse(black_box("5 minutes"), black_box(Some("en")))
+        })
+    });
+}
+
+// Benchmark: Batch parse
+fn benchmark_parse_api_batch(c: &mut Criterion) {
+    use rustling::parse::Parser;
+
+    let parser = Parser::new();
+    let texts = vec![
+        "42".to_string(),
+        "5 minutes".to_string(),
+        "tomorrow".to_string(),
+        "2024-01-15".to_string(),
+    ];
+
+    c.bench_function("parse api batch 4", |b| {
+        b.iter(|| {
+            parser.parse_batch(black_box(&texts), black_box(Some("en")))
+        })
+    });
+}
+
 criterion_group!(
     benches,
     benchmark_parse_simple_number,
@@ -213,6 +258,9 @@ criterion_group!(
     benchmark_parse_integer_value,
     benchmark_levenshtein,
     benchmark_pattern_normalizer,
+    benchmark_parse_api,
+    benchmark_parse_api_duration,
+    benchmark_parse_api_batch,
 );
 
 criterion_main!(benches);

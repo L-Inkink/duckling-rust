@@ -25,27 +25,24 @@ COPY ml ./ml
 COPY src ./src
 COPY examples ./examples
 
-# Build release binary
+# Build release binary with server feature
 # Use --release for optimized build
 # Link statically to reduce runtime dependencies
-RUN cargo build --release --example http_server
+RUN cargo build --release --features server --bin http_server
 
 # Strip debug symbols to reduce binary size
-RUN strip /app/target/release/examples/http_server
+RUN strip /app/target/release/http_server
 
 # ============================================================================
 # Stage 2: Runtime - Minimal image with only the binary
 # ============================================================================
-FROM debian:bookworm-slim
+FROM alpine:3.19
 
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Install runtime dependencies (alpine uses apk)
+RUN apk add --no-cache ca-certificates curl
 
 # Create non-root user for security
-RUN useradd -m -u 1000 rustling && \
+RUN adduser -D -u 1000 rustling && \
     mkdir -p /app /app/rules && \
     chown -R rustling:rustling /app
 
@@ -54,7 +51,7 @@ WORKDIR /app
 
 # Copy binary from builder
 COPY --from=builder --chown=rustling:rustling \
-    /app/target/release/examples/http_server /usr/local/bin/rustling-server
+    /app/target/release/http_server /usr/local/bin/rustling-server
 
 # Copy rules directory (if exists)
 COPY --chown=rustling:rustling rules ./rules
@@ -78,4 +75,4 @@ HEALTHCHECK --interval=30s \
     CMD curl -f http://localhost:8080/health || exit 1
 
 # Run the HTTP server
-CMD ["rustling-server"]
+CMD ["http_server"]

@@ -7,17 +7,17 @@
 //!
 //! Basic usage (static rules only):
 //! ```bash
-//! cargo run --example http_server
+//! cargo run --example http_server --features server
 //! ```
 //!
 //! With hot-reload enabled:
 //! ```bash
-//! RELOAD_API_KEY=your-secret-key cargo run --example http_server
+//! RELOAD_API_KEY=your-secret-key cargo run --example http_server --features server
 //! ```
 //!
 //! Custom bind address:
 //! ```bash
-//! BIND_ADDRESS=0.0.0.0:3000 cargo run --example http_server
+//! BIND_ADDRESS=0.0.0.0:3000 cargo run --example http_server --features server
 //! ```
 //!
 //! ## API Endpoints

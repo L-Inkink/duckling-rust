@@ -1,5 +1,6 @@
 use crate::values::{Value, TimeValue};
 use rustling_core::{RuleSetBuilder, rustling_error};
+use rustling_core::time::Grain;
 use chrono::Utc;
 
 pub fn rules(b: &RuleSetBuilder<Value>) {
@@ -12,9 +13,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
                 .map_err(|e| rustling_error!("Failed to parse duration: {}", e))?;
             let future = Utc::now() + chrono::Duration::minutes(amount);
 
-            Ok(Value::Time(TimeValue {
-                timestamp: future,
-            }))
+            Ok(Value::Time(TimeValue::instant(future, Grain::Minute)))
         }
     );
 
@@ -27,9 +26,7 @@ pub fn rules(b: &RuleSetBuilder<Value>) {
                 .map_err(|e| rustling_error!("Failed to parse duration: {}", e))?;
             let future = Utc::now() + chrono::Duration::hours(amount);
 
-            Ok(Value::Time(TimeValue {
-                timestamp: future,
-            }))
+            Ok(Value::Time(TimeValue::instant(future, Grain::Minute)))
         }
     );
 }

@@ -137,11 +137,11 @@ impl ModelManager {
         let mut file = fs::File::create(&dest_path)
             .map_err(|e| ModelError::SaveFailed(format!("Failed to create file: {}", e)))?;
 
-        let mut content = response
+        let content = response
             .bytes()
             .map_err(|e| ModelError::DownloadFailed(format!("Read error: {:?}", e)))?;
 
-        file.write_all(&mut content)
+        file.write_all(&content)
             .map_err(|e| ModelError::SaveFailed(format!("Write error: {}", e)))?;
 
         Ok(dest_path)

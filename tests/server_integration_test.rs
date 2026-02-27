@@ -3,11 +3,14 @@
 //! These tests verify end-to-end functionality of the rustling HTTP server,
 //! including all endpoints and hot-reload capabilities.
 
+#![cfg(feature = "server")]
+
 use actix_web::{test, App};
 use rustling::server::{handlers, ServerBuilder};
 use rustling::dynamic::loader::InlineLoader;
 use rustling::dynamic::ConfigManager;
 use rustling::server::AppState;
+use rustling::locale::LocaleRegistry;
 use rustling::fuzzy::PatternNormalizer;
 use rustling::{RuleSetBuilder, BoundariesChecker};
 use rustling::rules;
@@ -38,7 +41,7 @@ async fn test_parse_endpoint_integration() {
     // Test parsing a number
     let req = test::TestRequest::post()
         .uri("/parse")
-        .set_json(json!({"text": "42"}))
+        .set_json(json!({"text": "42", "locale": "en"}))
         .to_request();
 
     let resp = test::call_service(&app, req).await;
@@ -58,7 +61,8 @@ async fn test_batch_parse_integration() {
     let req = test::TestRequest::post()
         .uri("/parse/batch")
         .set_json(json!({
-            "texts": ["5 minutes", "3 hours", "tomorrow at 3pm"]
+            "texts": ["5 minutes", "3 hours", "tomorrow at 3pm"],
+            "locale": "en"
         }))
         .to_request();
 
@@ -131,7 +135,7 @@ async fn test_input_validation_text_length() {
     let long_text = "a".repeat(10_001); // Exceeds 10KB limit
     let req = test::TestRequest::post()
         .uri("/parse")
-        .set_json(json!({"text": long_text}))
+        .set_json(json!({"text": long_text, "locale": "en"}))
         .to_request();
 
     let resp = test::call_service(&app, req).await;
@@ -210,6 +214,7 @@ async fn test_hot_reload_functionality() {
         config_manager: Arc::new(Mutex::new(config_manager)),
         pattern_normalizer: Arc::new(PatternNormalizer::new()),
         dynamic_enabled: true,
+        locales: Arc::new(LocaleRegistry::build_all()),
     };
 
     // Test reload
@@ -239,7 +244,7 @@ async fn test_parse_various_inputs() {
     for (text, _should_have_results) in test_cases {
         let req = test::TestRequest::post()
             .uri("/parse")
-            .set_json(json!({"text": text}))
+            .set_json(json!({"text": text, "locale": "en"}))
             .to_request();
 
         let resp = test::call_service(&app, req).await;
@@ -262,7 +267,7 @@ async fn test_concurrent_requests() {
     for i in 0..10 {
         let req = test::TestRequest::post()
             .uri("/parse")
-            .set_json(json!({"text": format!("{} minutes", i)}))
+            .set_json(json!({"text": format!("{} minutes", i), "locale": "en"}))
             .to_request();
 
         let resp = test::call_service(&app, req).await;

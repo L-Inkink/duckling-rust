@@ -1,7 +1,10 @@
+use std::sync::Arc;
+
 use crate::dynamic::engine::DynamicRuleEngine;
 use crate::dynamic::rules::DynamicRuleSet;
 use crate::dynamic::ConfigManager;
 use crate::fuzzy::PatternNormalizer;
+use crate::locale::LocaleRegistry;
 use crate::rules;
 use crate::values::Value;
 use crate::RuleSetBuilder;
@@ -18,6 +21,8 @@ pub struct AppState {
     pub pattern_normalizer: std::sync::Arc<PatternNormalizer>,
     /// Whether dynamic rules are enabled
     pub dynamic_enabled: bool,
+    /// Locale registry for per-locale rule sets
+    pub locales: Arc<LocaleRegistry>,
 }
 
 impl AppState {
@@ -35,6 +40,7 @@ impl AppState {
             config_manager: std::sync::Arc::new(std::sync::Mutex::new(ConfigManager::static_only())),
             pattern_normalizer: std::sync::Arc::new(PatternNormalizer::new()),
             dynamic_enabled: false,
+            locales: Arc::new(LocaleRegistry::build_all()),
         }
     }
 
@@ -94,6 +100,13 @@ mod tests {
     }
 
     #[test]
+    fn test_app_state_has_locale_registry() {
+        let state = AppState::static_only();
+        assert!(state.locales.get("fr").is_some());
+        assert!(state.locales.get("xx").is_none());
+    }
+
+    #[test]
     fn test_reload_rules_success() {
         let rules = create_test_dynamic_rules(1);
         let json = serde_json::to_string(&rules).unwrap();
@@ -111,6 +124,7 @@ mod tests {
             config_manager: std::sync::Arc::new(std::sync::Mutex::new(manager)),
             pattern_normalizer: std::sync::Arc::new(PatternNormalizer::new()),
             dynamic_enabled: true,
+            locales: Arc::new(LocaleRegistry::build_all()),
         };
 
         let result = state.reload_rules();
@@ -141,6 +155,7 @@ mod tests {
             config_manager: std::sync::Arc::new(std::sync::Mutex::new(manager)),
             pattern_normalizer: std::sync::Arc::new(PatternNormalizer::new()),
             dynamic_enabled: true,
+            locales: Arc::new(LocaleRegistry::build_all()),
         };
 
         let result = state.reload_rules();
