@@ -13,7 +13,7 @@ mod grpc_tests {
         parser_server::ParserServer,
         BatchParseRequest, HealthRequest, ParseRequest,
     };
-    use rustling::server::grpc::{GrpcAppState, ParserService};
+    use rustling::grpc::{GrpcAppState, ParserService};
     use std::time::Duration;
     use tokio::net::TcpListener;
     use tokio_stream::wrappers::TcpListenerStream;

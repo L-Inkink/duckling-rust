@@ -145,16 +145,21 @@ curl -X POST http://localhost:8080/parse \
 **统一解析 API**
 - `src/parse.rs` — Parser::parse() / parse_batch() / ParserConfig / ParseOutput
 
-**性能基准**
+**性能基准** (2026-02-27 实测)
 ```
-核心层:  parse integer 0.4µs | levenshtein 0.4µs | normalize 0.09µs
+核心层:   parse integer 0.4µs | levenshtein 0.4µs | normalize 0.09µs
 API层:   parse integer 6.6µs | parse duration 9.6µs | batch(4) 37.7µs (9.4µs/item)
-目标对比: FFI 1-10µs ✓(6.6µs) | gRPC 5-10ms(待服务器测试) | HTTP ~25ms
+FFI:     6.6µs ✅ (目标 1-10µs)
+gRPC:    P50=234µs | P99=393µs | 峰值吞吐=164K RPS | 持续=225K RPS ✅ (目标 5-10ms, >1000 RPS)
+HTTP:    ~25ms (待压测)
 ```
+
+**详细报告**: [GRPC_BENCH_REPORT.md](../reports/GRPC_BENCH_REPORT.md)
 
 **2026-02-27 补充完成：**
 - [x] gRPC 端到端集成测试（build.rs + tonic-build 生成 proto 代码，TcpListener 随机端口，11 个测试用例覆盖 Parse/ParseBatch/Health 全流程）
 - [x] FFI C 示例程序（include/rustling.h 公开头文件，examples/ffi_example.c 演示完整 C API，scripts/build_ffi_example.sh 一键编译运行）
+- [x] gRPC 性能基准测试（tools/grpc_bench.rs，单客户端 P50=234µs，100 并发峰值 164K RPS，持续 225K RPS）
 
 ---
 
@@ -382,9 +387,12 @@ API层:   parse integer 6.6µs | parse duration 9.6µs | batch(4) 37.7µs (9.4µ
 | 指标 | 目标 | 当前 |
 |------|------|------|
 | FFI 解析延迟 | <10µs | **6.6µs** ✅ |
-| 解析延迟 P50（HTTP） | <10ms | ~25ms |
-| 解析延迟 P99 | <50ms | 待压测 |
-| 吞吐量 | >1000 req/s | 待压测 |
+| gRPC 解析延迟 P50 | <10ms | **234µs** ✅ (超越 40x) |
+| gRPC 解析延迟 P99 | <50ms | **393µs** ✅ |
+| gRPC 吞吐量峰值 | >1000 req/s | **164K r/s** ✅ (超越 164x) |
+| gRPC 吞吐量持续 | - | **225K r/s** |
+| 解析延迟 P99 | <50ms | 待 HTTP 压测 |
+| 吞吐量 | >1000 req/s | 待 HTTP 压测 |
 | 缓存命中率 | >70% | 未实现 |
 | 内存使用 | <200MB | ~80MB |
 | Docker 镜像大小 | <50MB | **34.3MB** ✅ |
@@ -444,6 +452,7 @@ API层:   parse integer 6.6µs | parse duration 9.6µs | batch(4) 37.7µs (9.4µ
 | [ValueKind-关键突破.md](../architecture/ValueKind-关键突破.md) | composite 规则调试关键 |
 | [DOCKER.md](../guides/DOCKER.md) | Docker 部署完整指南 |
 | [BENCHMARKS.md](../reports/BENCHMARKS.md) | 性能基准测试报告 |
+| [GRPC_BENCH_REPORT.md](../reports/GRPC_BENCH_REPORT.md) | gRPC 大批量性能压测报告 |
 | [UNSAFE_CODE_AUDIT.md](../reports/UNSAFE_CODE_AUDIT.md) | unsafe 代码安全审计 |
 | [tools/migration/README.md](../../tools/migration/README.md) | 代码生成工具链说明 |
 

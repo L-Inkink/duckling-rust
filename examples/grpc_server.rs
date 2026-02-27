@@ -7,7 +7,7 @@
 //! Test with grpcurl:
 //!   grpcurl -plaintext -d '{"text":"42","locale":"en"}' localhost:50051 duckling.Parser/Parse
 
-use rustling::server::grpc::{GrpcAppState, ParserService};
+use rustling::grpc::{GrpcAppState, ParserService};
 use tonic::transport::Server;
 
 #[tokio::main]
