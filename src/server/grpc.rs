@@ -15,6 +15,7 @@ use crate::locale::LocaleRegistry;
 use crate::grpc_proto::{
     ParseRequest, ParseResponse, BatchParseRequest, BatchParseResponse,
     BatchParseResult, ParseResult, HealthRequest, HealthResponse,
+    parser_server::{self, ParserServer},
 };
 
 /// Application state for gRPC server
@@ -54,14 +55,21 @@ impl ParserService {
         Self { state }
     }
 
-    /// Parse a single text
-    pub async fn parse(
+    /// Wrap in a tonic ParserServer ready for serving
+    pub fn into_server(self) -> ParserServer<Self> {
+        ParserServer::new(self)
+    }
+}
+
+/// Implement the tonic-generated gRPC service trait
+#[tonic::async_trait]
+impl parser_server::Parser for ParserService {
+    async fn parse(
         &self,
         request: Request<ParseRequest>,
     ) -> Result<Response<ParseResponse>, Status> {
         let req = request.into_inner();
 
-        // Validate input
         if req.text.is_empty() {
             return Ok(Response::new(ParseResponse {
                 results: vec![],
@@ -69,34 +77,29 @@ impl ParserService {
             }));
         }
 
-        // Get locale, default to "en" if not provided
         let locale = if req.locale.is_empty() {
             "en".to_string()
         } else {
             req.locale.clone()
         };
 
-        // Get rule set for locale
-        let rule_set = self.state.locales.get(&locale);
+        let rule_set = match self.state.locales.get(&locale) {
+            Some(rs) => rs,
+            None => {
+                log::warn!("Unsupported locale: {}", locale);
+                return Ok(Response::new(ParseResponse {
+                    results: vec![],
+                    count: 0,
+                }));
+            }
+        };
 
-        if rule_set.is_none() {
-            log::warn!("Unsupported locale: {}", locale);
-            return Ok(Response::new(ParseResponse {
-                results: vec![],
-                count: 0,
-            }));
-        }
-
-        let rule_set = rule_set.unwrap();
-
-        // Normalize and parse
         let normalized = self.state.pattern_normalizer.normalize(&req.text);
 
         let nodes = rule_set
             .apply_all(&normalized)
             .map_err(|e| Status::internal(format!("Parse error: {:?}", e)))?;
 
-        // Convert results
         let results: Vec<ParseResult> = nodes
             .iter()
             .map(|n| {
@@ -113,36 +116,30 @@ impl ParserService {
             .collect();
 
         let count = results.len() as u32;
-
         Ok(Response::new(ParseResponse { results, count }))
     }
 
-    /// Parse multiple texts in batch
-    pub async fn parse_batch(
+    async fn parse_batch(
         &self,
         request: Request<BatchParseRequest>,
     ) -> Result<Response<BatchParseResponse>, Status> {
         let req = request.into_inner();
 
-        // Validate batch size
         if req.texts.len() > 100 {
-            return Err(Status::invalid_argument("Batch size exceeds maximum of 100 items"));
+            return Err(Status::invalid_argument(
+                "Batch size exceeds maximum of 100 items",
+            ));
         }
 
-        // Get locale, default to "en" if not provided
         let locale = if req.locale.is_empty() {
             "en".to_string()
         } else {
             req.locale.clone()
         };
 
-        // Get rule set for locale
-        let rule_set = self.state.locales.get(&locale);
-
-        let rule_set = match rule_set {
+        let rule_set = match self.state.locales.get(&locale) {
             Some(rs) => rs,
             None => {
-                // Return empty results for unsupported locale
                 let results: Vec<BatchParseResult> = req
                     .texts
                     .iter()
@@ -161,7 +158,6 @@ impl ParserService {
             }
         };
 
-        // Parse each text
         let mut batch_results = Vec::with_capacity(req.texts.len());
         let mut total_count = 0u32;
 
@@ -220,8 +216,7 @@ impl ParserService {
         }))
     }
 
-    /// Health check
-    pub async fn health(
+    async fn health(
         &self,
         _request: Request<HealthRequest>,
     ) -> Result<Response<HealthResponse>, Status> {
@@ -235,6 +230,7 @@ impl ParserService {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::grpc_proto::parser_server::Parser;
 
     #[test]
     fn test_grpc_state_creation() {
@@ -245,8 +241,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_parse_empty_text() {
-        let state = GrpcAppState::new();
-        let service = ParserService::new(state);
+        let service = ParserService::new(GrpcAppState::new());
 
         let request = Request::new(ParseRequest {
             text: "".to_string(),
@@ -262,8 +257,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_parse_integer() {
-        let state = GrpcAppState::new();
-        let service = ParserService::new(state);
+        let service = ParserService::new(GrpcAppState::new());
 
         let request = Request::new(ParseRequest {
             text: "42".to_string(),
@@ -278,8 +272,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_parse_duration() {
-        let state = GrpcAppState::new();
-        let service = ParserService::new(state);
+        let service = ParserService::new(GrpcAppState::new());
 
         let request = Request::new(ParseRequest {
             text: "5 minutes".to_string(),
@@ -289,14 +282,12 @@ mod tests {
         let response = service.parse(request).await.unwrap();
         let response = response.into_inner();
 
-        // Should find duration
         assert!(response.count > 0);
     }
 
     #[tokio::test]
     async fn test_parse_batch() {
-        let state = GrpcAppState::new();
-        let service = ParserService::new(state);
+        let service = ParserService::new(GrpcAppState::new());
 
         let request = Request::new(BatchParseRequest {
             texts: vec!["42".to_string(), "5 minutes".to_string()],
@@ -312,8 +303,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_parse_unsupported_locale() {
-        let state = GrpcAppState::new();
-        let service = ParserService::new(state);
+        let service = ParserService::new(GrpcAppState::new());
 
         let request = Request::new(ParseRequest {
             text: "42".to_string(),
@@ -328,8 +318,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_health() {
-        let state = GrpcAppState::new();
-        let service = ParserService::new(state);
+        let service = ParserService::new(GrpcAppState::new());
 
         let request = Request::new(HealthRequest {});
 
@@ -338,5 +327,12 @@ mod tests {
 
         assert!(response.healthy);
         assert!(!response.version.is_empty());
+    }
+
+    #[test]
+    fn test_into_server() {
+        let service = ParserService::new(GrpcAppState::new());
+        let _server = service.into_server();
+        // Should compile and create a ParserServer successfully
     }
 }
