@@ -1,19 +1,18 @@
 # Unsafe Code Audit Report
 
-**Date**: 2026-02-12
+**Date**: 2026-02-12 (updated 2026-02-27)
 **Auditor**: Claude Code
 **Project**: Rustling (duckling-rust)
-**Phase**: Phase 0 Week 2 - Day 8-9
+**Phase**: Phase 0 Week 2 (initial); Phase 6-B FFI (update)
 
 ---
 
 ## Executive Summary
 
-**Total unsafe blocks found**: 2
-**Location**: `core/src/lib.rs:268-269`
-**Type**: `unsafe impl Send/Sync`
-**Risk Level**: **LOW** ✅
-**Action Required**: Document + Consider modernization in future
+| 位置 | 类型 | 数量 | 风险 | 结论 |
+|------|------|------|------|------|
+| `core/src/lib.rs:268-269` | `unsafe impl Send/Sync` | 2 行 | **LOW** ✅ | 历史遗留，已记录，可日后清理 |
+| `src/ffi.rs` | FFI unsafe 块 | 4 处 | **MEDIUM → MITIGATED** ✅ | 已按最佳实践修复（2026-02-27） |
 
 ---
 
@@ -168,20 +167,81 @@ The current unsafe code is **sound, justified, and low-risk**. It's a legacy pat
 
 ---
 
-## Appendix: Other Common Unsafe Patterns Checked
+---
 
-**Checked for but NOT FOUND**:
-- ❌ Raw pointer dereferencing (`*ptr`)
-- ❌ FFI calls (`extern "C"`)
-- ❌ Inline assembly (`asm!`)
-- ❌ Type transmutation (`std::mem::transmute`)
-- ❌ Mutable static variables (`static mut`)
-- ❌ Union field access
+## Finding 2: FFI Unsafe Blocks (src/ffi.rs) — Added Phase 6-B
 
-**Result**: Rustling has an exceptionally clean unsafe footprint (only 2 lines, both benign).
+**Date**: 2026-02-27
+**Status**: ✅ MITIGATED
+
+### 2a. `CStr::from_ptr` — Reading C strings
+
+```rust
+// Safety: caller guarantees valid null-terminated UTF-8
+let text_str = unsafe { CStr::from_ptr(text) }.to_str()?;
+```
+
+**Used in**: `rustling_parse_inner`, `rustling_locale_supported`
+**Risk**: Dangling pointer or non-UTF-8 data from caller → **MEDIUM**
+**Mitigations applied**:
+- Null pointer checked before use
+- `.to_str()` converts the error (non-UTF-8 → early return with error result)
+- Standard FFI pattern; safety obligation on caller is documented in header
+
+### 2b. `CString::from_raw` — Freeing C strings
+
+```rust
+pub unsafe extern "C" fn rustling_free_string(ptr: *mut c_char) {
+    if !ptr.is_null() {
+        let _ = CString::from_raw(ptr);  // reclaims CString allocation
+    }
+}
+```
+
+**Used in**: `rustling_free_string`, `rustling_free_error`, `rustling_free_result`
+**Risk**: Double-free or use-after-free if caller passes wrong pointer → **HIGH**
+**Mitigations applied**:
+- All string allocations in this crate use `CString::into_raw` (via `to_c_string()` helper) — allocation and deallocation are guaranteed to match
+- Previous bug (`Vec::as_ptr` + `mem::forget`) was **fixed** on 2026-02-27: `rustling_supported_locales` now uses `to_c_string()` like all other functions
+- `rustling_free_result` added to prevent partial-free bugs (callers no longer free `json` and `error` separately)
+
+### 2c. Previously fixed: `Vec::as_ptr` + `mem::forget` UB
+
+```rust
+// REMOVED (was in rustling_supported_locales before 2026-02-27):
+// let ptr = bytes.as_ptr() as *mut c_char;
+// std::mem::forget(bytes);  // WRONG: CString::from_raw on Vec ptr = UB
+```
+
+This was **undefined behaviour**: `rustling_free_string` used `CString::from_raw`, but the pointer came from a `Vec` allocation. Fixed by replacing with `to_c_string(json)`.
+
+### Summary of FFI Safety
+
+| Pattern | Count | Status |
+|---------|-------|--------|
+| `CStr::from_ptr` | 3 | ✅ Null-checked, UTF-8 validated |
+| `CString::from_raw` | 3 | ✅ All allocations via `CString::into_raw` |
+| `Vec::as_ptr` UB | 0 | ✅ Eliminated (was 1, fixed 2026-02-27) |
+| Panic across FFI | 0 | ✅ All functions wrapped in `catch_unwind` |
 
 ---
 
-**Report Generated**: 2026-02-12
-**Next Review**: Phase 1 (when considering removal)
-**Approved By**: Phase 0 modernization audit
+## Appendix: Unsafe Patterns — Complete Inventory
+
+| Pattern | Status |
+|---------|--------|
+| Raw pointer dereferencing (`*ptr`) | ✅ Not present |
+| `CStr::from_ptr` (FFI boundary) | ✅ Present, mitigated (see §2a) |
+| `CString::from_raw` (FFI free) | ✅ Present, mitigated (see §2b) |
+| Inline assembly (`asm!`) | ✅ Not present |
+| Type transmutation (`std::mem::transmute`) | ✅ Not present |
+| Mutable static variables (`static mut`) | ✅ Not present (using `OnceLock` instead) |
+| Union field access | ✅ Not present |
+| `unsafe impl Send/Sync` | ✅ Present in `core/` (see §1, benign) |
+
+---
+
+**Initial report**: 2026-02-12
+**Updated**: 2026-02-27 (Phase 6-B FFI audit; fixed `rustling_supported_locales` UB)
+**Next Review**: Phase 7 or on any future `unsafe` addition
+**Approved By**: Phase 0 modernization audit + Phase 6-B FFI fix

@@ -146,15 +146,23 @@ grpcurl -plaintext localhost:50051 duckling.Parser/Health
 ## FFI (Offline / Android)
 
 ```c
-// Parse text, returns JSON string (caller must free)
-char* rustling_parse(const char* text, const char* locale);
-void  rustling_free_string(char* s);
-void  rustling_free_error(char* s);
-char* rustling_version(void);
-char* rustling_supported_locales(void);
+typedef struct {
+    char    *json;    // JSON array of results (NULL on error)
+    uint32_t count;   // number of matches
+    char    *error;   // error message (NULL on success)
+} RustlingParseResult;
+
+RustlingParseResult rustling_parse(const char* text, const char* locale);
+void     rustling_free_result(RustlingParseResult result); // preferred: frees json+error
+void     rustling_free_string(char* s);                    // for version/locales strings
+void     rustling_free_error(char* s);                     // alias for free_string
+char*    rustling_version(void);
+char*    rustling_supported_locales(void);
 uint32_t rustling_locale_supported(const char* locale);
-void rustling_init(void);
+void     rustling_init(void);
 ```
+
+The `value` field in results is a structured JSON object (`{"Integer":42}`, `{"Duration":{"amount":5,"unit":"Minute"}}`, etc.), not a debug string.
 
 ### Build FFI Library
 

@@ -132,11 +132,23 @@ service DucklingParser {
 ## 📱 FFI 库（离线 / Android）
 
 ```c
-char* rustling_parse(const char* text, const char* locale);  // 返回 JSON，需释放
-void  rustling_free_string(char* s);
-const char* rustling_version(void);
-const char* rustling_supported_locales(void);
+typedef struct {
+    char    *json;    // JSON 结果数组（出错时为 NULL）
+    uint32_t count;   // 匹配数量
+    char    *error;   // 错误信息（成功时为 NULL）
+} RustlingParseResult;
+
+RustlingParseResult rustling_parse(const char* text, const char* locale);
+void     rustling_free_result(RustlingParseResult result); // 推荐：同时释放 json 和 error
+void     rustling_free_string(char* s);                    // 释放 version/locales 字符串
+void     rustling_free_error(char* s);                     // 同 free_string
+char*    rustling_version(void);
+char*    rustling_supported_locales(void);
+uint32_t rustling_locale_supported(const char* locale);
+void     rustling_init(void);
 ```
+
+结果中的 `value` 字段为结构化 JSON 对象（如 `{"Integer":42}`、`{"Duration":{"amount":5,"unit":"Minute"}}`），而非调试字符串。
 
 编译：`cargo build --release --lib` → 生成 `librustling.a`（静态）/ `librustling.so`（动态）
 

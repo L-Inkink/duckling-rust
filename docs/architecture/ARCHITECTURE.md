@@ -647,9 +647,24 @@ impl<S> Pattern<S> for CustomPattern {
 
 ### 9. C FFI 库（Phase 6-B，离线模式）
 
-- `src/ffi.rs` — C ABI 接口：rustling_parse / rustling_free_string / rustling_version / rustling_supported_locales / rustling_init
+- `src/ffi.rs` — C ABI 接口（`include/rustling.h` 对应头文件）：
+
+  | 函数 | 说明 |
+  |------|------|
+  | `rustling_parse(text, locale)` | 解析文本，返回 `FfiParseResult`（json/count/error 三字段结构体） |
+  | `rustling_free_result(result)` | **推荐**：一次性释放 json 和 error |
+  | `rustling_free_string(ptr)` | 释放 version / supported_locales 返回的字符串 |
+  | `rustling_free_error(ptr)` | 同 free_string，语义别名 |
+  | `rustling_version()` | 返回版本字符串，需用 free_string 释放 |
+  | `rustling_supported_locales()` | 返回 JSON 语言列表，需用 free_string 释放 |
+  | `rustling_locale_supported(locale)` | 返回 1（支持）或 0 |
+  | `rustling_init()` | 预热（可选，减少首次调用延迟） |
+
+- `value` 字段为结构化 JSON 对象（`{"Integer":42}`、`{"Duration":{"amount":5,"unit":"Minute"}}`），可被任意 JSON 解析器直接处理
+- 所有 FFI 函数通过 `catch_unwind` 保护，Rust panic 不会跨 FFI 边界传播（否则为 UB）
+- 所有字符串统一通过 `CString::into_raw` 分配，与 `rustling_free_string`（`CString::from_raw`）配对安全
 - `crate-type = ["lib", "staticlib", "cdylib"]`
-- 生成：librustling.a（静态，37MB）/ librustling.so（动态，2.7MB）
+- 生成：`librustling.a`（静态，37MB）/ `librustling.so`（动态，2.7MB）
 
 ### 10. 统一解析 API
 

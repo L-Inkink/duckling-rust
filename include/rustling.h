@@ -66,20 +66,36 @@ void rustling_init(void);
  *
  * @return A RustlingParseResult whose json field points to a
  *         NUL-terminated UTF-8 JSON string like:
- *         [{"value":"Integer(42)","byte_start":0,"byte_end":2,
+ *         [{"value":{"Integer":42},"byte_start":0,"byte_end":2,
  *           "char_start":0,"char_end":2}, …]
  *
- * The caller is responsible for freeing the returned pointers:
- *   rustling_free_string(result.json);
- *   rustling_free_error(result.error);   // only if non-NULL
+ *         The "value" field is a structured JSON object, not a debug string:
+ *           Integer:  {"Integer": 42}
+ *           Float:    {"Float": 3.14}
+ *           Duration: {"Duration": {"amount": 5, "unit": "Minute"}}
+ *           Time:     {"Time": {...}}
+ *
+ * Prefer freeing the result with rustling_free_result() rather than
+ * manually freeing each field.
  */
 RustlingParseResult rustling_parse(const char *text, const char *locale);
 
 /* ── Memory management ─────────────────────────────────────────────────── */
 
 /**
- * Free a string allocated by rustling (json field of RustlingParseResult,
- * return value of rustling_version(), rustling_supported_locales()).
+ * Free all memory owned by a RustlingParseResult (both json and error).
+ *
+ * This is the preferred way to release a parse result.  It handles the
+ * NULL checks for you and is safe to call on both success and error results.
+ *
+ * @param result  The result returned by rustling_parse().
+ *                Must be called exactly once per result.
+ */
+void rustling_free_result(RustlingParseResult result);
+
+/**
+ * Free a string allocated by rustling (return value of rustling_version()
+ * or rustling_supported_locales()).
  *
  * @param ptr  Pointer previously returned by a rustling function.
  *             Passing NULL is safe and has no effect.
@@ -87,8 +103,8 @@ RustlingParseResult rustling_parse(const char *text, const char *locale);
 void rustling_free_string(char *ptr);
 
 /**
- * Free an error string allocated by rustling (error field of
- * RustlingParseResult).  Equivalent to rustling_free_string().
+ * Free an error string allocated by rustling.  Equivalent to
+ * rustling_free_string(); provided for semantic clarity.
  *
  * @param ptr  Pointer previously returned as an error.
  *             Passing NULL is safe and has no effect.
