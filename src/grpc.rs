@@ -83,34 +83,20 @@ impl parser_server::Parser for ParserService {
             req.locale.clone()
         };
 
-        let rule_set = match self.state.locales.get(&locale) {
-            Some(rs) => rs,
-            None => {
-                log::warn!("Unsupported locale: {}", locale);
-                return Ok(Response::new(ParseResponse {
-                    results: vec![],
-                    count: 0,
-                }));
-            }
-        };
+        // Use unified parse API for clean JSON output (handles locale validation internally)
+        let parse_output = crate::parse::Parser::new().parse(&req.text, Some(&locale));
 
-        let normalized = self.state.pattern_normalizer.normalize(&req.text);
-
-        let nodes = rule_set
-            .apply_all(&normalized)
-            .map_err(|e| Status::internal(format!("Parse error: {:?}", e)))?;
-
-        let results: Vec<ParseResult> = nodes
-            .iter()
-            .map(|n| {
-                let byte_range = n.root_node.byte_range;
-                let char_range = byte_range.char_range(&req.text);
+        let results: Vec<ParseResult> = parse_output
+            .results
+            .into_iter()
+            .map(|pv| {
+                let value = serde_json::to_string(&pv.value).unwrap_or_default();
                 ParseResult {
-                    value: format!("{:?}", n.value),
-                    byte_start: byte_range.0 as u32,
-                    byte_end: byte_range.1 as u32,
-                    char_start: char_range.0 as u32,
-                    char_end: char_range.1 as u32,
+                    value,
+                    byte_start: pv.byte_start as u32,
+                    byte_end: pv.byte_end as u32,
+                    char_start: pv.char_start as u32,
+                    char_end: pv.char_end as u32,
                 }
             })
             .collect();
@@ -137,27 +123,6 @@ impl parser_server::Parser for ParserService {
             req.locale.clone()
         };
 
-        let rule_set = match self.state.locales.get(&locale) {
-            Some(rs) => rs,
-            None => {
-                let results: Vec<BatchParseResult> = req
-                    .texts
-                    .iter()
-                    .enumerate()
-                    .map(|(idx, text)| BatchParseResult {
-                        index: idx as u32,
-                        text: text.clone(),
-                        results: vec![],
-                        count: 0,
-                    })
-                    .collect();
-                return Ok(Response::new(BatchParseResponse {
-                    results,
-                    total_count: 0,
-                }));
-            }
-        };
-
         let mut batch_results = Vec::with_capacity(req.texts.len());
         let mut total_count = 0u32;
 
@@ -172,29 +137,20 @@ impl parser_server::Parser for ParserService {
                 continue;
             }
 
-            let normalized = self.state.pattern_normalizer.normalize(text);
+            // Use unified parse API for clean JSON output
+            let parse_output = crate::parse::Parser::new().parse(text, Some(&locale));
 
-            let nodes = match rule_set.apply_all(&normalized) {
-                Ok(nodes) => nodes,
-                Err(e) => {
-                    return Err(Status::internal(format!(
-                        "Parse error at index {}: {:?}",
-                        index, e
-                    )));
-                }
-            };
-
-            let results: Vec<ParseResult> = nodes
-                .iter()
-                .map(|n| {
-                    let byte_range = n.root_node.byte_range;
-                    let char_range = byte_range.char_range(text);
+            let results: Vec<ParseResult> = parse_output
+                .results
+                .into_iter()
+                .map(|pv| {
+                    let value = serde_json::to_string(&pv.value).unwrap_or_default();
                     ParseResult {
-                        value: format!("{:?}", n.value),
-                        byte_start: byte_range.0 as u32,
-                        byte_end: byte_range.1 as u32,
-                        char_start: char_range.0 as u32,
-                        char_end: char_range.1 as u32,
+                        value,
+                        byte_start: pv.byte_start as u32,
+                        byte_end: pv.byte_end as u32,
+                        char_start: pv.char_start as u32,
+                        char_end: pv.char_end as u32,
                     }
                 })
                 .collect();
