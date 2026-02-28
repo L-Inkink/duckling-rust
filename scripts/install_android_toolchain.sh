@@ -30,13 +30,24 @@ done
 
 echo ""
 echo "=== [3/5] 检查/安装 Android NDK ==="
-if brew list android-ndk &>/dev/null; then
+if brew list --cask android-ndk &>/dev/null; then
     echo "    android-ndk 已安装"
 else
-    echo "    brew install android-ndk..."
-    brew install android-ndk
+    echo "    brew install --cask android-ndk..."
+    brew install --cask android-ndk
 fi
-NDK_HOME="$(brew --prefix android-ndk)"
+# android-ndk is a cask; resolve its actual install path
+NDK_HOME=""
+# Try brew --caskroom (works on some Homebrew versions)
+if brew --caskroom &>/dev/null; then
+    CASKROOM="$(brew --caskroom)"
+    NDK_VERSIONED="$(ls -d "$CASKROOM/android-ndk/"* 2>/dev/null | tail -1)"
+    [ -d "$NDK_VERSIONED" ] && NDK_HOME="$NDK_VERSIONED"
+fi
+# Fallback: well-known Homebrew share path (cask symlink or direct install)
+if [ -z "$NDK_HOME" ] || [ ! -d "$NDK_HOME" ]; then
+    NDK_HOME="/opt/homebrew/share/android-ndk"
+fi
 echo "    NDK 路径: $NDK_HOME"
 
 echo ""
