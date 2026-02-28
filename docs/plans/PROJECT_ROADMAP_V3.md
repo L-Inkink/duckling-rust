@@ -3,7 +3,7 @@
 **版本**: 3.4
 **创建日期**: 2026-02-14
 **最后更新**: 2026-02-27
-**状态**: Phase 0/1/2/5-A/6-B 已完成，多语种路由已完成，下一步 Phase 3 (Android JNI)
+**状态**: Phase 0/1/2/5-A/6-B 已完成，多语种路由已完成，Phase 3 Android 交叉编译 + Python ctypes 已完成，JNI Wrapper 待开发
 
 ---
 
@@ -165,17 +165,25 @@ HTTP:    ~25ms (待压测)
 
 ## 🗺️ 未来路线图
 
-### 🚧 Phase 3: Android JNI 集成（当前阶段）
+### 🚧 Phase 3: Android JNI 集成（进行中）
 **计划**: 2026-02-27 - 2026-03-07
 
 > **前提条件**: FFI 库已就绪（Phase 6-B 已完成 ✅），C ABI 接口可直接用于 JNI
 
 **核心任务**:
 ```
-□ Rust Android 交叉编译
-  - 配置 NDK 环境（cargo-ndk）
+✅ Rust Android 交叉编译（2026-02-28 完成）
+  - 配置 NDK 环境（cargo-ndk，Homebrew cask）
   - 添加 Android 目标（aarch64-linux-android, armv7-linux-androideabi, x86_64-linux-android）
-  - 编译 .so 库
+  - 编译 .so 库（arm64: 3.0MB, armeabi: 2.0MB, x86_64: 3.7MB）
+  - 工具链安装脚本（scripts/install_android_toolchain.sh）
+  - 自动化构建脚本（scripts/build_android.sh --verify）
+
+✅ Python ctypes 包装（2026-02-28 完成，超出计划范围）
+  - python/rustling/ffi.py：ctypes 绑定 FfiParseResult，支持 Android/macOS/Linux/Windows
+  - python/rustling/__init__.py：Python 包入口，export parse()
+  - 桌面验证测试 4/4 通过
+  - 架构文档：docs/guides/ANDROID_PYTHON_INTEGRATION.md
 
 □ JNI Wrapper（复用 src/ffi.rs C ABI）
   - JNI 函数导出（Java_com_rustling_NLPParser_parse 等）
@@ -194,8 +202,9 @@ HTTP:    ~25ms (待压测)
 ```
 
 **验收标准**:
+- [x] Android .so 库大小 <10MB（各架构）✅ arm64: 3.0MB, armeabi: 2.0MB, x86_64: 3.7MB
+- [x] Python ctypes wrapper 桌面验证通过 ✅
 - [ ] Android App 能解析 "twenty three" → 23
-- [ ] .so 库大小 <10MB（各架构）
 - [ ] 解析延迟 <50ms（含 JNI 开销）
 - [ ] 无内存泄漏（LeakCanary 验证）
 - [ ] 无崩溃（测试 1000 次解析）
@@ -355,7 +364,8 @@ HTTP:    ~25ms (待压测)
 
 | 时间 | 里程碑 | 状态 |
 |------|--------|------|
-| Feb 27 - Mar 07 | Phase 3 — Android JNI 集成 | 🚧 当前 |
+| Feb 28 | Phase 3 — Android 交叉编译 + Python ctypes | ✅ 部分完成 |
+| Mar 01 - Mar 07 | Phase 3 续 — JNI Wrapper + Kotlin + 示例 App | 🚧 当前 |
 | Mar 08 - Mar 28 | Phase 4 — 多语种扩展 + ML 优化 | ⏳ |
 | Mar 29 - Apr 18 | Phase 5-B/C — 生产部署完善 | ⏳ |
 | Apr 19 - May 09 | Phase 6 — 性能优化 | ⏳ |

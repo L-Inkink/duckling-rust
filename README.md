@@ -180,6 +180,44 @@ cargo build --release --lib
 
 See [include/rustling.h](include/rustling.h) for the complete C API header.
 
+### Android Cross-Compilation
+
+Build `librustling.so` for Android via [cargo-ndk](https://github.com/bbqsrc/cargo-ndk):
+
+```bash
+# One-time toolchain setup (installs rustup, Android NDK, cargo-ndk)
+./scripts/install_android_toolchain.sh
+
+# Build for all three ABIs
+./scripts/build_android.sh --verify
+# Output: android/jniLibs/{arm64-v8a,armeabi-v7a,x86_64}/librustling.so
+```
+
+Copy `android/jniLibs/` into your Android project. See [docs/guides/ANDROID_PYTHON_INTEGRATION.md](docs/guides/ANDROID_PYTHON_INTEGRATION.md) for CMakeLists.txt and Gradle configuration.
+
+### Python ctypes Wrapper
+
+Call the FFI from Python without PyO3 — works in [Chaquopy](https://chaquo.com/chaquopy/) on Android:
+
+```python
+# python/rustling/ffi.py — zero extra dependencies
+import sys; sys.path.insert(0, "python")
+from rustling import parse
+
+parse("5 minutes", "en")
+# [{'value': {'Duration': {'amount': 5, 'unit': 'Minute'}}, ...}]
+
+parse("明天下午三点", "zh")
+# [{'value': {'Time': {...}}, ...}]
+```
+
+```bash
+# Desktop quick test (macOS/Linux)
+cargo build --release --lib
+ln -sf "$(pwd)/target/release/librustling.dylib" python/rustling/librustling.dylib
+python3 python/rustling/ffi_test.py
+```
+
 ## Compile Features
 
 | Feature | Flag | Description |

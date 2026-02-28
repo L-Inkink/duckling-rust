@@ -152,6 +152,44 @@ void     rustling_init(void);
 
 编译：`cargo build --release --lib` → 生成 `librustling.a`（静态）/ `librustling.so`（动态）
 
+### Android 交叉编译
+
+通过 [cargo-ndk](https://github.com/bbqsrc/cargo-ndk) 为 Android 三大 ABI 构建 `librustling.so`：
+
+```bash
+# 一键安装工具链（rustup、Android NDK、cargo-ndk）
+./scripts/install_android_toolchain.sh
+
+# 构建三大 ABI 并验证
+./scripts/build_android.sh --verify
+# 产物：android/jniLibs/{arm64-v8a,armeabi-v7a,x86_64}/librustling.so
+```
+
+将 `android/jniLibs/` 整个目录复制到 Android 项目中。CMakeLists.txt 和 Gradle 配置详见 [docs/guides/ANDROID_PYTHON_INTEGRATION.md](docs/guides/ANDROID_PYTHON_INTEGRATION.md)。
+
+### Python ctypes 包装
+
+无需 PyO3，直接通过 ctypes 调用 FFI，在 Android 上的 [Chaquopy](https://chaquo.com/chaquopy/) Python 环境中开箱即用：
+
+```python
+# python/rustling/ffi.py — 零额外依赖
+import sys; sys.path.insert(0, "python")
+from rustling import parse
+
+parse("5 minutes", "en")
+# [{'value': {'Duration': {'amount': 5, 'unit': 'Minute'}}, ...}]
+
+parse("明天下午三点", "zh")
+# [{'value': {'Time': {...}}, ...}]
+```
+
+```bash
+# 桌面快速验证（macOS/Linux）
+cargo build --release --lib
+ln -sf "$(pwd)/target/release/librustling.dylib" python/rustling/librustling.dylib
+python3 python/rustling/ffi_test.py
+```
+
 ---
 
 ## 📦 编译特性
