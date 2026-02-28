@@ -36,15 +36,23 @@ else
     echo "    brew install --cask android-ndk..."
     brew install --cask android-ndk
 fi
-# android-ndk is a cask; resolve its actual install path
+# android-ndk is a cask; resolve its actual NDK root
 NDK_HOME=""
-# Try brew --caskroom (works on some Homebrew versions)
+# Try brew --caskroom to find the version directory
 if brew --caskroom &>/dev/null; then
     CASKROOM="$(brew --caskroom)"
-    NDK_VERSIONED="$(ls -d "$CASKROOM/android-ndk/"* 2>/dev/null | tail -1)"
-    [ -d "$NDK_VERSIONED" ] && NDK_HOME="$NDK_VERSIONED"
+    NDK_VERSION_DIR="$(ls -d "$CASKROOM/android-ndk/"* 2>/dev/null | tail -1)"
+    if [ -d "$NDK_VERSION_DIR" ]; then
+        # On macOS, NDK cask wraps the NDK inside a .app bundle
+        APP_BUNDLE="$(ls -d "$NDK_VERSION_DIR/"*.app 2>/dev/null | head -1)"
+        if [ -d "$APP_BUNDLE/Contents/NDK" ]; then
+            NDK_HOME="$APP_BUNDLE/Contents/NDK"
+        else
+            NDK_HOME="$NDK_VERSION_DIR"
+        fi
+    fi
 fi
-# Fallback: well-known Homebrew share path (cask symlink or direct install)
+# Fallback: well-known share path (Homebrew may create a symlink here)
 if [ -z "$NDK_HOME" ] || [ ! -d "$NDK_HOME" ]; then
     NDK_HOME="/opt/homebrew/share/android-ndk"
 fi
