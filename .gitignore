@@ -3,8 +3,10 @@
 
 # Cargo
 target/
+target_user/
 Cargo.lock
-.cargo/
+.cargo/*
+!.cargo/config.toml
 
 # Backups
 *.bak

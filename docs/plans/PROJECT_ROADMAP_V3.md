@@ -185,6 +185,13 @@ HTTP:    ~25ms (待压测)
   - 桌面验证测试 4/4 通过
   - 架构文档：docs/guides/ANDROID_PYTHON_INTEGRATION.md
 
+✅ libnlu 静态库集成（2026-03-02 完成，超出计划范围）
+  - .cargo/config.toml：配置 NDK r27c 跨编译工具链（aarch64/armv7），target-dir=target_user
+  - libnlu/CMakeLists.txt：add_custom_command 触发 cargo build，导入 rustling STATIC IMPORTED
+  - librustling.a 验证：x86_64 (41MB) ✅，aarch64-linux-android (41MB) ✅
+  - Rust/rustup/NDK r27c 安装至用户目录（/data0/lizezhou/.cargo, /data0/lizezhou/android-ndk）
+  - 集成路径：rustling → librustling.a → libnlu_static_lib.a → Android APK
+
 □ JNI Wrapper（复用 src/ffi.rs C ABI）
   - JNI 函数导出（Java_com_rustling_NLPParser_parse 等）
   - Java/Kotlin ↔ Rust 类型转换
