@@ -1,9 +1,11 @@
 # Rustling → libnlu 静态库集成指南
 
-**完成日期**: 2026-03-02
+**完成日期**: 2026-03-03
 **适用分支**: `ffi-struct-api-and-android-guide`
 
 > 本文档说明如何将 rustling 编译为静态库（`.a`），并链接进 libnlu（C++ 项目）的构建系统，最终产物为 `libnlu_static_lib.a`，可嵌入 Android APK。
+>
+> libnlu 实际位于 `~/nlp/dm-sdk/libnlu/`（dm-sdk 项目子目录），修改已应用至该路径。
 
 ---
 
@@ -151,9 +153,15 @@ crate-type = ["lib", "staticlib", "cdylib"]
 
 在 `find_package(Protobuf REQUIRED)` 块之后、`add_library(nlu_static_lib ...)` 之前添加：
 
+> **路径说明**：
+> - dm-sdk 项目结构：`~/nlp/dm-sdk/libnlu/CMakeLists.txt`，duckling-rust 位于 `~/nlp/duckling-rust/`
+> - 相对路径：`../../duckling-rust`（libnlu → dm-sdk → nlp → duckling-rust）
+> - 若 libnlu 是独立项目（与 duckling-rust 并列），改为 `../duckling-rust`
+
 ```cmake
 # ── Rustling NLP 静态库集成 ──────────────────────────────────────────────
-set(RUSTLING_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../duckling-rust")
+# dm-sdk 布局：dm-sdk/libnlu/ → ../../duckling-rust
+set(RUSTLING_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../duckling-rust")
 
 if("${TARGET_COMPILE_TYPE}" STREQUAL "x86")
     set(RUSTLING_TARGET "x86_64-unknown-linux-gnu")
@@ -202,8 +210,8 @@ target_link_libraries(nlu_static_lib rustling)
 # 确保 cargo 在 PATH 中
 export PATH=/data0/lizezhou/.cargo/bin:$PATH
 
-# x86 构建（含 rustling 集成）
-cd /data0/lizezhou/nlp/libnlu
+# x86 构建（含 rustling 集成，在 dm-sdk/libnlu 下运行）
+cd ~/nlp/dm-sdk/libnlu
 ./build.sh x86
 
 # 观察 CMake 输出中是否有：
@@ -286,6 +294,7 @@ if (rustling_locale_supported("zh")) {
 | `.cargo/` 被 gitignore 整体忽略 | 旧 gitignore 写法 `.cargo/` | 改为 `.cargo/*` + `!.cargo/config.toml` |
 | ARM64 构建需要 NDK | libnlu arm64 路径写死 `/mnt/ndk/` | 本地 NDK 已安装至 `~/android-ndk/android-ndk-r27c/` |
 | 首次构建较慢（~60s） | cargo 全量编译 41MB 静态库 | 产物缓存在 `target_user/`，后续增量编译极快 |
+| `nlu_manager_test` 链接失败（`GLIBC_2.38`） | dm-sdk `third_party/x86/protobuf-3.6.1/lib/libprotobuf.so` 为高版本 glibc 编译，本机 Ubuntu 20.04 不支持 | 与 rustling 无关；`libnlu_static_lib.a` 已成功构建（93%）；可在 Docker / 匹配环境中完成最终链接 |
 
 ---
 
