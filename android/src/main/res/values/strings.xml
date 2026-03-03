@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duckling NLP</string>
+    <string name="app_title">Duckling NLP Parser</string>
+
+    <!-- Status Messages -->
+    <string name="status_initializing">Initializing parser…</string>
+    <string name="status_initialized">Version: %1$s | Locales: %2$d supported</string>
+
+    <!-- Input -->
+    <string name="hint_input">Enter text to parse (e.g., "5 minutes", "next Monday")</string>
+
+    <!-- Buttons -->
+    <string name="btn_parse">Parse</string>
+    <string name="btn_clear">Clear</string>
+
+    <!-- Results -->
+    <string name="label_results">Results:</string>
+    <string name="default_results">Enter text above and tap Parse to see results.</string>
+    <string name="no_results">No entities found in the input text.</string>
+
+    <!-- Error Messages -->
+    <string name="error_library_not_found">Error: Native library not found.\n%1$s\n\nMake sure librustling.so is in jniLibs folder.</string>
+    <string name="error_init_failed">Initialization failed: %1$s</string>
+    <string name="error_empty_input">Please enter some text to parse.</string>
+    <string name="error_parse_failed">Parse error: %1$s</string>
+</resources>

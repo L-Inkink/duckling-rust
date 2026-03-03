@@ -39,6 +39,10 @@ pub mod grpc;
 // FFI support (always available)
 pub mod ffi;
 
+// JNI support for Android (requires --features jni)
+#[cfg(feature = "jni")]
+pub mod jni_wrapper;
+
 // Unified parse API
 pub mod parse;
 

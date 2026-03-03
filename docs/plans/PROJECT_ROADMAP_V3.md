@@ -204,20 +204,22 @@ HTTP:    ~25ms (待压测)
   - nm 验证符号存在：rustling_init, rustling_parse ✅
   - verify_libnlu_rustling.cpp：全功能测试通过
 
-□ JNI Wrapper（复用 src/ffi.rs C ABI）
+✅ JNI Wrapper（复用 src/ffi.rs C ABI）
   - JNI 函数导出（Java_com_rustling_NLPParser_parse 等）
   - Java/Kotlin ↔ Rust 类型转换
-  - 内存管理（JNI Global Ref）
+  - 内存管理（JNI Global Ref）✅ 2026-03-03
 
-□ Kotlin 封装类
+✅ Kotlin 封装类
   - NLPParser — 核心解析器（加载 .so，调用 JNI）
   - DucklingClient — 在线/离线统一接口（降级策略）
-  - ParseResult / ParsedValue 数据类
+  - ParseResult / ParsedValue 数据类 ✅ 2026-03-03
 
-□ Android 示例 App
+✅ Android 示例 App
+  - build.gradle, AndroidManifest.xml ✅
+  - NLPParser.kt, DucklingClient.kt, MainActivity.kt, ParseResult.kt ✅
   - 规则从 assets 加载
   - 离线解析演示
-  - 在线 API 降级演示
+  - 在线 API 降级演示 ✅ 2026-03-03
 ```
 
 **验收标准**:

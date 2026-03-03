@@ -40,6 +40,9 @@ tokio-stream = { version = "0.1", optional = true }
 # FFI dependencies
 libc = "0.2"
 
+# JNI dependencies (Android)
+jni = { version = "0.21", optional = true }
+
 [lib]
 name = "rustling"
 crate-type = ["lib", "staticlib", "cdylib"]
@@ -51,6 +54,7 @@ grpc = ["tokio", "tonic", "prost", "tokio-stream"]
 apollo = ["reqwest"]
 fasttext = ["finalfusion", "dirs", "reqwest"]
 migration-tools = ["tera", "glob"]
+jni = ["dep:jni"]
 
 [build-dependencies]
 tonic-build = "0.12"

@@ -1,0 +1,119 @@
+/**
+ * Android App build configuration for Duckling NLP Demo.
+ *
+ * This build.gradle demonstrates how to integrate the native librustling.so
+ * library into an Android application.
+ *
+ * Build Requirements:
+ * - Android SDK (API 24+, Android 7.0+)
+ * - Kotlin plugin
+ * - NDK (for native library development if needed)
+ *
+ * To build the native library:
+ *   cargo build --release --target aarch64-linux-android --features jni
+ *   # Output: target_user/aarch64-linux-android/release/librustling.so
+ *
+ * Copy the .so to: app/src/main/jniLibs/arm64-v8a/
+ */
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android' version '1.9.22'
+}
+
+android {
+    namespace 'com.rustling'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.rustling.duckling"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    sourceSets {
+        main {
+            // Native libraries (librustling.so)
+            jniLibs.srcDirs = ['src/main/jniLibs']
+
+            // Kotlin source files
+            kotlin.srcDirs = ['src/main/kotlin']
+        }
+    }
+
+    // Enable build config for version info
+    buildFeatures {
+        buildConfig true
+    }
+}
+
+dependencies {
+    // AndroidX Core
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    // Material Design
+    implementation 'com.google.android.material:material:1.11.0'
+
+    // ConstraintLayout
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // JSON parsing (for JNI result parsing)
+    implementation 'org.json:json:20231013'
+
+    // Lifecycle
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+/**
+ * Custom task to verify native library exists before build.
+ *
+ * This is optional but helps catch missing .so files early.
+ */
+android.applicationVariants.all { variant ->
+    def variantName = variant.name.capitalize()
+    def jniLibsDir = "src/main/jniLibs"
+
+    // Check for at least one ABI directory with .so file
+    def abiDirs = file(jniLibsDir).listDirs()
+    def hasNativeLib = abiDirs?.any { dir ->
+        file("${dir.absolutePath}/librustling.so").exists()
+    }
+
+    if (!hasNativeLib && variant.buildType.name == 'debug') {
+        println("WARNING: librustling.so not found in ${jniLibsDir}!")
+        println("Parse functionality will fail at runtime.")
+        println("Build native library with:")
+        println("  cargo build --release --target aarch64-linux-android --features jni")
+    }
+}
+
+// Apply standard Android settings
+apply from: 'gradle.properties'
