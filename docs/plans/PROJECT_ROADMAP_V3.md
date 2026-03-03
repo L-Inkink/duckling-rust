@@ -191,6 +191,12 @@ HTTP:    ~25ms (待压测)
   - librustling.a 验证：x86_64 (41MB) ✅，aarch64-linux-android (41MB) ✅
   - Rust/rustup/NDK r27c 安装至用户目录（/data0/lizezhou/.cargo, /data0/lizezhou/android-ndk）
   - 集成路径：rustling → librustling.a → libnlu_static_lib.a → Android APK
+  - 集成文档：docs/guides/LIBNLU_INTEGRATION.md
+
+✅ librustling.a C 端验证（2026-03-03 完成）
+  - tests/verify_static_lib.c：32/32 checks passed
+  - 验证：version, locales, init, parse(integer/duration/time/empty)
+  - 记录实际行为：zh 解析需 reference time，3.14→两个 Integer，5 minutes→count=2
 
 □ JNI Wrapper（复用 src/ffi.rs C ABI）
   - JNI 函数导出（Java_com_rustling_NLPParser_parse 等）
