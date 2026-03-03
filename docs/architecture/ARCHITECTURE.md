@@ -1,11 +1,11 @@
 # Rustling 架构设计文档
 
-**版本**: 2.0
+**版本**: 2.1
 **创建日期**: 2026-02-12
-**最后更新**: 2026-02-27
+**最后更新**: 2026-03-03
 **作者**: Claude Code
 
-> v1.0 记录 Phase 0 初始架构（三层）；v2.0 反映当前完整实现（双模式五层架构）。
+> v1.0 记录 Phase 0 初始架构（三层）；v2.0 反映双模式五层架构；v2.1 补充 Layer 5c 静态库集成 libnlu 场景。
 
 ---
 
@@ -82,12 +82,16 @@ Rustling 是 Duckling（Haskell 自然语言解析库）的 Rust 移植版本，
 └────────────────────────────────────────────┘
     │ 结构化结果
     ▼
-┌──────────────┬──────────────┬──────────────┐
-│ Layer 5a     │ Layer 5b     │ Layer 5c     │
-│ HTTP Server  │ gRPC Server  │ C FFI 库     │
-│ (Actix-web)  │ (tonic)      │ (Android JNI)│
-│ REST API     │ Protobuf RPC │ .so 离线解析 │
-└──────────────┴──────────────┴──────────────┘
+┌──────────────┬──────────────┬──────────────────────────────┐
+│ Layer 5a     │ Layer 5b     │ Layer 5c                     │
+│ HTTP Server  │ gRPC Server  │ C FFI 库                     │
+│ (Actix-web)  │ (tonic)      │ librustling.so（Android JNI）│
+│ REST API     │ Protobuf RPC │ librustling.a（libnlu 静态）  │
+└──────────────┴──────────────┴──────────────────────────────┘
+
+Layer 5c 两种部署形态：
+  .so  → Python ctypes / Android JNI（动态加载，独立进程）
+  .a   → 链接进 libnlu_static_lib.a → Android APK（零运行时依赖）
 ```
 
 ---

@@ -399,3 +399,12 @@ cargo test --lib
 - [Android NDK 指南：使用预编译库](https://developer.android.com/ndk/guides/prebuilt_libs)
 - [PyO3 Android 支持（experimental）](https://pyo3.rs/v0.22.0/building-and-distribution/android)
 - 本项目 C FFI 接口：`src/ffi.rs`、`include/rustling.h`
+
+---
+
+## 补充：静态库集成 libnlu（C++ 项目）
+
+除上述 `.so` + Python ctypes 方案外，rustling 也支持以**静态库**形式集成进 C++ 项目（如 libnlu）。
+静态库方案适用于 libnlu 这类最终产物本身就是 `.a` 的场景，可将 rustling 符号直接内嵌，零运行时依赖。
+
+详见：[LIBNLU_INTEGRATION.md](LIBNLU_INTEGRATION.md)
