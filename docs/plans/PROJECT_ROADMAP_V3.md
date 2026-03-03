@@ -198,6 +198,12 @@ HTTP:    ~25ms (待压测)
   - 验证：version, locales, init, parse(integer/duration/time/empty)
   - 记录实际行为：zh 解析需 reference time，3.14→两个 Integer，5 minutes→count=2
 
+✅ librustling.a 嵌套集成验证（2026-03-03 完成）
+  - libnlu/CMakeLists.txt：提取 .o + ar r 嵌套合并
+  - libnlu_static_lib.a：129MB → 169MB（26 → 468 个对象）
+  - nm 验证符号存在：rustling_init, rustling_parse ✅
+  - verify_libnlu_rustling.cpp：全功能测试通过
+
 □ JNI Wrapper（复用 src/ffi.rs C ABI）
   - JNI 函数导出（Java_com_rustling_NLPParser_parse 等）
   - Java/Kotlin ↔ Rust 类型转换

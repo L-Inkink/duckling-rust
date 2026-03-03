@@ -41,16 +41,20 @@ duckling-rust/include/rustling.h  ← C 头文件（公开 API）
         │
         │  cargo build --release --target <arch> --lib
         ▼
-duckling-rust/target_user/<arch>/release/librustling.a
+duckling-rust/target_user/<arch>/release/librustling.a (41MB)
         │
-        │  CMake: add_library(rustling STATIC IMPORTED)
-        │          target_link_libraries(nlu_static_lib rustling)
+        │  CMake: 提取 .o 文件，嵌套加入 libnlu_static_lib.a
+        │  ─────────────────────────────────────────────────
+        │  ar x librustling.a → 提取所有 .o
+        │  ar r libnlu_static_lib.a *.o → 嵌套合并
         ▼
-libnlu/libnlu_static_lib.a     ← 最终产物（含 rustling 符号）
+libnlu_static_lib.a (169MB)    ← 最终产物（含完整 rustling）
         │
         ▼
 Android APK / nlu_manager_test
 ```
+
+**嵌套原理**：静态库本质是目标文件（`.o`）的归档。CMake 自定义命令提取 `librustling.a` 中的所有 `.o` 文件，再通过 `ar r` 加入 `libnlu_static_lib.a`，实现真正的嵌套合并。
 
 **目标架构映射**：
 
@@ -160,7 +164,6 @@ crate-type = ["lib", "staticlib", "cdylib"]
 
 ```cmake
 # ── Rustling NLP 静态库集成 ──────────────────────────────────────────────
-# dm-sdk 布局：dm-sdk/libnlu/ → ../../duckling-rust
 set(RUSTLING_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../duckling-rust")
 
 if("${TARGET_COMPILE_TYPE}" STREQUAL "x86")
@@ -196,32 +199,120 @@ add_dependencies(rustling rustling_build)
 # 链接 rustling 静态库
 target_include_directories(nlu_static_lib PRIVATE "${RUSTLING_SRC_DIR}/include")
 target_link_libraries(nlu_static_lib rustling)
+
+# ── 嵌套 librustling.a 到 libnlu_static_lib.a ─────────────────────────────
+# 方法：提取 librustling.a 中的所有 .o 文件，加入 libnlu_static_lib.a
+set(NLUNLU_STATIC_LIB_PATH "${CMAKE_BINARY_DIR}/lib/libnlu_static_lib.a")
+
+# 创建一个辅助脚本来合并静态库
+set(MERGE_SCRIPT "${CMAKE_BINARY_DIR}/merge_rustling.sh")
+file(WRITE "${MERGE_SCRIPT}" "
+#!/bin/bash
+set -e
+WORK_DIR=\"${CMAKE_BINARY_DIR}/rustling_objs\"
+mkdir -p \"$WORK_DIR\"
+cd \"$WORK_DIR\"
+ar x \"${RUSTLING_LIB_PATH}\"
+for f in *.o; do
+    ar r \"${NLUNLU_STATIC_LIB_PATH}\" \"$f\" || true
+done
+cd \"${CMAKE_BINARY_DIR}\"
+rm -rf rustling_objs
+")
+
+add_custom_command(
+    OUTPUT  "${NLUNLU_STATIC_LIB_PATH}.merged"
+    COMMAND chmod +x "${MERGE_SCRIPT}" && "${MERGE_SCRIPT}"
+    DEPENDS nlu_static_lib rustling_build
+    COMMENT "Embedding librustling.a into libnlu_static_lib.a"
+)
+
+add_custom_target(nlu_static_lib_merged ALL DEPENDS "${NLUNLU_STATIC_LIB_PATH}.merged")
+# ─────────────────────────────────────────────────────────────────────────
 ```
 
-> **`add_custom_command` vs `add_custom_target`**：
-> - `add_custom_command(OUTPUT ...)` — CMake 将 `.a` 文件视为构建产物，仅在文件不存在时重新触发 `cargo build`
-> - `add_custom_target(rustling_build DEPENDS ...)` — 使其成为有名字的目标，供 `add_dependencies` 引用
+> **嵌套原理**：`target_link_libraries` 对静态库仅记录依赖，不会把依赖的静态库内容合并进来。因此需要自定义命令手动提取 `librustling.a` 中的 `.o` 文件并 `ar r` 到 `libnlu_static_lib.a`。
 
 ---
 
 ## 6. 构建验证
 
+### 6.1 构建产物
+
 ```bash
 # 确保 cargo 在 PATH 中
 export PATH=/data0/lizezhou/.cargo/bin:$PATH
 
-# x86 构建（含 rustling 集成，在 dm-sdk/libnlu 下运行）
-cd ~/nlp/dm-sdk/libnlu
-./build.sh x86
+# x86 构建（含 rustling 嵌套）
+cd ~/nlp/dm-sdk/libnlu/cmake/build
+make nlu_static_lib_merged
 
-# 观察 CMake 输出中是否有：
-# "Building Rustling for x86_64-unknown-linux-gnu"
+# 验证产物大小（嵌套前 129MB → 嵌套后 169MB）
+ls -lh lib/libnlu_static_lib.a
+# → 169MB ✅
 
-# 验证产物
-ls -lh output_x86/libnlu_static_lib.a
-nm output_x86/libnlu_static_lib.a | grep rustling_parse
-# → 应能看到 rustling_parse 等符号
+# 验证对象数量（嵌套前 26 → 嵌套后 468）
+ar -t lib/libnlu_static_lib.a | wc -l
+# → 468 ✅
 ```
+
+### 6.2 验证 rustling 符号存在
+
+```bash
+# 检查 rustling 对象文件
+ar -t lib/libnlu_static_lib.a | grep rustl
+# → rustling.rustling.xxxxx-cgu.0*.rcgu.o (442 个)
+
+# 检查符号定义
+nm lib/libnlu_static_lib.a | grep rustling_parse
+# → 0000000000000000 T rustling_parse ✅
+```
+
+### 6.3 运行功能验证测试
+
+```bash
+# 编译测试程序
+g++ -o verify_libnlu_rustling \
+    ~/nlp/dm-sdk/libnlu/verify_libnlu_rustling.cpp \
+    -I~/nlp/duckling-rust/include \
+    -I~/nlp/dm-sdk/libnlu \
+    lib/libnlu_static_lib.a \
+    -lpthread -ldl -lm
+
+# 运行
+./verify_libnlu_rustling
+```
+
+**预期输出**：
+```
+=== libnlu_static_lib.a embedded rustling verification ===
+rustling version: 0.10.0
+  ✓ version OK
+supported locales: ["ar","bg","ca","da","de","el","en","es","fr","ga","he","hr","hu","it","ja","ka","ko","nb","nl","pl","pt","ro","ru","sv","tr","uk","vi","zh"]
+  ✓ locales OK
+  ✓ init OK
+
+--- parse tests ---
+parse("42", "en"):
+  json: [{"byte_end":2,"byte_start":0,"char_end":2,"char_start":0,"value":{"Integer":42}}]
+  count: 1
+  ✓ Integer found
+parse("tomorrow", "en"):
+  json: [{"byte_end":8,"byte_start":0,"char_end":8,"char_start":0,"value":{"Time":{"Instant":{"datetime":"2026-03-04T00:00:00Z","form":"Unspecified","grain":"Day","latent":false}}}}]
+  count: 1
+  ✓ Time found
+parse("5 minutes", "en"):
+  json: [{"byte_end":1,"byte_start":0,"char_end":1,"char_start":0,"value":{"Integer":5}},{"byte_end":9,"byte_start":0,"char_end":9,"char_start":0,"value":{"Duration":{"amount":5,"unit":"Minute"}}}]
+  count: 2
+  ✓ Duration found
+parse("", "en"):
+  count: 0
+  ✓ empty input handled
+
+=== All tests completed ===
+```
+
+> 测试文件位置：`~/nlp/dm-sdk/libnlu/verify_libnlu_rustling.cpp`
 
 ---
 
@@ -294,7 +385,8 @@ if (rustling_locale_supported("zh")) {
 | `.cargo/` 被 gitignore 整体忽略 | 旧 gitignore 写法 `.cargo/` | 改为 `.cargo/*` + `!.cargo/config.toml` |
 | ARM64 构建需要 NDK | libnlu arm64 路径写死 `/mnt/ndk/` | 本地 NDK 已安装至 `~/android-ndk/android-ndk-r27c/` |
 | 首次构建较慢（~60s） | cargo 全量编译 41MB 静态库 | 产物缓存在 `target_user/`，后续增量编译极快 |
-| `nlu_manager_test` 链接失败（`GLIBC_2.38`） | dm-sdk `third_party/x86/protobuf-3.6.1/lib/libprotobuf.so` 为高版本 glibc 编译，本机 Ubuntu 20.04 不支持 | 与 rustling 无关；`libnlu_static_lib.a` 已成功构建（93%）；可在 Docker / 匹配环境中完成最终链接 |
+| `nlu_manager_test` 链接失败（`GLIBC_2.38`） | dm-sdk `third_party/x86/protobuf-3.6.1/lib/libprotobuf.so` 为高版本 glibc 编译，本机 Ubuntu 20.04 不支持 | 与 rustling 无关；`libnlu_static_lib.a` 已成功构建（169MB）；可在 Docker / 匹配环境中完成最终链接 |
+| 静态库链接后符号未找到 | `target_link_libraries` 对静态库仅记录依赖，不嵌入内容 | 使用嵌套合并：提取 `librustling.a` 的 `.o` 文件，`ar r` 加入 `libnlu_static_lib.a` |
 
 ---
 
@@ -303,5 +395,6 @@ if (rustling_locale_supported("zh")) {
 - `duckling-rust/include/rustling.h` — 完整 C API 声明
 - `duckling-rust/src/ffi.rs` — FFI 实现（`#[no_mangle] extern "C"`）
 - `duckling-rust/.cargo/config.toml` — 跨编译工具链配置
+- `duckling-rust/tests/verify_static_lib.c` — x86_64 静态库验证（C 测试）
 - `libnlu/CMakeLists.txt` — 集成入口（已修改）
-- `libnlu/docs/rust_integration.md` — libnlu 侧集成通用方案
+- `libnlu/verify_libnlu_rustling.cpp` — libnlu 嵌套验证（C++ 测试）
